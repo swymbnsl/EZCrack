@@ -6,17 +6,36 @@ const QuestionSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  topic: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  type: {
+    type: String,
+    required: true,
+    trim: true,
+    enum: ["midsem", "endsem"],
+  },
+  marks: {
+    type: Number,
+    required: true,
+  },
   year: {
     type: Number,
     required: true,
   },
-  subject_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subject",
-  },
   unit_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Unit",
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
   },
 });
 

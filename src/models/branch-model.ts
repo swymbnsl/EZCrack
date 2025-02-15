@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
+import Subject from "./subjects-model";
 
-const subjectSchema = new mongoose.Schema({
+const branchSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
-  units_ids: [
+  subject_ids: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Unit",
+      ref: Subject,
     },
   ],
   created_at: {
@@ -21,7 +23,6 @@ const subjectSchema = new mongoose.Schema({
   },
 });
 
-const Subject =
-  mongoose.models.Subject || mongoose.model("Subject", subjectSchema);
+const Branch = mongoose.models.Branch || mongoose.model("Branch", branchSchema);
 
-export default Subject;
+export default Branch;

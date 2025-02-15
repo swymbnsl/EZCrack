@@ -2,19 +2,44 @@
 
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { subjects } from "@/constants/lists";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface Subject {
+  _id: string;
+  name: string;
+  semester: number;
+}
 
 export default function SubjectsPage() {
   const searchParams = useSearchParams();
   const branch = searchParams.get("branch")?.toLowerCase();
   const sem = searchParams.get("sem");
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // @ts-ignore - we know the structure of our subjects object
-  const subjectsList = subjects[branch]?.[sem] || [];
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch(
+          `/api/subjects?branch=${branch}&sem=${sem}`
+        );
+        const data = await response.json();
+        setSubjects(data.subjects || []);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (branch && sem) {
+      fetchSubjects();
+    }
+  }, [branch, sem]);
 
   const container = {
     hidden: { opacity: 0 },
@@ -57,25 +82,38 @@ export default function SubjectsPage() {
           </p>
         </motion.div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
+            <p className="text-gray-400 text-lg">Loading subjects...</p>
+          </motion.div>
+        )}
+
         {/* Subjects Grid */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {subjectsList.map((subject: string, index: number) => (
-            <SubjectCard
-              key={subject}
-              subject={subject}
-              index={index}
-              variants={item}
-            />
-          ))}
-        </motion.div>
+        {!isLoading && (
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {subjects.map((subject, index) => (
+              <SubjectCard
+                key={subject._id}
+                subject={subject.name}
+                index={index}
+                variants={item}
+              />
+            ))}
+          </motion.div>
+        )}
 
         {/* Empty State */}
-        {subjectsList.length === 0 && (
+        {!isLoading && subjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

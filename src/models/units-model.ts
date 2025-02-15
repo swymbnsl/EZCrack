@@ -5,19 +5,12 @@ const unitSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  subject_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subject",
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
-  order: {
-    type: Number,
-    required: true,
-  },
+  topics: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   created_at: {
     type: Date,
     default: Date.now,
