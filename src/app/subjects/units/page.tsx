@@ -3,43 +3,27 @@
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { SubjectCard } from "@/components/subjects/SubjectCard";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ContentCard } from "@/components/ui/ContentCard";
 
-interface Subject {
+interface Unit {
   _id: string;
-  name: string;
-  semester: number;
+  created_at: string;
+  number: number;
+  subject_id: string;
+  topics: string[];
+  updated_at: string;
 }
 
-export default function SubjectsPage() {
+export default function UnitsPage() {
   const searchParams = useSearchParams();
-  const branch = searchParams.get("branch")?.toLowerCase();
+  const subject_id = searchParams.get("subject_id");
+  const branch = searchParams.get("branch");
   const sem = searchParams.get("sem");
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await fetch(
-          `/api/subjects?branch=${branch}&sem=${sem}`
-        );
-        const data = await response.json();
-        setSubjects(data.subjects || []);
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (branch && sem) {
-      fetchSubjects();
-    }
-  }, [branch, sem]);
 
   const container = {
     hidden: { opacity: 0 },
@@ -56,10 +40,31 @@ export default function SubjectsPage() {
     show: { y: 0, opacity: 1 },
   };
 
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const response = await fetch(`/api/units?subject_id=${subject_id}`);
+        const data = await response.json();
+        console.log("Fetched units:", data);
+        setUnits(data.units || []);
+      } catch (error) {
+        console.error("Error fetching units:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (subject_id) {
+      fetchUnits();
+    }
+  }, [subject_id]);
+
   return (
     <PageWrapper>
-      <div className="max-w-6xl mx-auto relative z-10 p-8">
-        {/* Header Section */}
+      <motion.div
+        key={`units-page-${subject_id}-${branch}-${sem}`}
+        className="max-w-6xl mx-auto relative z-10 p-8"
+      >
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -67,65 +72,65 @@ export default function SubjectsPage() {
           className="mb-12"
         >
           <Link
-            href="/"
+            href={`/subjects?branch=${branch}&sem=${sem}`}
             className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 group"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to Home
+            Back to Subjects
           </Link>
 
           <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
-            {branch?.toUpperCase()} - Semester {sem}
+            Units
           </h1>
           <p className="text-gray-400 text-lg">
-            Select a subject to explore study materials
+            Select a unit to explore study materials
           </p>
         </motion.div>
 
-        {/* Loading State */}
-        {isLoading && (
+        {isLoading ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center py-20"
           >
-            <p className="text-gray-400 text-lg">Loading subjects...</p>
+            <p className="text-gray-400 text-lg">Loading units...</p>
           </motion.div>
-        )}
-
-        {/* Subjects Grid */}
-        {!isLoading && (
+        ) : units.length > 0 ? (
           <motion.div
+            key={`units-grid-${subject_id}`}
             variants={container}
             initial="hidden"
             animate="show"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {subjects.map((subject, index) => (
-              <SubjectCard
-                key={subject._id}
-                name={subject.name}
-                id={subject._id}
-                index={index}
+            {units.map((unit) => (
+              <ContentCard
+                key={unit._id}
+                title={
+                  unit.topics.length > 0
+                    ? unit.topics[0]
+                    : `Unit ${unit.number}`
+                }
+                subtitle={`Unit ${unit.number}`}
+                onClick={() => {
+                  // Add navigation logic here when needed
+                  console.log(`Clicked unit ${unit.number}`);
+                }}
                 variants={item}
+                additionalInfo={`${unit.topics.length} topics`}
               />
             ))}
           </motion.div>
-        )}
-
-        {/* Empty State */}
-        {!isLoading && subjects.length === 0 && (
+        ) : (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center py-20"
           >
-            <p className="text-gray-400 text-lg">
-              No subjects found for this semester.
-            </p>
+            <p className="text-gray-400 text-lg">No units found.</p>
           </motion.div>
         )}
-      </div>
+      </motion.div>
     </PageWrapper>
   );
 }

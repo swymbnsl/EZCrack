@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
-import Subject from "@/models/subjects-model";
+import Unit from "@/models/units-model";
 
 export const GET = async (req: Request) => {
   try {
-    const { searchParams } = new URL(req.url);
-    const subjectId = searchParams.get("subjectId");
+    const url = new URL(req.url);
+    const subject_id = url.searchParams.get("subject_id");
 
-    if (!subjectId) {
+    if (!subject_id) {
       return NextResponse.json(
         { error: "Subject ID is required" },
         { status: 400 }
@@ -16,13 +16,9 @@ export const GET = async (req: Request) => {
 
     await connectToDB();
 
-    const subject = await Subject.findById(subjectId).populate("units_ids");
+    const units = await Unit.find({ subject_id }).lean();
 
-    if (!subject) {
-      return NextResponse.json({ error: "Subject not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(subject.units_ids, { status: 200 });
+    return NextResponse.json({ units });
   } catch (error) {
     console.error("Error fetching units:", error);
     return NextResponse.json(

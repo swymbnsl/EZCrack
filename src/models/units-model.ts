@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const unitSchema = new mongoose.Schema({
-  name: {
-    type: String,
+  number: {
+    type: Number,
     required: true,
   },
   topics: [
