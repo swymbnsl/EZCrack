@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { ContributorBadge } from "@/components/shared/ContributorBadge";
 
 interface HeaderProps {
   branchId: string | string[];
@@ -13,6 +14,7 @@ interface HeaderProps {
     primary: { value: number | string; label: string };
     secondary: { value: number | string; label: string };
   };
+  showContributor?: boolean;
 }
 
 export function Header({
@@ -23,7 +25,17 @@ export function Header({
   title,
   subtitle,
   stats,
+  showContributor = true,
 }: HeaderProps) {
+  // Demo contributor data
+  const contributor = {
+    name: "Swayam Bansal",
+    branch: "ECE",
+    semester: 2,
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=Valentina",
+    linkedinUrl: "https://linkedin.com/in/swymbnsl",
+  };
+
   return (
     <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
       <div className="max-w-[2000px] mx-auto p-8">
@@ -61,6 +73,8 @@ export function Header({
                 {subtitle}
               </p>
             </div>
+
+            {showContributor && <ContributorBadge contributor={contributor} />}
 
             <div className="flex gap-4">
               <StatCard

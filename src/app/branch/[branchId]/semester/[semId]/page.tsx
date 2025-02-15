@@ -64,6 +64,7 @@ export default function SubjectsPage() {
               label: "Semester",
             },
           }}
+          showContributor={false}
         />
 
         <div className="flex-1 overflow-hidden">
