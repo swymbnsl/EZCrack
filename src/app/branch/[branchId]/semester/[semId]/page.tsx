@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { ChevronLeft } from "lucide-react";
@@ -15,31 +15,11 @@ interface Subject {
 }
 
 export default function SubjectsPage() {
-  const searchParams = useSearchParams();
-  const branch = searchParams.get("branch")?.toLowerCase();
-  const sem = searchParams.get("sem");
+  const params = useParams();
+  const branchId = params.branchId as string;
+  const semId = params.semId as string;
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await fetch(
-          `/api/subjects?branch=${branch}&sem=${sem}`
-        );
-        const data = await response.json();
-        setSubjects(data.subjects || []);
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (branch && sem) {
-      fetchSubjects();
-    }
-  }, [branch, sem]);
 
   const container = {
     hidden: { opacity: 0 },
@@ -56,10 +36,29 @@ export default function SubjectsPage() {
     show: { y: 0, opacity: 1 },
   };
 
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch(
+          `/api/subjects?branch=${branchId}&sem=${semId}`
+        );
+        const data = await response.json();
+        setSubjects(data.subjects || []);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (branchId && semId) {
+      fetchSubjects();
+    }
+  }, [branchId, semId]);
+
   return (
     <PageWrapper>
       <div className="max-w-6xl mx-auto relative z-10 p-8">
-        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,14 +74,13 @@ export default function SubjectsPage() {
           </Link>
 
           <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
-            {branch?.toUpperCase()} - Semester {sem}
+            {branchId?.toUpperCase()} - Semester {semId}
           </h1>
           <p className="text-gray-400 text-lg">
             Select a subject to explore study materials
           </p>
         </motion.div>
 
-        {/* Loading State */}
         {isLoading && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -93,7 +91,6 @@ export default function SubjectsPage() {
           </motion.div>
         )}
 
-        {/* Subjects Grid */}
         {!isLoading && (
           <motion.div
             variants={container}
@@ -108,12 +105,13 @@ export default function SubjectsPage() {
                 id={subject._id}
                 index={index}
                 variants={item}
+                branchId={branchId}
+                semId={semId}
               />
             ))}
           </motion.div>
         )}
 
-        {/* Empty State */}
         {!isLoading && subjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}

@@ -17,12 +17,14 @@ export default function Home() {
   const handleGetStarted = () => {
     if (selectedBranch && selectedSemester) {
       const semNumber = selectedSemester.replace("Semester ", "");
-      const searchParams = new URLSearchParams({
-        branch: selectedBranch.toLowerCase(),
-        sem: semNumber,
-      });
-      router.push(`/subjects?${searchParams.toString()}`);
+      router.push(
+        `/branch/${selectedBranch.toLowerCase()}/semester/${semNumber}`
+      );
     }
+  };
+
+  const handleBranchSemSelect = (branch: string, sem: string) => {
+    router.push(`/branch/${branch.toLowerCase()}/semester/${sem}`);
   };
 
   return (

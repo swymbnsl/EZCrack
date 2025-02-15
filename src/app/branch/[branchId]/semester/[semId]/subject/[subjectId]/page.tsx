@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { ChevronLeft, BookOpen } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ContentCard } from "@/components/ui/ContentCard";
@@ -18,12 +18,11 @@ interface Unit {
 }
 
 export default function UnitsPage() {
-  const searchParams = useSearchParams();
-  const subject_id = searchParams.get("subject_id");
-  const branch = searchParams.get("branch");
-  const sem = searchParams.get("sem");
+  const params = useParams();
+  const { branchId, semId, subjectId } = params;
   const [units, setUnits] = useState<Unit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   const container = {
     hidden: { opacity: 0 },
@@ -43,9 +42,8 @@ export default function UnitsPage() {
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        const response = await fetch(`/api/units?subject_id=${subject_id}`);
+        const response = await fetch(`/api/units?subject_id=${subjectId}`);
         const data = await response.json();
-        console.log("Fetched units:", data);
         setUnits(data.units || []);
       } catch (error) {
         console.error("Error fetching units:", error);
@@ -54,15 +52,15 @@ export default function UnitsPage() {
       }
     };
 
-    if (subject_id) {
+    if (subjectId) {
       fetchUnits();
     }
-  }, [subject_id]);
+  }, [subjectId]);
 
   return (
     <PageWrapper>
       <motion.div
-        key={`units-page-${subject_id}-${branch}-${sem}`}
+        key={`units-page-${subjectId}`}
         className="max-w-6xl mx-auto relative z-10 p-8"
       >
         <motion.div
@@ -72,7 +70,7 @@ export default function UnitsPage() {
           className="mb-12"
         >
           <Link
-            href={`/subjects?branch=${branch}&sem=${sem}`}
+            href={`/branch/${branchId}/semester/${semId}`}
             className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 group"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -97,7 +95,7 @@ export default function UnitsPage() {
           </motion.div>
         ) : units.length > 0 ? (
           <motion.div
-            key={`units-grid-${subject_id}`}
+            key={`units-grid-${subjectId}`}
             variants={container}
             initial="hidden"
             animate="show"
@@ -113,8 +111,9 @@ export default function UnitsPage() {
                 }
                 subtitle={`Unit ${unit.number}`}
                 onClick={() => {
-                  // Add navigation logic here when needed
-                  console.log(`Clicked unit ${unit.number}`);
+                  router.push(
+                    `/branch/${branchId}/semester/${semId}/subject/${subjectId}/unit/${unit._id}`
+                  );
                 }}
                 variants={item}
                 additionalInfo={`${unit.topics.length} topics`}

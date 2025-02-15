@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ContentCard } from "@/components/ui/ContentCard";
 
 interface SubjectCardProps {
@@ -8,6 +8,8 @@ interface SubjectCardProps {
   id: string;
   index: number;
   variants: any;
+  branchId: string;
+  semId: string;
 }
 
 export const SubjectCard = ({
@@ -15,14 +17,13 @@ export const SubjectCard = ({
   id,
   index,
   variants,
+  branchId,
+  semId,
 }: SubjectCardProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const branch = searchParams.get("branch");
-  const sem = searchParams.get("sem");
 
   const handleClick = () => {
-    router.push(`/subjects/units?branch=${branch}&sem=${sem}&subject_id=${id}`);
+    router.push(`/branch/${branchId}/semester/${semId}/subject/${id}`);
   };
 
   return (
