@@ -7,7 +7,7 @@ export const GET = async (
   { params }: { params: { unitId: string } }
 ) => {
   try {
-    const { unitId } = params;
+    const { unitId } = await params;
 
     if (!unitId) {
       return NextResponse.json(

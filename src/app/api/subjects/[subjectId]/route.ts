@@ -2,20 +2,22 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
 import Subject from "@/models/subjects-model";
 
-export const GET = async (
-  req: Request,
-  { params }: { params: { subjectId: string } }
-) => {
+interface RouteParams {
+  params: {
+    subjectId: string;
+  };
+}
+
+export async function GET(request: Request, { params }: RouteParams) {
+  const { subjectId } = await params;
+  if (!subjectId) {
+    return NextResponse.json(
+      { error: "Subject ID is required" },
+      { status: 400 }
+    );
+  }
+
   try {
-    const { subjectId } = params;
-
-    if (!subjectId) {
-      return NextResponse.json(
-        { error: "Subject ID is required" },
-        { status: 400 }
-      );
-    }
-
     await connectToDB();
 
     const subject = await Subject.findById(subjectId).lean();
@@ -32,4 +34,4 @@ export const GET = async (
       { status: 500 }
     );
   }
-};
+}

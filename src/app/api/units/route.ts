@@ -4,8 +4,8 @@ import Unit from "@/models/units-model";
 
 export const GET = async (req: Request) => {
   try {
-    const url = new URL(req.url);
-    const subject_id = url.searchParams.get("subject_id");
+    const { searchParams } = new URL(req.url);
+    const subject_id = searchParams.get("subject_id");
 
     if (!subject_id) {
       return NextResponse.json(

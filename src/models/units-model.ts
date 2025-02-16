@@ -5,6 +5,11 @@ const unitSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  subject_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Subject",
+    required: true,
+  },
   topics: [
     {
       type: String,
