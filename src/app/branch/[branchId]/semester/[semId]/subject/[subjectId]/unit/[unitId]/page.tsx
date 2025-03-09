@@ -10,6 +10,7 @@ import { TopicCard } from "@/components/topics/TopicCard";
 import { QuestionCard } from "@/components/questions/QuestionCard";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
 import axios from "axios";
+import { BookOpen } from "lucide-react";
 
 interface Topic {
   title: string;
@@ -212,17 +213,22 @@ export default function UnitPage() {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: topicIndex * 0.1 }}
-                            className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6"
+                            className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
                           >
-                            <div className="flex items-center justify-between mb-6">
-                              <h2 className="text-xl max-w-[83%] font-semibold text-white">
-                                {topic.title}
-                              </h2>
-                              <span className="text-sm text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full">
+                            <div className="px-6 py-4 border-b border-gray-700/50 flex items-center justify-between">
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className="w-10 h-10 shrink-0 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                                  <BookOpen className="w-5 h-5 text-purple-400" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-white">
+                                  {topic.title}
+                                </h2>
+                              </div>
+                              <span className="text-sm shrink-0 ml-3 text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full">
                                 {topic.questions.length} questions
                               </span>
                             </div>
-                            <div className="space-y-4">
+                            <div className="p-6 space-y-4">
                               {topic.questions
                                 .filter(
                                   (q) =>
@@ -230,12 +236,31 @@ export default function UnitPage() {
                                     q.year === yearFilter
                                 )
                                 .map((question, qIndex) => (
-                                  <QuestionCard
+                                  <motion.div
                                     key={`${question.id}-${qIndex}`}
-                                    question={question}
-                                    index={qIndex}
-                                    delay={topicIndex * 0.1 + qIndex * 0.05}
-                                  />
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{
+                                      delay: topicIndex * 0.1 + qIndex * 0.05,
+                                    }}
+                                    className="group relative bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/30 hover:border-purple-500/30 rounded-xl p-5 transition-all"
+                                  >
+                                    <div className="flex flex-col gap-3">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-sm font-medium text-white bg-purple-500/20 px-3 py-1.5 rounded-full">
+                                            {question.year}
+                                          </span>
+                                          <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                                            {question.marks} marks
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <p className="text-gray-200">
+                                        {question.text}
+                                      </p>
+                                    </div>
+                                  </motion.div>
                                 ))}
                             </div>
                           </motion.div>
