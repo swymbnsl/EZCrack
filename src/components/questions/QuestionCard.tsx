@@ -21,7 +21,7 @@ export function QuestionCard({ question, index, delay }: QuestionCardProps) {
       className="group p-4 bg-gray-700/30 rounded-lg hover:bg-gray-700/40 transition-all border border-transparent hover:border-purple-500/20"
     >
       <div className="flex justify-between items-start gap-4">
-        <p className="text-gray-200 group-hover:text-white transition-colors">
+        <p className="text-gray-200 max-w-[83%] group-hover:text-white transition-colors">
           {question.text}
         </p>
         <div className="flex flex-col items-end gap-2">

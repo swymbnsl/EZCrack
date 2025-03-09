@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Info } from "lucide-react";
 import Link from "next/link";
 import { ContributorBadge } from "@/components/shared/ContributorBadge";
 
@@ -15,6 +15,32 @@ interface HeaderProps {
     secondary: { value: number | string; label: string };
   };
   showContributor?: boolean;
+  showWeightageInfo?: boolean;
+}
+
+function WeightageInfo() {
+  return (
+    <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+      <div className="flex items-center gap-4">
+        <div className="relative group">
+          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-500/20 group-hover:border-purple-500/40 transition-colors flex items-center justify-center">
+            <Info className="w-6 h-6 text-purple-400" />
+          </div>
+        </div>
+
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-medium text-white">Weightage Calculation</h3>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <span className="inline-flex items-center gap-1 bg-gray-800/50 rounded-full">
+              Based on question frequency and total marks
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function Header({
@@ -26,6 +52,7 @@ export function Header({
   subtitle,
   stats,
   showContributor = true,
+  showWeightageInfo = false,
 }: HeaderProps) {
   // Demo contributor data
   const contributor = {
@@ -73,6 +100,7 @@ export function Header({
                 {subtitle}
               </p>
             </div>
+            {showWeightageInfo && <WeightageInfo />}
 
             {showContributor && <ContributorBadge contributor={contributor} />}
 

@@ -3,16 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { BookOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { TopicCard } from "@/components/topics/TopicCard";
 import { QuestionCard } from "@/components/questions/QuestionCard";
-import { UnitTabs } from "@/components/units/UnitTabs";
-import { UnitSortControls } from "@/components/units/UnitSortControls";
-import { UnitYearFilter } from "@/components/units/UnitYearFilter";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
+import axios from "axios";
 
 interface Topic {
   title: string;
@@ -47,23 +44,59 @@ export default function UnitPage() {
   const [yearFilter, setYearFilter] = useState<YearFilter>("all");
   const [activeTab, setActiveTab] = useState<"topics" | "questions">("topics");
 
-  // Demo data generation
-  const generateDemoData = (rawUnit: any): Unit => {
-    const years = [2023, 2022, 2021, 2020];
+  const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
+    const questions = questionsData.foundQuestions || [];
+
+    interface TopicWithRawScore {
+      title: string;
+      rawScore: number;
+      years: number[];
+      questions: Question[];
+    }
+
+    // First pass: calculate raw scores for each topic
+    const topicsWithRawScores: TopicWithRawScore[] = rawUnit.topics.map(
+      (topic: string) => {
+        const topicQuestions = questions.filter((q: any) => q.topic === topic);
+        const years = [...new Set(topicQuestions.map((q: any) => q.year))];
+        const totalMarks = topicQuestions.reduce(
+          (sum: number, q: any) => sum + (q.marks || 0),
+          0
+        );
+        const frequency = topicQuestions.length;
+
+        // Raw score combines marks and frequency
+        const rawScore = totalMarks * frequency;
+
+        return {
+          title: topic,
+          rawScore,
+          years,
+          questions: topicQuestions.map((q: any) => ({
+            id: q._id,
+            text: q.question,
+            marks: q.marks,
+            year: q.year,
+          })),
+        };
+      }
+    );
+
+    // Calculate total raw score
+    const totalRawScore = topicsWithRawScores.reduce(
+      (sum: number, topic: TopicWithRawScore) => sum + topic.rawScore,
+      0
+    );
+
+    // Second pass: normalize to percentages
     return {
       ...rawUnit,
-      topics: rawUnit.topics.map((topic: string) => ({
-        title: topic,
-        weightage: Math.floor(Math.random() * 30) + 10, // Random weightage between 10-40
-        years: years.filter(() => Math.random() > 0.5),
-        questions: Array(Math.floor(Math.random() * 3) + 2)
-          .fill(null)
-          .map((_, i) => ({
-            id: `q-${i}`,
-            text: `Sample question ${i + 1} for ${topic}`,
-            marks: [5, 10, 15][Math.floor(Math.random() * 3)],
-            year: years[Math.floor(Math.random() * years.length)],
-          })),
+      topics: topicsWithRawScores.map((topic: TopicWithRawScore) => ({
+        ...topic,
+        weightage:
+          totalRawScore === 0
+            ? Math.round(100 / topicsWithRawScores.length) // Equal distribution if no questions
+            : Math.round((topic.rawScore / totalRawScore) * 100),
       })),
     };
   };
@@ -71,9 +104,17 @@ export default function UnitPage() {
   useEffect(() => {
     const fetchUnit = async () => {
       try {
-        const response = await fetch(`/api/units/${unitId}`);
-        const data = await response.json();
-        setUnit(generateDemoData(data.unit));
+        const response = await axios.get(`/api/units/${unitId}`);
+        const data = response.data;
+        const questionsResponse = await axios.get(`/api/questions`, {
+          params: {
+            unit: data.unit.number,
+            subjectId: subjectId,
+          },
+        });
+        const questionsData = questionsResponse.data;
+
+        setUnit(generateAnalysisData(data.unit, questionsData));
       } catch (error) {
         console.error("Error fetching unit:", error);
       } finally {
@@ -109,6 +150,7 @@ export default function UnitPage() {
           backText="Back to Units"
           title={`Unit ${unit?.number || ""}`}
           subtitle={`${unit?.topics.length || 0} topics to explore`}
+          showWeightageInfo={true}
           stats={{
             primary: {
               value: unit?.topics.length || 0,
@@ -172,7 +214,7 @@ export default function UnitPage() {
                             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6"
                           >
                             <div className="flex items-center justify-between mb-6">
-                              <h2 className="text-xl font-semibold text-white">
+                              <h2 className="text-xl max-w-[83%] font-semibold text-white">
                                 {topic.title}
                               </h2>
                               <span className="text-sm text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full">

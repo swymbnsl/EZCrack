@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import axios from "axios";
 
 interface Subject {
   _id: string;
@@ -26,10 +27,10 @@ export default function SubjectsPage() {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `/api/subjects?branch=${branchId}&sem=${semId}`
         );
-        const data = await response.json();
+        const data = response.data;
         setSubjects(data.subjects || []);
       } catch (error) {
         console.error("Error fetching subjects:", error);

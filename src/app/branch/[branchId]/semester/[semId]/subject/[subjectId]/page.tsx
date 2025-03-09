@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { UnitCard } from "@/components/units/UnitCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import axios from "axios";
 
 interface Unit {
   _id: string;
@@ -34,13 +35,13 @@ export default function UnitsPage() {
     const fetchData = async () => {
       try {
         const [unitsResponse, subjectResponse] = await Promise.all([
-          fetch(`/api/units?subject_id=${subjectId}`),
-          fetch(`/api/subjects/${subjectId}`),
+          axios.get(`/api/units?subject_id=${subjectId}`),
+          axios.get(`/api/subjects/${subjectId}`),
         ]);
 
         const [unitsData, subjectData] = await Promise.all([
-          unitsResponse.json(),
-          subjectResponse.json(),
+          unitsResponse.data,
+          subjectResponse.data,
         ]);
 
         setUnits(unitsData.units);

@@ -21,16 +21,16 @@ export function UnitCard({
   subjectId,
 }: UnitCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      whileHover={{ scale: 1.02 }}
-      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:bg-gray-800/70 hover:border-purple-500/30 transition-all"
+    <Link
+      href={`/branch/${branchId}/semester/${semId}/subject/${subjectId}/unit/${unit._id}`}
+      className="block"
     >
-      <Link
-        href={`/branch/${branchId}/semester/${semId}/subject/${subjectId}/unit/${unit._id}`}
-        className="block"
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+        whileHover={{ scale: 1.02 }}
+        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:bg-gray-800/70 hover:border-purple-500/30 transition-all"
       >
         <div className="flex justify-between items-start mb-6">
           <h2 className="text-xl font-semibold text-white">
@@ -53,7 +53,7 @@ export function UnitCard({
             </p>
           )}
         </div>
-      </Link>
-    </motion.div>
+      </motion.div>
+    </Link>
   );
 }
