@@ -14,16 +14,25 @@ interface TopicCardProps {
     years: number[];
   };
   index: number;
+  onTopicClick?: () => void;
 }
 
-export function TopicCard({ topic, index }: TopicCardProps) {
+export function TopicCard({ topic, index, onTopicClick }: TopicCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
-      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 transition-all hover:bg-gray-800/70 hover:border-purple-500/30 flex flex-col"
+      onClick={onTopicClick}
+      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 transition-all hover:bg-gray-800/70 hover:border-purple-500/30 flex flex-col cursor-pointer"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onTopicClick?.();
+        }
+      }}
     >
       <div className="flex justify-between items-start mb-6">
         <h2 className="text-xl font-semibold text-white">{topic.title}</h2>

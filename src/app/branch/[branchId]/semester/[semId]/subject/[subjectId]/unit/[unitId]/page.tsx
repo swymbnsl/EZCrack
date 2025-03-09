@@ -194,6 +194,7 @@ export default function UnitPage() {
                             key={`${topic.title}-${index}`}
                             topic={topic}
                             index={index}
+                            onTopicClick={() => setActiveTab("questions")}
                           />
                         ))}
                       </motion.div>
