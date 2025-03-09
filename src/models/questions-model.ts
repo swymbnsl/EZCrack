@@ -1,33 +1,33 @@
 import mongoose from "mongoose";
 
-const QuestionSchema = new mongoose.Schema({
+const questionSchema = new mongoose.Schema({
   question: {
     type: String,
     required: true,
-    trim: true,
+  },
+  year: {
+    type: String,
   },
   topic: {
     type: String,
     required: true,
-    trim: true,
   },
-  type: {
-    type: String,
+  midsem: {
+    type: Boolean,
     required: true,
-    trim: true,
-    enum: ["midsem", "endsem"],
   },
   marks: {
     type: Number,
     required: true,
   },
-  year: {
+  unit: {
     type: Number,
     required: true,
   },
-  unit_id: {
+  subject_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Unit",
+    ref: "Subject",
+    required: true,
   },
   created_at: {
     type: Date,
@@ -40,6 +40,6 @@ const QuestionSchema = new mongoose.Schema({
 });
 
 const Question =
-  mongoose.models.Question || mongoose.model("Question", QuestionSchema);
+  mongoose.models.Question || mongoose.model("Question", questionSchema);
 
 export default Question;

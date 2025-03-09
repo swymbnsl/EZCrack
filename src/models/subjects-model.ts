@@ -11,6 +11,14 @@ const subjectSchema = new mongoose.Schema({
       ref: "Unit",
     },
   ],
+  subject_code: {
+    type: String,
+    required: true,
+  },
+  credits: {
+    type: Number,
+    required: true,
+  },
   created_at: {
     type: Date,
     default: Date.now,

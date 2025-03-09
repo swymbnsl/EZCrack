@@ -8,7 +8,7 @@ interface SubjectCardProps {
   subject: {
     _id: string;
     name: string;
-    code?: string;
+    subject_code?: string;
     credits?: number;
   };
   index: number;
@@ -42,18 +42,15 @@ export function SubjectCard({
               </h2>
               <div className="flex items-center gap-3 text-sm text-gray-400">
                 <span className="px-2.5 py-1 bg-gray-800/80 rounded-lg border border-gray-700/50">
-                  {subject.code || "CS-301"}
+                  {subject.subject_code || "CS-301"}
                 </span>
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-800/80 rounded-lg border border-gray-700/50">
                   <GraduationCap className="w-4 h-4" />
-                  <span>{subject.credits || 4} Credits</span>
+                  <span>{subject.credits || 3} Credits</span>
                 </div>
               </div>
             </div>
           </div>
-          <span className="text-purple-400 font-medium bg-purple-500/10 px-3 py-1 rounded-full">
-            Core
-          </span>
         </div>
       </Link>
     </motion.div>
