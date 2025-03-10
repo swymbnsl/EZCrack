@@ -1,4 +1,4 @@
-import { BookOpen, Filter } from "lucide-react";
+import { BookOpen, FileText } from "lucide-react";
 
 interface UnitTabsProps {
   activeTab: "topics" | "questions";
@@ -7,37 +7,65 @@ interface UnitTabsProps {
 
 export function UnitTabs({ activeTab, setActiveTab }: UnitTabsProps) {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm uppercase text-gray-400 font-medium">View</h3>
-        <Filter className="w-4 h-4 text-gray-500" />
-      </div>
-      <div className="bg-gray-800/30 p-1.5 rounded-xl flex flex-col gap-1.5">
+    <div className="space-y-2">
+      <h3 className="text-sm font-medium text-gray-400 mb-4 flex items-center gap-2">
+        <FileText className="w-4 h-4" />
+        View Mode
+      </h3>
+
+      <div className="bg-gray-800/40 rounded-xl border border-gray-700/50 overflow-hidden">
         <button
           onClick={() => setActiveTab("topics")}
-          className={`px-4 py-3 rounded-lg transition-all duration-200 relative text-left flex items-center gap-3 ${
+          className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
             activeTab === "topics"
-              ? "text-white bg-purple-500/20"
-              : "text-gray-400 hover:text-white hover:bg-gray-700/30"
+              ? "bg-purple-500/20 text-white"
+              : "text-gray-300 hover:bg-gray-700/50"
           }`}
         >
-          <div className="p-2 bg-gray-700/30 rounded-lg">
-            <BookOpen className="w-4 h-4" />
+          <div
+            className={`w-8 h-8 rounded-lg ${
+              activeTab === "topics" ? "bg-purple-500/20" : "bg-gray-700/50"
+            } flex items-center justify-center`}
+          >
+            <BookOpen
+              className={`w-4 h-4 ${
+                activeTab === "topics" ? "text-purple-400" : "text-gray-400"
+              }`}
+            />
           </div>
-          Topics & Weightage
+          <div className="flex flex-col">
+            <span className="font-medium">Topics Overview</span>
+            <span className="text-xs text-gray-400">
+              View weightage and analysis
+            </span>
+          </div>
         </button>
+
         <button
           onClick={() => setActiveTab("questions")}
-          className={`px-4 py-3 rounded-lg transition-all duration-200 relative text-left flex items-center gap-3 ${
+          className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
             activeTab === "questions"
-              ? "text-white bg-purple-500/20"
-              : "text-gray-400 hover:text-white hover:bg-gray-700/30"
+              ? "bg-purple-500/20 text-white"
+              : "text-gray-300 hover:bg-gray-700/50"
           }`}
         >
-          <div className="p-2 bg-gray-700/30 rounded-lg">
-            <Filter className="w-4 h-4" />
+          <div
+            className={`w-8 h-8 rounded-lg ${
+              activeTab === "questions" ? "bg-purple-500/20" : "bg-gray-700/50"
+            } flex items-center justify-center`}
+          >
+            <FileText
+              className={`w-4 h-4 ${
+                activeTab === "questions" ? "text-purple-400" : "text-gray-400"
+              }`}
+            />
           </div>
-          Questions
+          <div className="flex flex-col">
+            <span className="font-medium">Questions</span>
+            <span className="text-xs text-gray-400">
+              Browse all questions by topic
+            </span>
+          </div>
         </button>
       </div>
     </div>

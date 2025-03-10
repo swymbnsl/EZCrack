@@ -15,8 +15,9 @@ export const GET = async (req: Request) => {
     }
 
     await connectToDB();
-
+    console.log(1);
     const units = await Unit.find({ subject_id }).lean();
+    console.log(2);
 
     return NextResponse.json({ units });
   } catch (error) {

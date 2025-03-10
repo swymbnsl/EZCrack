@@ -6,6 +6,7 @@ interface QuestionCardProps {
     text: string;
     marks: number;
     year: number;
+    midsem?: boolean;
   };
   index: number;
   delay: number;
@@ -29,6 +30,11 @@ export function QuestionCard({ question, index, delay }: QuestionCardProps) {
             {question.marks} marks
           </span>
           <span className="text-sm text-gray-400">{question.year}</span>
+          {question.midsem !== undefined && (
+            <span className="text-sm text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
+              {question.midsem ? "Midterm" : "Endterm"}
+            </span>
+          )}
         </div>
       </div>
     </motion.div>

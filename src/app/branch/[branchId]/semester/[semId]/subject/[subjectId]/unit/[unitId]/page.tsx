@@ -3,14 +3,14 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { TopicCard } from "@/components/topics/TopicCard";
 import { QuestionCard } from "@/components/questions/QuestionCard";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
 import axios from "axios";
-import { BookOpen } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronUp, ListOrdered } from "lucide-react";
 
 interface Topic {
   title: string;
@@ -24,6 +24,7 @@ interface Question {
   text: string;
   marks: number;
   year: number;
+  midsem: boolean;
 }
 
 interface Unit {
@@ -33,7 +34,7 @@ interface Unit {
   subject_id: string;
 }
 
-type SortOrder = "asc" | "desc";
+type SortOrder = "asc" | "desc" | "original";
 type YearFilter = "all" | number;
 
 export default function UnitPage() {
@@ -41,9 +42,10 @@ export default function UnitPage() {
   const { branchId, semId, subjectId, unitId } = params;
   const [unit, setUnit] = useState<Unit | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
-  const [yearFilter, setYearFilter] = useState<YearFilter>("all");
   const [activeTab, setActiveTab] = useState<"topics" | "questions">("topics");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("original");
+  const [yearFilter, setYearFilter] = useState<YearFilter>("all");
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
 
   const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
     const questions = questionsData.foundQuestions || [];
@@ -78,6 +80,7 @@ export default function UnitPage() {
             text: q.question,
             marks: q.marks,
             year: q.year,
+            midsem: q.midsem,
           })),
         };
       }
@@ -131,15 +134,40 @@ export default function UnitPage() {
   const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || "";
   const parsedSemId = Array.isArray(semId) ? semId[0] : semId || "";
 
-  const sortedTopics = unit?.topics.slice().sort((a, b) => {
-    const comparison = a.weightage - b.weightage;
-    return sortOrder === "asc" ? comparison : -comparison;
-  });
+  const sortedTopics = useMemo(() => {
+    if (!unit) return [];
 
-  const availableYears = unit?.topics
-    .flatMap((t) => t.years)
-    .filter((year, index, self) => self.indexOf(year) === index)
-    .sort((a, b) => b - a);
+    if (sortOrder === "original") {
+      return [...unit.topics];
+    }
+
+    return [...unit.topics].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.weightage - b.weightage;
+      } else {
+        return b.weightage - a.weightage;
+      }
+    });
+  }, [unit, sortOrder]);
+
+  // Get unique years from all topics
+  const uniqueYears = useMemo(() => {
+    if (!unit) return [];
+
+    const years = new Set<number>();
+    unit.topics.forEach((topic) => {
+      topic.years.forEach((year) => years.add(year));
+    });
+
+    return Array.from(years).sort((a, b) => b - a); // Sort years in descending order
+  }, [unit]);
+
+  // Update available years when unit changes
+  useEffect(() => {
+    if (unit) {
+      setAvailableYears(uniqueYears);
+    }
+  }, [uniqueYears]);
 
   return (
     <PageWrapper>
@@ -167,11 +195,11 @@ export default function UnitPage() {
         <div className="flex-1 flex overflow-hidden">
           <UnitSidebar
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            onTabChange={setActiveTab}
             sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
+            onSortOrderChange={setSortOrder}
             yearFilter={yearFilter}
-            setYearFilter={setYearFilter}
+            onYearFilterChange={setYearFilter}
             availableYears={availableYears || []}
           />
 
@@ -220,7 +248,7 @@ export default function UnitPage() {
                                 <div className="w-10 h-10 shrink-0 rounded-lg bg-purple-500/10 flex items-center justify-center">
                                   <BookOpen className="w-5 h-5 text-purple-400" />
                                 </div>
-                                <h2 className="text-lg font-semibold text-white">
+                                <h2 className="text-lg font-semibold text-white truncate">
                                   {topic.title}
                                 </h2>
                               </div>
@@ -253,6 +281,11 @@ export default function UnitPage() {
                                           </span>
                                           <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
                                             {question.marks} marks
+                                          </span>
+                                          <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
+                                            {question.midsem
+                                              ? "Midterm"
+                                              : "Endterm"}
                                           </span>
                                         </div>
                                       </div>
