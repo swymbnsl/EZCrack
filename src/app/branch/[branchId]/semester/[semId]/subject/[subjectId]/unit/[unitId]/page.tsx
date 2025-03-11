@@ -10,8 +10,15 @@ import { TopicCard } from "@/components/topics/TopicCard";
 import { QuestionCard } from "@/components/questions/QuestionCard";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
 import { NotesModal } from "@/components/notes/NotesModal";
+import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
 import axios from "axios";
-import { BookOpen, ChevronDown, ChevronUp, ListOrdered } from "lucide-react";
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  ListOrdered,
+  Calculator,
+} from "lucide-react";
 
 interface Topic {
   title: string;
@@ -40,6 +47,11 @@ interface Unit {
   topics: Topic[];
   subject_id: string;
   notes?: Note[];
+  formulaSheet?: {
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 type SortOrder = "asc" | "desc" | "original";
@@ -58,6 +70,7 @@ export default function UnitPage() {
   const [selectedTopicNotes, setSelectedTopicNotes] = useState<Note | null>(
     null
   );
+  const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false);
 
   const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
     const questions = questionsData.foundQuestions || [];
@@ -243,6 +256,8 @@ export default function UnitPage() {
             yearFilter={yearFilter}
             onYearFilterChange={setYearFilter}
             availableYears={availableYears || []}
+            hasFormulaSheet={!!unit?.formulaSheet?.content}
+            onFormulaSheetClick={() => setShowFormulaSheetModal(true)}
           />
 
           <div className="flex-1 overflow-hidden">
@@ -360,6 +375,13 @@ export default function UnitPage() {
           isOpen={showNotesModal}
           onClose={() => setShowNotesModal(false)}
           note={selectedTopicNotes}
+        />
+
+        <FormulaSheetModal
+          isOpen={showFormulaSheetModal}
+          onClose={() => setShowFormulaSheetModal(false)}
+          formulaSheet={unit?.formulaSheet || null}
+          unitNumber={unit?.number || 0}
         />
       </div>
     </PageWrapper>

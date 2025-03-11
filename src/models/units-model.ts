@@ -25,6 +25,17 @@ const unitSchema = new mongoose.Schema(
         },
       },
     ],
+    formulaSheet: {
+      content: String,
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+      updatedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
     repeatedQuestions: {
       conceptBased: [
         {

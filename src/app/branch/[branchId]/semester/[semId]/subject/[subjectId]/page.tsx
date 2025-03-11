@@ -16,6 +16,7 @@ import { UnitCard } from "@/components/units/UnitCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { QuestionCard } from "@/components/questions/QuestionCard";
 import axios from "axios";
+import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
 
 const formatExamType = (examType: string) => {
   const type = examType.toLowerCase();
@@ -53,6 +54,11 @@ interface Unit {
   number: number;
   topics: string[];
   repeatedQuestions?: RepeatedQuestions;
+  formulaSheet?: {
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 interface Question {
@@ -90,6 +96,8 @@ export default function UnitsPage() {
   const [expandedYears, setExpandedYears] = useState<Record<number, boolean>>(
     {}
   );
+  const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -629,6 +637,16 @@ export default function UnitsPage() {
             </div>
           </div>
         </div>
+
+        <FormulaSheetModal
+          isOpen={showFormulaSheetModal}
+          onClose={() => {
+            setShowFormulaSheetModal(false);
+            setSelectedUnit(null);
+          }}
+          formulaSheet={selectedUnit?.formulaSheet || null}
+          unitNumber={selectedUnit?.number || 0}
+        />
       </div>
     </PageWrapper>
   );

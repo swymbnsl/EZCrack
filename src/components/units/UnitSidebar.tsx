@@ -8,6 +8,7 @@ import {
   ChevronUp,
   ListOrdered,
   BarChart2,
+  Calculator,
 } from "lucide-react";
 
 type SortOrder = "asc" | "desc" | "original";
@@ -21,6 +22,8 @@ interface UnitSidebarProps {
   yearFilter: YearFilter;
   onYearFilterChange: (year: YearFilter) => void;
   availableYears: number[];
+  hasFormulaSheet?: boolean;
+  onFormulaSheetClick?: () => void;
 }
 
 export function UnitSidebar({
@@ -31,6 +34,8 @@ export function UnitSidebar({
   yearFilter,
   onYearFilterChange,
   availableYears,
+  hasFormulaSheet = false,
+  onFormulaSheetClick,
 }: UnitSidebarProps) {
   return (
     <motion.div
@@ -39,6 +44,22 @@ export function UnitSidebar({
       className="w-80 min-w-[320px] border-r border-gray-800 flex flex-col bg-gray-900/50"
     >
       <div className="p-8 space-y-8">
+        {hasFormulaSheet && (
+          <button
+            onClick={onFormulaSheetClick}
+            className="w-full flex items-center gap-3 px-4 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl transition-colors"
+          >
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+              <Calculator className="w-4 h-4" />
+            </div>
+            <div className="flex flex-col items-start">
+              <span className="font-medium">View Formula Sheet</span>
+              <span className="text-xs opacity-80">
+                Quick formulas and notes
+              </span>
+            </div>
+          </button>
+        )}
         <UnitTabs activeTab={activeTab} setActiveTab={onTabChange} />
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-gray-400 mb-4 flex items-center gap-2">
@@ -53,7 +74,6 @@ export function UnitSidebar({
                 sortOrder === "original"
                   ? "bg-purple-500/20 text-white"
                   : "text-gray-300 hover:bg-gray-700/50"
-              } }0"
               }`}
             >
               <div

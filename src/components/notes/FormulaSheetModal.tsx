@@ -1,0 +1,87 @@
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Calculator } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+interface FormulaSheet {
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface FormulaSheetModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  formulaSheet: FormulaSheet | null;
+  unitNumber: number;
+}
+
+export function FormulaSheetModal({
+  isOpen,
+  onClose,
+  formulaSheet,
+  unitNumber,
+}: FormulaSheetModalProps) {
+  if (!isOpen || !formulaSheet) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+            onClick={onClose}
+          />
+          <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-2xl max-h-[80vh] bg-gray-800/90 backdrop-blur-md border border-gray-700/50 rounded-2xl shadow-xl overflow-hidden pointer-events-auto"
+            >
+              <div className="p-6 border-b border-gray-700/50 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                    <Calculator className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-white">
+                      Unit {unitNumber} Formula Sheet
+                    </h2>
+                    <p className="text-sm text-gray-400">
+                      Last updated:{" "}
+                      {new Date(formulaSheet.updatedAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="w-8 h-8 rounded-full bg-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+                <div className="prose prose-invert prose-emerald max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {formulaSheet.content}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}

@@ -1,11 +1,22 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { BookOpen, FileText, Calculator } from "lucide-react";
 
 interface UnitCardProps {
   unit: {
     _id: string;
     number: number;
     topics: string[];
+    notes?: {
+      topic: string;
+      content: string;
+      createdAt: string;
+    }[];
+    formulaSheet?: {
+      content: string;
+      createdAt: string;
+      updatedAt: string;
+    };
   };
   index: number;
   branchId: string;
@@ -20,6 +31,9 @@ export function UnitCard({
   semId,
   subjectId,
 }: UnitCardProps) {
+  const hasNotes = unit.notes && unit.notes.length > 0;
+  const hasFormulaSheet = unit.formulaSheet && unit.formulaSheet.content;
+
   return (
     <Link
       href={`/branch/${branchId}/semester/${semId}/subject/${subjectId}/unit/${unit._id}`}
@@ -36,9 +50,11 @@ export function UnitCard({
           <h2 className="text-xl font-semibold text-white">
             Unit {unit.number}
           </h2>
-          <span className="text-purple-400 font-semibold bg-purple-500/10 px-3 py-1 rounded-full">
-            {unit.topics.length} topics
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-purple-400 font-semibold bg-purple-500/10 px-3 py-1 rounded-full">
+              {unit.topics.length} topics
+            </span>
+          </div>
         </div>
         <div className="text-gray-400">
           {unit.topics.slice(0, 3).map((topic, i) => (
@@ -51,6 +67,21 @@ export function UnitCard({
             <p className="text-sm text-gray-500 mt-2">
               +{unit.topics.length - 3} more topics
             </p>
+          )}
+        </div>
+
+        <div className="mt-6 flex items-center gap-3">
+          {hasNotes && (
+            <div className="flex items-center gap-1.5 text-sm text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-lg">
+              <FileText className="w-4 h-4" />
+              <span>Notes</span>
+            </div>
+          )}
+          {hasFormulaSheet && (
+            <div className="flex items-center gap-1.5 text-sm text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg">
+              <Calculator className="w-4 h-4" />
+              <span>Formula Sheet</span>
+            </div>
           )}
         </div>
       </motion.div>

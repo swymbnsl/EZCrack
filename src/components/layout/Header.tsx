@@ -100,6 +100,7 @@ export function Header({
                 {subtitle}
               </p>
             </div>
+
             {showWeightageInfo && <WeightageInfo />}
 
             {showContributor && <ContributorBadge contributor={contributor} />}
