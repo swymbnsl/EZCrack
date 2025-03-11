@@ -7,6 +7,7 @@ import { Dropdown } from "@/components/ui/Dropdown";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { Hero } from "@/components/home/Hero";
 import { PageWrapper } from "@/components/layout/PageWrapper";
+import { Navbar } from "@/components/layout/Navbar";
 import { branches, semesters } from "@/constants/lists";
 
 export default function Home() {
@@ -29,6 +30,7 @@ export default function Home() {
 
   return (
     <PageWrapper>
+      <Navbar />
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
