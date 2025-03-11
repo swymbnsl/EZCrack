@@ -15,6 +15,16 @@ const unitSchema = new mongoose.Schema(
       ref: "Subject",
       required: true,
     },
+    notes: [
+      {
+        topic: String,
+        content: String,
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     repeatedQuestions: {
       conceptBased: [
         {
@@ -49,6 +59,4 @@ const unitSchema = new mongoose.Schema(
   }
 );
 
-const Unit = mongoose.model("Unit", unitSchema);
-
-export default Unit;
+export default mongoose.models.Unit || mongoose.model("Unit", unitSchema);

@@ -9,6 +9,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { TopicCard } from "@/components/topics/TopicCard";
 import { QuestionCard } from "@/components/questions/QuestionCard";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
+import { NotesModal } from "@/components/notes/NotesModal";
 import axios from "axios";
 import { BookOpen, ChevronDown, ChevronUp, ListOrdered } from "lucide-react";
 
@@ -27,11 +28,18 @@ interface Question {
   midsem: boolean;
 }
 
+interface Note {
+  topic: string;
+  content: string;
+  createdAt: string;
+}
+
 interface Unit {
   _id: string;
   number: number;
   topics: Topic[];
   subject_id: string;
+  notes?: Note[];
 }
 
 type SortOrder = "asc" | "desc" | "original";
@@ -46,6 +54,10 @@ export default function UnitPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>("original");
   const [yearFilter, setYearFilter] = useState<YearFilter>("all");
   const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [selectedTopicNotes, setSelectedTopicNotes] = useState<Note | null>(
+    null
+  );
 
   const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
     const questions = questionsData.foundQuestions || [];
@@ -130,6 +142,36 @@ export default function UnitPage() {
       fetchUnit();
     }
   }, [unitId]);
+
+  const handleTopicClick = (topicTitle: string) => {
+    if (unit?.notes) {
+      const note = unit.notes.find((note) => note.topic === topicTitle);
+      if (note) {
+        setSelectedTopicNotes(note);
+        setShowNotesModal(true);
+      } else {
+        // If no notes exist for this topic, fall back to showing questions
+        setActiveTab("questions");
+      }
+    } else {
+      // If no notes at all, fall back to showing questions
+      setActiveTab("questions");
+    }
+  };
+
+  const handleTopicNotesClick = (topicTitle: string) => {
+    if (unit?.notes) {
+      const note = unit.notes.find((note) => note.topic === topicTitle);
+      if (note) {
+        setSelectedTopicNotes(note);
+        setShowNotesModal(true);
+      }
+    }
+  };
+
+  const hasTopicNotes = (topicTitle: string) => {
+    return unit?.notes?.some((note) => note.topic === topicTitle) || false;
+  };
 
   const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || "";
   const parsedSemId = Array.isArray(semId) ? semId[0] : semId || "";
@@ -223,7 +265,8 @@ export default function UnitPage() {
                             key={`${topic.title}-${index}`}
                             topic={topic}
                             index={index}
-                            onTopicClick={() => setActiveTab("questions")}
+                            onTopicClick={() => handleTopicClick(topic.title)}
+                            hasNotes={hasTopicNotes(topic.title)}
                           />
                         ))}
                       </motion.div>
@@ -312,6 +355,12 @@ export default function UnitPage() {
             </div>
           </div>
         </div>
+
+        <NotesModal
+          isOpen={showNotesModal}
+          onClose={() => setShowNotesModal(false)}
+          note={selectedTopicNotes}
+        />
       </div>
     </PageWrapper>
   );

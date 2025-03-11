@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
-import { Calendar } from "lucide-react";
+import { Calendar, FileText, BookOpen } from "lucide-react";
+
+interface Note {
+  topic: string;
+  content: string;
+  createdAt: string;
+}
 
 interface TopicCardProps {
   topic: {
@@ -15,9 +21,15 @@ interface TopicCardProps {
   };
   index: number;
   onTopicClick?: () => void;
+  hasNotes?: boolean;
 }
 
-export function TopicCard({ topic, index, onTopicClick }: TopicCardProps) {
+export function TopicCard({
+  topic,
+  index,
+  onTopicClick,
+  hasNotes = false,
+}: TopicCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -25,7 +37,7 @@ export function TopicCard({ topic, index, onTopicClick }: TopicCardProps) {
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
       onClick={onTopicClick}
-      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 transition-all hover:bg-gray-800/70 hover:border-purple-500/30 flex flex-col cursor-pointer"
+      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 transition-all hover:bg-gray-800/70 hover:border-purple-500/30 flex flex-col cursor-pointer relative"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -70,17 +82,26 @@ export function TopicCard({ topic, index, onTopicClick }: TopicCardProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: index * 0.1 + 0.3 }}
-        className="mt-6 flex flex-wrap gap-2"
+        className="mt-6 flex flex-wrap gap-2 items-center justify-between"
       >
-        {topic.years?.map((year) => (
-          <span
-            key={year}
-            className="inline-flex items-center gap-1 px-2 py-1 bg-gray-700/30 rounded-md text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
-          >
-            <Calendar className="w-3 h-3" />
-            {year}
-          </span>
-        ))}
+        <div className="flex flex-wrap gap-2">
+          {topic.years?.map((year) => (
+            <span
+              key={year}
+              className="inline-flex items-center gap-1 px-2 py-1 bg-gray-700/30 rounded-md text-sm text-gray-300 hover:bg-gray-700/50 transition-colors"
+            >
+              <Calendar className="w-3 h-3" />
+              {year}
+            </span>
+          ))}
+        </div>
+
+        {hasNotes && (
+          <div className="flex items-center gap-1 px-3 py-1.5 bg-purple-500/10 rounded-md text-sm text-purple-400 border border-purple-500/30 transition-colors">
+            <FileText className="w-3.5 h-3.5" />
+            <span>View Notes</span>
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );
