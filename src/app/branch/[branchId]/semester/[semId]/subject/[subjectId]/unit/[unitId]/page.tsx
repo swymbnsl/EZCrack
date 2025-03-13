@@ -9,6 +9,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { TopicCard } from "@/components/topics/TopicCard";
 import { QuestionCard } from "@/components/questions/QuestionCard";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
+import { UnitFiltersMobile } from "@/components/units/UnitFiltersMobile";
 import { NotesModal } from "@/components/notes/NotesModal";
 import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -55,17 +56,42 @@ interface Unit {
     createdAt: string;
     updatedAt: string;
   };
+  repeatedQuestions?: {
+    conceptBased: {
+      concept: string;
+      frequency: number;
+      questions: {
+        _id: string;
+        question: string;
+        marks: number;
+        year: string;
+        midsem: boolean;
+      }[];
+    }[];
+    patternBased: {
+      pattern: string;
+      frequency: number;
+      questions: {
+        _id: string;
+        question: string;
+        marks: number;
+        year: string;
+        midsem: boolean;
+      }[];
+    }[];
+  };
 }
 
 type SortOrder = "asc" | "desc" | "original";
 type YearFilter = "all" | number;
+type TabType = "topics" | "questions" | "repeated";
 
 export default function UnitPage() {
   const params = useParams();
   const { branchId, semId, subjectId, unitId } = params;
   const [unit, setUnit] = useState<Unit | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"topics" | "questions">("topics");
+  const [activeTab, setActiveTab] = useState<TabType>("topics");
   const [sortOrder, setSortOrder] = useState<SortOrder>("original");
   const [yearFilter, setYearFilter] = useState<YearFilter>("all");
   const [availableYears, setAvailableYears] = useState<number[]>([]);
@@ -74,6 +100,9 @@ export default function UnitPage() {
     null
   );
   const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false);
+  const [activeRepeatedType, setActiveRepeatedType] = useState<
+    "concept" | "pattern"
+  >("concept");
 
   const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
     const questions = questionsData.foundQuestions || [];
@@ -195,18 +224,27 @@ export default function UnitPage() {
   const sortedTopics = useMemo(() => {
     if (!unit) return [];
 
-    if (sortOrder === "original") {
-      return [...unit.topics];
+    let filtered = [...unit.topics];
+
+    // Apply year filter if not "all" and we're on topics tab
+    if (yearFilter !== "all") {
+      filtered = filtered.filter((topic) =>
+        topic.years.includes(yearFilter as number)
+      );
     }
 
-    return [...unit.topics].sort((a, b) => {
+    if (sortOrder === "original") {
+      return filtered;
+    }
+
+    return filtered.sort((a, b) => {
       if (sortOrder === "asc") {
         return a.weightage - b.weightage;
       } else {
         return b.weightage - a.weightage;
       }
     });
-  }, [unit, sortOrder]);
+  }, [unit, sortOrder, yearFilter]);
 
   // Get unique years from all topics
   const uniqueYears = useMemo(() => {
@@ -226,6 +264,17 @@ export default function UnitPage() {
       setAvailableYears(uniqueYears);
     }
   }, [uniqueYears]);
+
+  // Update when sortOrder changes (debugging)
+  useEffect(() => {
+    console.log("Sort order changed:", sortOrder);
+  }, [sortOrder]);
+
+  // Sort by topics or questions depending on active tab
+  const handleSortOrderChange = (order: SortOrder) => {
+    console.log("Parent component changing sort order to:", order);
+    setSortOrder(order);
+  };
 
   return (
     <PageWrapper>
@@ -250,13 +299,13 @@ export default function UnitPage() {
           }}
         />
 
-        <div className="flex-1 flex flex-col sm:flex-row overflow-visible sm:overflow-hidden mt-6 sm:mt-0 bg-gradient-to-b from-gray-950 to-black sm:bg-none">
-          <div className="w-full sm:w-auto sm:min-w-[320px]">
+        <div className="flex-1 flex flex-col sm:flex-row overflow-visible sm:overflow-hidden mt-2 sm:mt-0 bg-gradient-to-b from-gray-950 to-black sm:bg-none">
+          <div className="hidden sm:block sm:w-auto sm:min-w-[320px]">
             <UnitSidebar
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
+              activeTab={activeTab === "repeated" ? "topics" : activeTab}
+              onTabChange={(tab) => setActiveTab(tab)}
               sortOrder={sortOrder}
-              onSortOrderChange={setSortOrder}
+              onSortOrderChange={handleSortOrderChange}
               yearFilter={yearFilter}
               onYearFilterChange={setYearFilter}
               availableYears={availableYears || []}
@@ -265,9 +314,22 @@ export default function UnitPage() {
             />
           </div>
 
+          {/* Mobile filters */}
+          <UnitFiltersMobile
+            activeTab={activeTab === "repeated" ? "topics" : activeTab}
+            onTabChange={(tab) => setActiveTab(tab)}
+            sortOrder={sortOrder}
+            onSortOrderChange={handleSortOrderChange}
+            yearFilter={yearFilter}
+            onYearFilterChange={setYearFilter}
+            availableYears={availableYears || []}
+            hasFormulaSheet={!!unit?.formulaSheet?.content}
+            onFormulaSheetClick={() => setShowFormulaSheetModal(true)}
+          />
+
           <div className="flex-1 overflow-visible sm:overflow-hidden">
             <div className="sm:h-full sm:overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
-              <div className="p-4 sm:p-8">
+              <div className="p-3 sm:p-8">
                 {isLoading ? (
                   <LoadingSpinner text="Loading content..." />
                 ) : unit ? (
@@ -298,7 +360,7 @@ export default function UnitPage() {
                           description="This unit doesn't have any topics yet. Check back later for updates."
                         />
                       )
-                    ) : (
+                    ) : activeTab === "questions" ? (
                       <motion.div
                         key="questions"
                         initial={{ opacity: 0 }}
@@ -326,12 +388,17 @@ export default function UnitPage() {
                                     <div className="w-10 h-10 shrink-0 rounded-lg bg-purple-500/10 flex items-center justify-center">
                                       <BookOpen className="w-5 h-5 text-purple-400" />
                                     </div>
-                                    <h2 className="text-lg font-semibold text-white truncate">
+                                    <h2 className="text-lg font-semibold text-white break-words">
                                       {topic.title}
                                     </h2>
                                   </div>
                                   <span className="text-sm shrink-0 ml-3 text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full">
-                                    {filteredQuestions.length} questions
+                                    <span className="hidden sm:inline">
+                                      {filteredQuestions.length} questions
+                                    </span>
+                                    <span className="sm:hidden">
+                                      {filteredQuestions.length} Qs
+                                    </span>
                                   </span>
                                 </div>
                                 <div className="p-6 space-y-4">
@@ -346,11 +413,11 @@ export default function UnitPage() {
                                             delay:
                                               topicIndex * 0.1 + qIndex * 0.05,
                                           }}
-                                          className="group relative bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/30 hover:border-purple-500/30 rounded-xl p-5 transition-all"
+                                          className="group relative bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/30 hover:border-purple-500/30 rounded-xl p-3 sm:p-5 transition-all"
                                         >
-                                          <div className="flex flex-col gap-3">
-                                            <div className="flex items-center justify-between">
-                                              <div className="flex items-center gap-2">
+                                          <div className="flex flex-col gap-2 sm:gap-3">
+                                            <div className="flex items-center text-xs">
+                                              <div className="hidden sm:flex flex-wrap items-center gap-2">
                                                 <span className="text-sm font-medium text-white bg-purple-500/20 px-3 py-1.5 rounded-full">
                                                   {question.year}
                                                 </span>
@@ -363,8 +430,21 @@ export default function UnitPage() {
                                                     : "Endterm"}
                                                 </span>
                                               </div>
+                                              <div className="sm:hidden flex items-center text-xs divide-x divide-gray-700">
+                                                <span className="font-medium text-white pr-2">
+                                                  {question.year}
+                                                </span>
+                                                <span className="font-medium text-emerald-400 px-2">
+                                                  {question.marks}m
+                                                </span>
+                                                <span className="font-medium text-amber-400 pl-2">
+                                                  {question.midsem
+                                                    ? "Mid"
+                                                    : "End"}
+                                                </span>
+                                              </div>
                                             </div>
-                                            <p className="text-gray-200">
+                                            <p className="text-sm sm:text-base text-gray-200">
                                               {question.text}
                                             </p>
                                           </div>
@@ -400,6 +480,157 @@ export default function UnitPage() {
                           </div>
                         )}
                       </motion.div>
+                    ) : (
+                      <div className="space-y-6 sm:space-y-8">
+                        <div className="flex justify-center">
+                          <div className="hidden sm:block bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full p-1 mb-6">
+                            <div className="flex items-center">
+                              <button
+                                onClick={() => setActiveRepeatedType("concept")}
+                                className={`px-6 py-2 rounded-full text-sm transition-colors ${
+                                  activeRepeatedType === "concept"
+                                    ? "bg-purple-500 text-white"
+                                    : "text-gray-300 hover:text-gray-100"
+                                }`}
+                              >
+                                Concept Based
+                              </button>
+                              <button
+                                onClick={() => setActiveRepeatedType("pattern")}
+                                className={`px-6 py-2 rounded-full text-sm transition-colors ${
+                                  activeRepeatedType === "pattern"
+                                    ? "bg-purple-500 text-white"
+                                    : "text-gray-300 hover:text-gray-100"
+                                }`}
+                              >
+                                Pattern Based
+                              </button>
+                            </div>
+                          </div>
+                          <div className="sm:hidden bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full p-1 mb-4">
+                            <div className="flex items-center">
+                              <button
+                                onClick={() => setActiveRepeatedType("concept")}
+                                className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+                                  activeRepeatedType === "concept"
+                                    ? "bg-purple-500 text-white"
+                                    : "text-gray-300 hover:text-gray-100"
+                                }`}
+                              >
+                                Concept Based
+                              </button>
+                              <button
+                                onClick={() => setActiveRepeatedType("pattern")}
+                                className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+                                  activeRepeatedType === "pattern"
+                                    ? "bg-purple-500 text-white"
+                                    : "text-gray-300 hover:text-gray-100"
+                                }`}
+                              >
+                                Pattern Based
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {activeRepeatedType === "concept" && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                            {unit?.repeatedQuestions?.conceptBased &&
+                              unit.repeatedQuestions.conceptBased.map(
+                                (concept, idx) => (
+                                  <div
+                                    key={`${concept.concept}-${idx}`}
+                                    className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                                  >
+                                    <div className="bg-purple-500/10 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/50">
+                                      <h2 className="text-base sm:text-lg font-medium text-white">
+                                        {concept.concept}
+                                      </h2>
+                                    </div>
+                                    <div className="px-4 sm:px-6 py-3 sm:py-4">
+                                      <div className="space-y-3 sm:space-y-4">
+                                        {concept.questions.map((q, qIdx) => (
+                                          <div
+                                            key={`${q._id || qIdx}`}
+                                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg p-3 sm:p-4"
+                                          >
+                                            <div className="flex flex-col gap-2 sm:gap-3">
+                                              <div className="flex flex-wrap items-center gap-2">
+                                                <span className="text-xs sm:text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                                  {q.marks} marks
+                                                </span>
+                                                <span className="text-xs sm:text-sm font-medium text-amber-400 bg-amber-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                                  {q.midsem
+                                                    ? "Midterm"
+                                                    : "Endterm"}
+                                                </span>
+                                                <span className="text-xs sm:text-sm font-medium text-blue-400 bg-blue-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                                  {q.year}
+                                                </span>
+                                              </div>
+                                              <p className="text-sm sm:text-base text-gray-200">
+                                                {q.question}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                          </div>
+                        )}
+
+                        {activeRepeatedType === "pattern" && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                            {unit?.repeatedQuestions?.patternBased &&
+                              unit.repeatedQuestions.patternBased.map(
+                                (pattern, idx) => (
+                                  <div
+                                    key={`${pattern.pattern}-${idx}`}
+                                    className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                                  >
+                                    <div className="bg-purple-500/10 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/50">
+                                      <h2 className="text-base sm:text-lg font-medium text-white">
+                                        {pattern.pattern}
+                                      </h2>
+                                    </div>
+                                    <div className="px-4 sm:px-6 py-3 sm:py-4">
+                                      <div className="space-y-3 sm:space-y-4">
+                                        {pattern.questions.map((q, qIdx) => (
+                                          <div
+                                            key={`${q._id || qIdx}`}
+                                            className="bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg p-3 sm:p-4"
+                                          >
+                                            <div className="flex flex-col gap-2 sm:gap-3">
+                                              <div className="flex flex-wrap items-center gap-2">
+                                                <span className="text-xs sm:text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                                  {q.marks} marks
+                                                </span>
+                                                <span className="text-xs sm:text-sm font-medium text-amber-400 bg-amber-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                                  {q.midsem
+                                                    ? "Midterm"
+                                                    : "Endterm"}
+                                                </span>
+                                                <span className="text-xs sm:text-sm font-medium text-blue-400 bg-blue-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                                  {q.year}
+                                                </span>
+                                              </div>
+                                              <p className="text-sm sm:text-base text-gray-200">
+                                                {q.question}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              )}
+                          </div>
+                        )}
+                      </div>
                     )}
                   </AnimatePresence>
                 ) : (

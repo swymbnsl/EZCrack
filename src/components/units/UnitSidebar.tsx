@@ -64,7 +64,7 @@ export function UnitSidebar({
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-gray-400 mb-4 flex items-center gap-2">
             <BarChart2 className="w-4 h-4" />
-            Sort Topics By
+            {activeTab === "topics" ? "Sort Topics By" : "Sort Questions By"}
           </h3>
 
           <div className="bg-gray-800/40 rounded-xl border border-gray-700/50 overflow-hidden">
@@ -119,9 +119,15 @@ export function UnitSidebar({
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-medium">Highest Weightage</span>
+                <span className="font-medium">
+                  {activeTab === "topics"
+                    ? "Highest Weightage"
+                    : "Highest First"}
+                </span>
                 <span className="text-xs text-gray-400">
-                  Most important first
+                  {activeTab === "topics"
+                    ? "Most important first"
+                    : "Sort by importance"}
                 </span>
               </div>
             </button>
@@ -146,9 +152,13 @@ export function UnitSidebar({
                 />
               </div>
               <div className="flex flex-col">
-                <span className="font-medium">Lowest Weightage</span>
+                <span className="font-medium">
+                  {activeTab === "topics" ? "Lowest Weightage" : "Lowest First"}
+                </span>
                 <span className="text-xs text-gray-400">
-                  Least important first
+                  {activeTab === "topics"
+                    ? "Least important first"
+                    : "Sort by importance"}
                 </span>
               </div>
             </button>
