@@ -4,12 +4,14 @@ interface GradientButtonProps {
   onClick: () => void;
   disabled?: boolean;
   children: React.ReactNode;
+  className?: string;
 }
 
 export const GradientButton = ({
   onClick,
   disabled = false,
   children,
+  className = "",
 }: GradientButtonProps) => {
   return (
     <motion.button
@@ -21,7 +23,7 @@ export const GradientButton = ({
           !disabled
             ? "bg-gradient-to-r from-indigo-500/90 via-purple-500/90 to-pink-500/90 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 backdrop-blur-sm"
             : "bg-gray-700/50 backdrop-blur-sm cursor-not-allowed"
-        }`}
+        } ${className}`}
       disabled={disabled}
     >
       {children}

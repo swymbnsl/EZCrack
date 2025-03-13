@@ -47,7 +47,7 @@ export default function Home() {
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="max-w-5xl mx-auto pt-32 px-4 relative z-10"
+        className="w-full max-w-5xl mx-auto pt-16 sm:pt-24 md:pt-32 px-4 sm:px-6 md:px-8 relative z-10 min-h-[calc(100vh-80px)] flex flex-col justify-center"
       >
         <Hero />
 
@@ -56,16 +56,16 @@ export default function Home() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="flex justify-center items-center py-12"
+            className="flex justify-center items-center py-8 sm:py-12"
           >
-            <div className="w-12 h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
           </motion.div>
         ) : availableBranches.length > 0 && availableSemesters.length > 0 ? (
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="space-y-8 max-w-xl mx-auto"
+            className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-xl mx-auto px-2 sm:px-4"
           >
             <Dropdown
               options={availableBranches}
@@ -81,19 +81,22 @@ export default function Home() {
               placeholder="Select Semester"
             />
 
-            <GradientButton
-              onClick={handleGetStarted}
-              disabled={!selectedBranch || !selectedSemester}
-            >
-              Get Started
-            </GradientButton>
+            <div className="pt-2 sm:pt-4">
+              <GradientButton
+                onClick={handleGetStarted}
+                disabled={!selectedBranch || !selectedSemester}
+                className="w-full justify-center"
+              >
+                Get Started
+              </GradientButton>
+            </div>
           </motion.div>
         ) : (
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="max-w-xl mx-auto mt-12"
+            className="w-full max-w-xl mx-auto mt-6 sm:mt-8 md:mt-12 px-2 sm:px-4"
           >
             <EmptyState
               icon={availableBranches.length === 0 ? School : BookOpen}
