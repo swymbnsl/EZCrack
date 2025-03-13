@@ -9,12 +9,15 @@ import {
   ChevronRight,
   ChevronDown,
   Repeat,
+  FileQuestion,
+  AlertCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
 import { UnitCard } from "@/components/units/UnitCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { QuestionCard } from "@/components/questions/QuestionCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import axios from "axios";
 import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
 
@@ -130,36 +133,40 @@ export default function UnitsPage() {
     }
   }, [subjectId]);
 
-  // Group questions by year and unit
-  const questionsByYear = questions.reduce((acc, question) => {
-    // Filter by exam type
-    if (
-      examFilter !== "all" &&
-      ((examFilter === "midterm" && !question.midsem) ||
-        (examFilter === "endterm" && question.midsem))
-    ) {
-      return acc;
-    }
+  // Filter questions based on exam type
+  const filteredQuestions = useMemo(() => {
+    return questions.filter((question) => {
+      if (examFilter === "all") return true;
+      if (examFilter === "midterm") return question.midsem;
+      return !question.midsem; // endterm
+    });
+  }, [questions, examFilter]);
 
-    const year = question.year;
-    if (!acc[year]) {
-      acc[year] = {
-        total: 0,
-        byUnit: {} as Record<number, Question[]>,
-      };
-    }
-    if (!acc[year].byUnit[question.unit]) {
-      acc[year].byUnit[question.unit] = [];
-    }
-    acc[year].byUnit[question.unit].push(question);
-    acc[year].total++;
-    return acc;
-  }, {} as Record<number, { total: number; byUnit: Record<number, Question[]> }>);
+  // Group filtered questions by year and unit
+  const questionsByYear = useMemo(() => {
+    return filteredQuestions.reduce((acc, question) => {
+      const year = question.year;
+      if (!acc[year]) {
+        acc[year] = {
+          total: 0,
+          byUnit: {} as Record<number, Question[]>,
+        };
+      }
+      if (!acc[year].byUnit[question.unit]) {
+        acc[year].byUnit[question.unit] = [];
+      }
+      acc[year].byUnit[question.unit].push(question);
+      acc[year].total++;
+      return acc;
+    }, {} as Record<number, { total: number; byUnit: Record<number, Question[]> }>);
+  }, [filteredQuestions]);
 
   // Sort years in descending order
-  const sortedYears = Object.keys(questionsByYear)
-    .map(Number)
-    .sort((a, b) => b - a);
+  const sortedYears = useMemo(() => {
+    return Object.keys(questionsByYear)
+      .map(Number)
+      .sort((a, b) => b - a);
+  }, [questionsByYear]);
 
   // Toggle year expansion
   const toggleYear = (year: number) => {
@@ -171,6 +178,12 @@ export default function UnitsPage() {
 
   const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || "";
   const parsedSemId = Array.isArray(semId) ? semId[0] : semId || "";
+
+  // Get total questions count for the current filter
+  const totalFilteredQuestions = filteredQuestions.length;
+
+  // Pluralize years correctly
+  const yearText = sortedYears.length === 1 ? "year" : "years";
 
   return (
     <PageWrapper>
@@ -184,18 +197,18 @@ export default function UnitsPage() {
           subtitle={
             viewMode === "units"
               ? `${units.length} units to explore`
-              : `${questions.length} questions across ${sortedYears.length} years`
+              : `${totalFilteredQuestions} questions across ${sortedYears.length} ${yearText}`
           }
           stats={{
             primary: {
               value: viewMode === "units" ? units.length : sortedYears.length,
-              label: viewMode === "units" ? "Units" : "Years",
+              label: viewMode === "units" ? "Units" : yearText,
             },
             secondary: {
               value:
                 viewMode === "units"
                   ? units.reduce((acc, unit) => acc + unit.topics.length, 0)
-                  : questions.length,
+                  : totalFilteredQuestions,
               label: viewMode === "units" ? "Topics" : "Questions",
             },
           }}
@@ -294,16 +307,26 @@ export default function UnitsPage() {
                         exit={{ opacity: 0, y: -20 }}
                         className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6"
                       >
-                        {units.map((unit, index) => (
-                          <UnitCard
-                            key={unit._id}
-                            unit={unit}
-                            index={index}
-                            branchId={parsedBranchId}
-                            semId={parsedSemId}
-                            subjectId={subjectId as string}
-                          />
-                        ))}
+                        {units.length > 0 ? (
+                          units.map((unit: Unit, index: number) => (
+                            <UnitCard
+                              key={unit._id}
+                              unit={unit}
+                              index={index}
+                              branchId={parsedBranchId}
+                              semId={parsedSemId}
+                              subjectId={subjectId as string}
+                            />
+                          ))
+                        ) : (
+                          <div className="col-span-full">
+                            <EmptyState
+                              icon={BookOpen}
+                              title="No Units Available"
+                              description="This subject doesn't have any units yet. Check back later for updates."
+                            />
+                          </div>
+                        )}
                       </motion.div>
                     ) : viewMode === "yearwise" ? (
                       <motion.div
@@ -313,105 +336,121 @@ export default function UnitsPage() {
                         exit={{ opacity: 0, y: -20 }}
                         className="max-w-5xl mx-auto space-y-6"
                       >
-                        {sortedYears.map((year) => (
-                          <div
-                            key={year}
-                            className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden"
-                          >
-                            <button
-                              onClick={() => toggleYear(year)}
-                              className="w-full px-8 py-5 flex items-center justify-between hover:bg-gray-700/20 transition-colors"
+                        {sortedYears.length > 0 ? (
+                          sortedYears.map((year) => (
+                            <div
+                              key={year}
+                              className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden"
                             >
-                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                                  <Calendar className="w-6 h-6 text-purple-400" />
-                                </div>
-                                <div className="flex items-baseline gap-3">
-                                  <h2 className="text-2xl font-semibold text-white">
-                                    {year}
-                                  </h2>
-                                  <span className="text-sm text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full">
-                                    {questionsByYear[year].total} questions
-                                  </span>
-                                </div>
-                              </div>
-                              <ChevronDown
-                                className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
-                                  expandedYears[year] ? "rotate-180" : ""
-                                }`}
-                              />
-                            </button>
-                            <AnimatePresence>
-                              {expandedYears[year] && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: "auto", opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="border-t border-gray-700/50"
-                                >
-                                  <div className="px-8 py-6 space-y-8">
-                                    {Object.entries(
-                                      questionsByYear[year].byUnit
-                                    )
-                                      .sort(([a], [b]) => Number(a) - Number(b))
-                                      .map(([unit, questions]) => (
-                                        <div key={unit}>
-                                          <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                                              <BookOpen className="w-4 h-4 text-purple-400" />
-                                            </div>
-                                            <h3 className="text-lg font-medium text-white">
-                                              Unit {unit}
-                                            </h3>
-                                            <span className="text-sm text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full">
-                                              {questions.length} questions
-                                            </span>
-                                          </div>
-                                          <div className="space-y-4">
-                                            {questions.map(
-                                              (question, qIndex) => (
-                                                <motion.div
-                                                  key={question._id}
-                                                  initial={{ opacity: 0 }}
-                                                  animate={{ opacity: 1 }}
-                                                  transition={{
-                                                    delay: qIndex * 0.05,
-                                                  }}
-                                                  className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5"
-                                                >
-                                                  <div className="flex flex-col gap-3">
-                                                    <div className="flex items-center justify-between">
-                                                      <span className="text-sm font-medium text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full">
-                                                        {question.topic}
-                                                      </span>
-                                                      <div className="flex items-center gap-2">
-                                                        <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
-                                                          {question.marks} marks
-                                                        </span>
-                                                        <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
-                                                          {question.midsem
-                                                            ? "Midterm"
-                                                            : "Endterm"}
-                                                        </span>
-                                                      </div>
-                                                    </div>
-                                                    <p className="text-gray-200">
-                                                      {question.question}
-                                                    </p>
-                                                  </div>
-                                                </motion.div>
-                                              )
-                                            )}
-                                          </div>
-                                        </div>
-                                      ))}
+                              <button
+                                onClick={() => toggleYear(year)}
+                                className="w-full px-8 py-5 flex items-center justify-between hover:bg-gray-700/20 transition-colors"
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                                    <Calendar className="w-6 h-6 text-purple-400" />
                                   </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        ))}
+                                  <div className="flex items-baseline gap-3">
+                                    <h2 className="text-2xl font-semibold text-white">
+                                      {year}
+                                    </h2>
+                                    <span className="text-sm text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full">
+                                      {questionsByYear[year].total} questions
+                                    </span>
+                                  </div>
+                                </div>
+                                <ChevronDown
+                                  className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+                                    expandedYears[year] ? "rotate-180" : ""
+                                  }`}
+                                />
+                              </button>
+                              <AnimatePresence>
+                                {expandedYears[year] && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="border-t border-gray-700/50"
+                                  >
+                                    <div className="px-8 py-6 space-y-8">
+                                      {Object.entries(
+                                        questionsByYear[year].byUnit
+                                      )
+                                        .sort(
+                                          ([a], [b]) => Number(a) - Number(b)
+                                        )
+                                        .map(([unit, questions]) => (
+                                          <div key={unit}>
+                                            <div className="flex items-center gap-3 mb-4">
+                                              <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                                                <BookOpen className="w-4 h-4 text-purple-400" />
+                                              </div>
+                                              <h3 className="text-lg font-medium text-white">
+                                                Unit {unit}
+                                              </h3>
+                                              <span className="text-sm text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full">
+                                                {questions.length} questions
+                                              </span>
+                                            </div>
+                                            <div className="space-y-4">
+                                              {questions.map(
+                                                (question, qIndex) => (
+                                                  <motion.div
+                                                    key={question._id}
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{
+                                                      delay: qIndex * 0.05,
+                                                    }}
+                                                    className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5"
+                                                  >
+                                                    <div className="flex flex-col gap-3">
+                                                      <div className="flex items-center justify-between">
+                                                        <span className="text-sm font-medium text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full">
+                                                          {question.topic}
+                                                        </span>
+                                                        <div className="flex items-center gap-2">
+                                                          <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                                                            {question.marks}{" "}
+                                                            marks
+                                                          </span>
+                                                          <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
+                                                            {question.midsem
+                                                              ? "Midterm"
+                                                              : "Endterm"}
+                                                          </span>
+                                                        </div>
+                                                      </div>
+                                                      <p className="text-gray-200">
+                                                        {question.question}
+                                                      </p>
+                                                    </div>
+                                                  </motion.div>
+                                                )
+                                              )}
+                                            </div>
+                                          </div>
+                                        ))}
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          ))
+                        ) : (
+                          <EmptyState
+                            icon={Calendar}
+                            title="No Questions Available"
+                            description={
+                              examFilter !== "all"
+                                ? `No ${examFilter} questions found. Try selecting 'All Exams'.`
+                                : "No questions available for this subject yet."
+                            }
+                            iconColor="text-purple-400"
+                          />
+                        )}
                       </motion.div>
                     ) : (
                       <motion.div
@@ -457,86 +496,101 @@ export default function UnitsPage() {
                               exit={{ opacity: 0, y: -20 }}
                               className="space-y-8"
                             >
-                              {units.map((unit) => {
-                                const conceptQuestions =
-                                  unit.repeatedQuestions?.conceptBased;
-                                if (!conceptQuestions?.length) return null;
+                              {units.some(
+                                (unit) =>
+                                  unit.repeatedQuestions?.conceptBased &&
+                                  unit.repeatedQuestions.conceptBased.length > 0
+                              ) ? (
+                                units.map((unit) => {
+                                  const conceptQuestions =
+                                    unit.repeatedQuestions?.conceptBased;
+                                  if (!conceptQuestions?.length) return null;
 
-                                return (
-                                  <div
-                                    key={`unit-${unit._id}`}
-                                    className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden"
-                                  >
-                                    <div className="px-8 py-6">
-                                      <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                                          <BookOpen className="w-6 h-6 text-purple-400" />
+                                  return (
+                                    <div
+                                      key={`unit-${unit._id}`}
+                                      className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden"
+                                    >
+                                      <div className="px-8 py-6">
+                                        <div className="flex items-center gap-3 mb-6">
+                                          <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                                            <BookOpen className="w-6 h-6 text-purple-400" />
+                                          </div>
+                                          <div>
+                                            <h3 className="text-2xl font-semibold text-white">
+                                              Unit {unit.number}
+                                            </h3>
+                                            <span className="text-sm text-purple-400">
+                                              {conceptQuestions.length} repeated
+                                              concepts
+                                            </span>
+                                          </div>
                                         </div>
-                                        <div>
-                                          <h3 className="text-2xl font-semibold text-white">
-                                            Unit {unit.number}
-                                          </h3>
-                                          <span className="text-sm text-purple-400">
-                                            {conceptQuestions.length} repeated
-                                            concepts
-                                          </span>
-                                        </div>
-                                      </div>
 
-                                      <div className="space-y-6">
-                                        {conceptQuestions.map(
-                                          (repeatedQuestion, index) => (
-                                            <div
-                                              key={`concept-${unit._id}-${index}`}
-                                              className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
-                                            >
-                                              <div className="p-5 bg-purple-500/10 border-b border-purple-500/20">
-                                                <div className="flex items-center justify-between">
-                                                  <h4 className="text-lg font-medium text-purple-400">
-                                                    {repeatedQuestion.concept}
-                                                  </h4>
-                                                  <span className="text-sm text-purple-400 bg-purple-500/20 px-3 py-1.5 rounded-full">
-                                                    Repeated{" "}
-                                                    {repeatedQuestion.frequency}{" "}
-                                                    times
-                                                  </span>
+                                        <div className="space-y-6">
+                                          {conceptQuestions.map(
+                                            (repeatedQuestion, index) => (
+                                              <div
+                                                key={`concept-${unit._id}-${index}`}
+                                                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                                              >
+                                                <div className="p-5 bg-purple-500/10 border-b border-purple-500/20">
+                                                  <div className="flex items-center justify-between">
+                                                    <h4 className="text-lg font-medium text-purple-400">
+                                                      {repeatedQuestion.concept}
+                                                    </h4>
+                                                    <span className="text-sm text-purple-400 bg-purple-500/20 px-3 py-1.5 rounded-full">
+                                                      Repeated{" "}
+                                                      {
+                                                        repeatedQuestion.frequency
+                                                      }{" "}
+                                                      times
+                                                    </span>
+                                                  </div>
+                                                </div>
+
+                                                <div className="p-5 space-y-4">
+                                                  {repeatedQuestion.questions.map(
+                                                    (q, qIndex) => (
+                                                      <div
+                                                        key={qIndex}
+                                                        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5"
+                                                      >
+                                                        <div className="flex flex-col gap-3">
+                                                          <div className="flex items-center justify-between">
+                                                            <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
+                                                              {formatExamType(
+                                                                q.examType
+                                                              )}
+                                                            </span>
+                                                            <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                                                              {q.year}
+                                                            </span>
+                                                          </div>
+                                                          <p className="text-gray-200">
+                                                            {q.question}
+                                                          </p>
+                                                        </div>
+                                                      </div>
+                                                    )
+                                                  )}
                                                 </div>
                                               </div>
-
-                                              <div className="p-5 space-y-4">
-                                                {repeatedQuestion.questions.map(
-                                                  (q, qIndex) => (
-                                                    <div
-                                                      key={qIndex}
-                                                      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5"
-                                                    >
-                                                      <div className="flex flex-col gap-3">
-                                                        <div className="flex items-center justify-between">
-                                                          <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
-                                                            {formatExamType(
-                                                              q.examType
-                                                            )}
-                                                          </span>
-                                                          <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
-                                                            {q.year}
-                                                          </span>
-                                                        </div>
-                                                        <p className="text-gray-200">
-                                                          {q.question}
-                                                        </p>
-                                                      </div>
-                                                    </div>
-                                                  )
-                                                )}
-                                              </div>
-                                            </div>
-                                          )
-                                        )}
+                                            )
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                );
-                              })}
+                                  );
+                                })
+                              ) : (
+                                <EmptyState
+                                  icon={Repeat}
+                                  title="No Repeated Concepts"
+                                  description="There are no repeated concept-based questions for this subject yet."
+                                  iconColor="text-purple-400"
+                                />
+                              )}
                             </motion.div>
                           ) : (
                             <motion.div
@@ -546,86 +600,101 @@ export default function UnitsPage() {
                               exit={{ opacity: 0, y: -20 }}
                               className="space-y-8"
                             >
-                              {units.map((unit) => {
-                                const patternQuestions =
-                                  unit.repeatedQuestions?.patternBased;
-                                if (!patternQuestions?.length) return null;
+                              {units.some(
+                                (unit) =>
+                                  unit.repeatedQuestions?.patternBased &&
+                                  unit.repeatedQuestions.patternBased.length > 0
+                              ) ? (
+                                units.map((unit) => {
+                                  const patternQuestions =
+                                    unit.repeatedQuestions?.patternBased;
+                                  if (!patternQuestions?.length) return null;
 
-                                return (
-                                  <div
-                                    key={`unit-${unit._id}`}
-                                    className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden"
-                                  >
-                                    <div className="px-8 py-6">
-                                      <div className="flex items-center gap-3 mb-6">
-                                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                                          <Repeat className="w-6 h-6 text-amber-400" />
+                                  return (
+                                    <div
+                                      key={`unit-${unit._id}`}
+                                      className="bg-gray-800/30 rounded-2xl border border-gray-700/50 overflow-hidden"
+                                    >
+                                      <div className="px-8 py-6">
+                                        <div className="flex items-center gap-3 mb-6">
+                                          <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                                            <Repeat className="w-6 h-6 text-amber-400" />
+                                          </div>
+                                          <div>
+                                            <h3 className="text-2xl font-semibold text-white">
+                                              Unit {unit.number}
+                                            </h3>
+                                            <span className="text-sm text-amber-400">
+                                              {patternQuestions.length} repeated
+                                              patterns
+                                            </span>
+                                          </div>
                                         </div>
-                                        <div>
-                                          <h3 className="text-2xl font-semibold text-white">
-                                            Unit {unit.number}
-                                          </h3>
-                                          <span className="text-sm text-amber-400">
-                                            {patternQuestions.length} repeated
-                                            patterns
-                                          </span>
-                                        </div>
-                                      </div>
 
-                                      <div className="space-y-6">
-                                        {patternQuestions.map(
-                                          (repeatedQuestion, index) => (
-                                            <div
-                                              key={`pattern-${unit._id}-${index}`}
-                                              className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
-                                            >
-                                              <div className="p-5 bg-amber-500/10 border-b border-amber-500/20">
-                                                <div className="flex items-center justify-between">
-                                                  <h4 className="text-lg font-medium text-amber-400">
-                                                    {repeatedQuestion.pattern}
-                                                  </h4>
-                                                  <span className="text-sm text-amber-400 bg-amber-500/20 px-3 py-1.5 rounded-full">
-                                                    Repeated{" "}
-                                                    {repeatedQuestion.frequency}{" "}
-                                                    times
-                                                  </span>
+                                        <div className="space-y-6">
+                                          {patternQuestions.map(
+                                            (repeatedQuestion, index) => (
+                                              <div
+                                                key={`pattern-${unit._id}-${index}`}
+                                                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                                              >
+                                                <div className="p-5 bg-amber-500/10 border-b border-amber-500/20">
+                                                  <div className="flex items-center justify-between">
+                                                    <h4 className="text-lg font-medium text-amber-400">
+                                                      {repeatedQuestion.pattern}
+                                                    </h4>
+                                                    <span className="text-sm text-amber-400 bg-amber-500/20 px-3 py-1.5 rounded-full">
+                                                      Repeated{" "}
+                                                      {
+                                                        repeatedQuestion.frequency
+                                                      }{" "}
+                                                      times
+                                                    </span>
+                                                  </div>
+                                                </div>
+
+                                                <div className="p-5 space-y-4">
+                                                  {repeatedQuestion.questions.map(
+                                                    (q, qIndex) => (
+                                                      <div
+                                                        key={qIndex}
+                                                        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5"
+                                                      >
+                                                        <div className="flex flex-col gap-3">
+                                                          <div className="flex items-center justify-between">
+                                                            <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
+                                                              {formatExamType(
+                                                                q.examType
+                                                              )}
+                                                            </span>
+                                                            <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                                                              {q.year}
+                                                            </span>
+                                                          </div>
+                                                          <p className="text-gray-200">
+                                                            {q.question}
+                                                          </p>
+                                                        </div>
+                                                      </div>
+                                                    )
+                                                  )}
                                                 </div>
                                               </div>
-
-                                              <div className="p-5 space-y-4">
-                                                {repeatedQuestion.questions.map(
-                                                  (q, qIndex) => (
-                                                    <div
-                                                      key={qIndex}
-                                                      className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-5"
-                                                    >
-                                                      <div className="flex flex-col gap-3">
-                                                        <div className="flex items-center justify-between">
-                                                          <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
-                                                            {formatExamType(
-                                                              q.examType
-                                                            )}
-                                                          </span>
-                                                          <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
-                                                            {q.year}
-                                                          </span>
-                                                        </div>
-                                                        <p className="text-gray-200">
-                                                          {q.question}
-                                                        </p>
-                                                      </div>
-                                                    </div>
-                                                  )
-                                                )}
-                                              </div>
-                                            </div>
-                                          )
-                                        )}
+                                            )
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                );
-                              })}
+                                  );
+                                })
+                              ) : (
+                                <EmptyState
+                                  icon={Repeat}
+                                  title="No Repeated Patterns"
+                                  description="There are no repeated pattern-based questions for this subject yet."
+                                  iconColor="text-amber-400"
+                                />
+                              )}
                             </motion.div>
                           )}
                         </AnimatePresence>

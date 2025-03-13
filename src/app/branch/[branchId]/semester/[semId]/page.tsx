@@ -3,11 +3,12 @@
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Book, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
 import axios from "axios";
 
 interface Subject {
@@ -44,24 +45,23 @@ export default function SubjectsPage() {
     }
   }, [branchId, semId]);
 
+  const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || "";
+  const parsedSemId = Array.isArray(semId) ? semId[0] : semId || "";
+
   return (
     <PageWrapper>
       <div className="relative z-10 h-screen flex flex-col">
         <Header
-          branchId={Array.isArray(branchId) ? branchId[0] : branchId || ""}
-          semId={Array.isArray(semId) ? semId[0] : semId || ""}
+          branchId={parsedBranchId}
+          semId={parsedSemId}
           backLink="/"
           backText="Back to Home"
-          title={`${
-            Array.isArray(branchId)
-              ? branchId[0].toUpperCase()
-              : branchId?.toUpperCase()
-          } Subjects`}
+          title={`${parsedBranchId.toUpperCase()} Subjects`}
           subtitle={`${subjects.length} subjects to explore`}
           stats={{
             primary: { value: subjects.length, label: "Subjects" },
             secondary: {
-              value: Array.isArray(semId) ? semId[0] : semId || "",
+              value: parsedSemId,
               label: "Semester",
             },
           }}
@@ -73,7 +73,7 @@ export default function SubjectsPage() {
             <div className="p-8">
               {isLoading ? (
                 <LoadingSpinner text="Loading subjects..." />
-              ) : (
+              ) : subjects.length > 0 ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -84,13 +84,22 @@ export default function SubjectsPage() {
                       key={subject._id}
                       subject={subject}
                       index={index}
-                      branchId={
-                        Array.isArray(branchId) ? branchId[0] : branchId || ""
-                      }
-                      semId={Array.isArray(semId) ? semId[0] : semId || ""}
+                      branchId={parsedBranchId}
+                      semId={parsedSemId}
                     />
                   ))}
                 </motion.div>
+              ) : (
+                <EmptyState
+                  icon={Book}
+                  title="No Subjects Available"
+                  description={`No subjects are available for ${parsedBranchId.toUpperCase()} branch in Semester ${parsedSemId} yet. Check back later for updates.`}
+                  iconColor="text-blue-400"
+                  action={{
+                    label: "Go Back Home",
+                    onClick: () => (window.location.href = "/"),
+                  }}
+                />
               )}
             </div>
           </div>
