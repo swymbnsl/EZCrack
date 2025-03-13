@@ -50,7 +50,7 @@ export default function SubjectsPage() {
 
   return (
     <PageWrapper>
-      <div className="relative z-10 h-screen flex flex-col">
+      <div className="relative z-10 min-h-screen sm:h-screen flex flex-col">
         <Header
           branchId={parsedBranchId}
           semId={parsedSemId}
@@ -68,9 +68,9 @@ export default function SubjectsPage() {
           showContributor={false}
         />
 
-        <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
-            <div className="p-8">
+        <div className="flex-1 overflow-visible sm:overflow-hidden mt-6 sm:mt-0 bg-gradient-to-b from-gray-950 to-black sm:bg-none rounded-t-xl sm:rounded-none">
+          <div className="sm:h-full sm:overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
+            <div className="p-4 sm:p-8">
               {isLoading ? (
                 <LoadingSpinner text="Loading subjects..." />
               ) : subjects.length > 0 ? (

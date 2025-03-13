@@ -9,7 +9,7 @@ export const Hero = () => {
       className="text-center mb-10 sm:mb-16 md:mb-20"
     >
       <motion.h1
-        className="text-5xl sm:text-7xl md:text-8xl lg:text-[150px] font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 mb-3 sm:mb-6 tracking-tight"
+        className="text-7xl sm:text-8xl md:text-9xl lg:text-[150px] font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 mb-3 sm:mb-6 tracking-tight"
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}

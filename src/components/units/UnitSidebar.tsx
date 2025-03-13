@@ -41,9 +41,9 @@ export function UnitSidebar({
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="w-80 min-w-[320px] border-r border-gray-800 flex flex-col bg-gray-900/50"
+      className="w-full sm:w-80 sm:min-w-[320px] sm:border-r border-b-2 sm:border-b-0 border-gray-800 rounded-b-xl sm:rounded-none bg-gray-950/90 backdrop-blur-sm sm:bg-gray-900/70 sm:backdrop-blur-sm flex flex-col mb-4 sm:mb-0"
     >
-      <div className="p-8 space-y-8">
+      <div className="p-4 sm:p-8 space-y-4 sm:space-y-8">
         {hasFormulaSheet && (
           <button
             onClick={onFormulaSheetClick}

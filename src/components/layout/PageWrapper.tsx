@@ -8,7 +8,7 @@ interface PageWrapperProps {
 
 export const PageWrapper = ({ children }: PageWrapperProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white relative overflow-x-hidden max-w-screen">
+    <div className="min-h-screen bg-black text-white relative overflow-x-hidden max-w-screen">
       <AnimatedBackground />
       {children}
     </div>

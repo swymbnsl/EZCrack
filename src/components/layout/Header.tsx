@@ -36,9 +36,9 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
         className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999]"
         onClick={onClose}
       />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] max-w-[90vw] max-h-[85vh] overflow-y-auto bg-gray-900 border border-purple-500/50 rounded-xl p-6 shadow-2xl z-[10000] scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] max-w-[90vw] max-h-[85vh] overflow-y-auto bg-gray-900 border border-purple-500/50 rounded-xl p-4 sm:p-6 shadow-2xl z-[10000] scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40">
         <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-medium text-purple-400">
+          <h4 className="text-base sm:text-lg font-medium text-purple-400">
             Weightage Calculation Explained
           </h4>
           <button
@@ -49,7 +49,7 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <div className="text-sm text-gray-300 space-y-4">
+        <div className="text-xs sm:text-sm text-gray-300 space-y-4">
           <p className="text-white">
             The weightage percentage represents the relative importance of each
             topic based on both the{" "}
@@ -58,29 +58,29 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
             that topic in previous exams.
           </p>
 
-          <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50 space-y-3">
+          <div className="bg-gray-800/50 rounded-xl p-3 sm:p-4 border border-gray-700/50 space-y-3">
             <h5 className="font-medium text-white">Formula:</h5>
 
             <div>
               <p className="mb-2">1. For each topic, calculate Raw Score:</p>
-              <div className="pl-4 font-mono bg-purple-500/10 p-3 rounded text-center">
+              <div className="pl-4 font-mono bg-purple-500/10 p-2 sm:p-3 rounded text-center">
                 Raw Score = Total Marks × Question Frequency
               </div>
             </div>
 
             <div>
               <p className="mb-2">2. Calculate percentage:</p>
-              <div className="pl-4 font-mono bg-purple-500/10 p-3 rounded text-center">
+              <div className="pl-4 font-mono bg-purple-500/10 p-2 sm:p-3 rounded text-center">
                 Weightage = (Topic Raw Score ÷ Total Raw Score) × 100
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+          <div className="bg-gray-800/50 rounded-xl p-3 sm:p-4 border border-gray-700/50">
             <h5 className="font-medium text-white mb-3">Example:</h5>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-[1fr,auto,auto,auto] gap-3 text-xs">
+              <div className="grid grid-cols-[1fr,auto,auto,auto] gap-2 sm:gap-3 text-xs">
                 <div className="font-medium text-purple-400">Topic</div>
                 <div className="font-medium text-purple-400">Questions</div>
                 <div className="font-medium text-purple-400">Total Marks</div>
@@ -157,14 +157,14 @@ function WeightageInfo() {
   const [showFormula, setShowFormula] = useState(false);
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
-      <div className="flex items-center gap-4">
+    <div className="bg-gray-800/50 rounded-xl p-3 sm:p-4 border border-gray-700/50">
+      <div className="flex items-center gap-2 sm:gap-4">
         <div className="relative">
           <button
             onClick={() => setShowFormula(true)}
-            className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-500/20 hover:border-purple-500/40 transition-colors flex items-center justify-center"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-purple-500/20 hover:border-purple-500/40 transition-colors flex items-center justify-center"
           >
-            <Info className="w-6 h-6 text-purple-400" />
+            <Info className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
           </button>
 
           {/* Modal rendered at document.body level */}
@@ -175,11 +175,13 @@ function WeightageInfo() {
 
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-medium text-white">Weightage Calculation</h3>
+            <h3 className="font-medium text-white text-sm sm:text-base">
+              Weightage Calculation
+            </h3>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-400">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
             <span className="inline-flex items-center gap-1 bg-gray-800/50 rounded-full">
-              Based on question frequency and total marks
+              Based on question frequency and marks
             </span>
           </div>
         </div>
@@ -209,56 +211,66 @@ export function Header({
   };
 
   return (
-    <div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-      <div className="max-w-[2000px] mx-auto p-8">
+    <div className="border-b-2 border-gray-800 bg-gradient-to-b from-gray-900 to-gray-950 backdrop-blur-md shadow-lg shadow-black/30 sticky top-0 sm:relative sm:shadow-none sm:border-b sm:border-gray-800 sm:bg-gray-900/50 sm:backdrop-blur-sm z-20">
+      <div className="max-w-[2000px] mx-auto p-4 sm:p-6 md:p-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8">
             <Link
               href={backLink}
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group"
+              className="inline-flex items-center gap-1 sm:gap-2 text-sm sm:text-base text-gray-400 hover:text-white transition-colors group"
             >
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               {backText}
             </Link>
-            <div className="flex items-center gap-3">
-              <span className="text-sm px-3 py-1 bg-gray-800/50 rounded-full border border-gray-700/50 text-gray-400">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-300">
                 {Array.isArray(branchId)
                   ? branchId[0].toUpperCase()
                   : branchId?.toUpperCase()}
               </span>
-              <span className="text-sm px-3 py-1 bg-gray-800/50 rounded-full border border-gray-700/50 text-gray-400">
-                Semester {semId}
+              <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-gray-800/80 rounded-full border border-gray-700/50 text-gray-300">
+                Sem {semId}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500">
                 {title}
               </h1>
-              <p className="text-gray-400 text-lg flex items-center gap-2">
+              <p className="text-gray-300 text-sm sm:text-base md:text-lg flex items-center gap-2">
                 {subtitle}
               </p>
             </div>
 
-            {showWeightageInfo && <WeightageInfo />}
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              {showWeightageInfo && (
+                <div className="w-full sm:w-auto">
+                  <WeightageInfo />
+                </div>
+              )}
 
-            {showContributor && <ContributorBadge contributor={contributor} />}
+              {showContributor && (
+                <div className="w-full sm:w-auto">
+                  <ContributorBadge contributor={contributor} />
+                </div>
+              )}
 
-            <div className="flex gap-4">
-              <StatCard
-                value={stats.primary.value}
-                label={stats.primary.label}
-              />
-              <StatCard
-                value={stats.secondary.value}
-                label={stats.secondary.label}
-              />
+              <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
+                <StatCard
+                  value={stats.primary.value}
+                  label={stats.primary.label}
+                />
+                <StatCard
+                  value={stats.secondary.value}
+                  label={stats.secondary.label}
+                />
+              </div>
             </div>
           </div>
         </motion.div>
@@ -269,9 +281,11 @@ export function Header({
 
 function StatCard({ value, label }: { value: number | string; label: string }) {
   return (
-    <div className="w-32 h-[88px] text-center px-4 py-3 bg-gray-800/50 rounded-lg border border-gray-700/50 flex flex-col items-center justify-center">
-      <div className="text-2xl font-bold text-purple-400">{value}</div>
-      <div className="text-sm text-gray-400">{label}</div>
+    <div className="flex-1 sm:flex-none sm:w-28 md:w-32 h-[70px] sm:h-[80px] md:h-[88px] text-center px-2 sm:px-4 py-2 sm:py-3 bg-gray-800/50 rounded-lg border border-gray-700/50 flex flex-col items-center justify-center">
+      <div className="text-xl sm:text-2xl font-bold text-purple-400">
+        {value}
+      </div>
+      <div className="text-xs sm:text-sm text-gray-400">{label}</div>
     </div>
   );
 }

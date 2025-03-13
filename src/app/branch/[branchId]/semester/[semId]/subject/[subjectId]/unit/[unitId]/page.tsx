@@ -229,7 +229,7 @@ export default function UnitPage() {
 
   return (
     <PageWrapper>
-      <div className="relative z-10 h-screen flex flex-col">
+      <div className="relative z-10 min-h-screen sm:h-screen flex flex-col">
         <Header
           branchId={parsedBranchId}
           semId={parsedSemId}
@@ -250,22 +250,24 @@ export default function UnitPage() {
           }}
         />
 
-        <div className="flex-1 flex overflow-hidden">
-          <UnitSidebar
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            sortOrder={sortOrder}
-            onSortOrderChange={setSortOrder}
-            yearFilter={yearFilter}
-            onYearFilterChange={setYearFilter}
-            availableYears={availableYears || []}
-            hasFormulaSheet={!!unit?.formulaSheet?.content}
-            onFormulaSheetClick={() => setShowFormulaSheetModal(true)}
-          />
+        <div className="flex-1 flex flex-col sm:flex-row overflow-visible sm:overflow-hidden mt-6 sm:mt-0 bg-gradient-to-b from-gray-950 to-black sm:bg-none">
+          <div className="w-full sm:w-auto sm:min-w-[320px]">
+            <UnitSidebar
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              sortOrder={sortOrder}
+              onSortOrderChange={setSortOrder}
+              yearFilter={yearFilter}
+              onYearFilterChange={setYearFilter}
+              availableYears={availableYears || []}
+              hasFormulaSheet={!!unit?.formulaSheet?.content}
+              onFormulaSheetClick={() => setShowFormulaSheetModal(true)}
+            />
+          </div>
 
-          <div className="flex-1 overflow-hidden">
-            <div className="h-full overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
-              <div className="p-8">
+          <div className="flex-1 overflow-visible sm:overflow-hidden">
+            <div className="sm:h-full sm:overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
+              <div className="p-4 sm:p-8">
                 {isLoading ? (
                   <LoadingSpinner text="Loading content..." />
                 ) : unit ? (
