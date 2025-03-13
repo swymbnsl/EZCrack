@@ -11,13 +11,13 @@ export const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         className="fixed top-4 left-0 right-0 z-40 px-4 flex justify-center sm:justify-end sm:top-6 sm:right-8 sm:left-auto sm:px-0"
       >
-        <div className="flex items-center bg-gray-800/80 backdrop-blur-lg rounded-full border border-gray-700/50 shadow-lg p-1">
+        <div className="flex items-center bg-gray-800/80 backdrop-blur-lg rounded-full border border-gray-700/50 shadow-lg p-1 mx-4 sm:mx-0 max-w-[calc(100%-2rem)] sm:max-w-none">
           <Link
             href="/"
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
           >
             <Home className="w-4 h-4" />
-            <span>Home</span>
+            <span className="hidden sm:inline">Home</span>
           </Link>
           <Link
             href="https://swymbnsl.com"
@@ -25,7 +25,8 @@ export const Navbar = () => {
             className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
           >
             <Code className="w-4 h-4" />
-            <span>Developer</span>
+            <span className="hidden sm:inline">Developer</span>
+            <span className="sm:hidden">Dev</span>
           </Link>
           <Link
             href="/contributors"
