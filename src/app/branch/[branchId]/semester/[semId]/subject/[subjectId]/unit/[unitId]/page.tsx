@@ -7,22 +7,13 @@ import { useEffect, useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { TopicCard } from "@/components/topics/TopicCard";
-import { QuestionCard } from "@/components/questions/QuestionCard";
 import { UnitSidebar } from "@/components/units/UnitSidebar";
 import { UnitFiltersMobile } from "@/components/units/UnitFiltersMobile";
 import { NotesModal } from "@/components/notes/NotesModal";
 import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
 import { EmptyState } from "@/components/ui/EmptyState";
 import axios from "axios";
-import {
-  BookOpen,
-  ChevronDown,
-  ChevronUp,
-  ListOrdered,
-  Calculator,
-  FileQuestion,
-  AlertCircle,
-} from "lucide-react";
+import { BookOpen, FileQuestion, AlertCircle } from "lucide-react";
 
 interface Topic {
   title: string;
@@ -82,6 +73,33 @@ interface Unit {
   };
 }
 
+interface RawQuestion {
+  _id: string;
+  topic: string;
+  question: string;
+  marks: number;
+  year: number;
+  midsem: boolean;
+}
+
+interface QuestionsData {
+  foundQuestions: RawQuestion[];
+}
+
+interface RawUnit {
+  topics: string[];
+  number: number;
+  _id: string;
+  subject_id: string;
+  notes?: Note[];
+  formulaSheet?: {
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  repeatedQuestions?: Unit["repeatedQuestions"];
+}
+
 type SortOrder = "asc" | "desc" | "original";
 type YearFilter = "all" | number;
 type TabType = "topics" | "questions" | "repeated";
@@ -104,7 +122,10 @@ export default function UnitPage() {
     "concept" | "pattern"
   >("concept");
 
-  const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
+  const generateAnalysisData = (
+    rawUnit: RawUnit,
+    questionsData: QuestionsData
+  ): Unit => {
     const questions = questionsData.foundQuestions || [];
 
     interface TopicWithRawScore {
@@ -117,10 +138,14 @@ export default function UnitPage() {
     // First pass: calculate raw scores for each topic
     const topicsWithRawScores: TopicWithRawScore[] = rawUnit.topics.map(
       (topic: string) => {
-        const topicQuestions = questions.filter((q: any) => q.topic === topic);
-        const years = [...new Set(topicQuestions.map((q: any) => q.year))];
+        const topicQuestions = questions.filter(
+          (q: RawQuestion) => q.topic === topic
+        );
+        const years = [
+          ...new Set(topicQuestions.map((q: RawQuestion) => q.year)),
+        ];
         const totalMarks = topicQuestions.reduce(
-          (sum: number, q: any) => sum + (q.marks || 0),
+          (sum: number, q: RawQuestion) => sum + (q.marks || 0),
           0
         );
         const frequency = topicQuestions.length;
@@ -132,7 +157,7 @@ export default function UnitPage() {
           title: topic,
           rawScore,
           years,
-          questions: topicQuestions.map((q: any) => ({
+          questions: topicQuestions.map((q: RawQuestion) => ({
             id: q._id,
             text: q.question,
             marks: q.marks,
@@ -186,7 +211,7 @@ export default function UnitPage() {
     if (unitId) {
       fetchUnit();
     }
-  }, [unitId]);
+  }, [unitId, subjectId]);
 
   const handleTopicClick = (topicTitle: string) => {
     if (unit?.notes) {
@@ -201,16 +226,6 @@ export default function UnitPage() {
     } else {
       // If no notes at all, fall back to showing questions
       setActiveTab("questions");
-    }
-  };
-
-  const handleTopicNotesClick = (topicTitle: string) => {
-    if (unit?.notes) {
-      const note = unit.notes.find((note) => note.topic === topicTitle);
-      if (note) {
-        setSelectedTopicNotes(note);
-        setShowNotesModal(true);
-      }
     }
   };
 
@@ -263,10 +278,7 @@ export default function UnitPage() {
     if (unit) {
       setAvailableYears(uniqueYears);
     }
-  }, [uniqueYears]);
-
-  // Update when sortOrder changes (debugging)
-  useEffect(() => {}, [sortOrder]);
+  }, [uniqueYears, unit]);
 
   // Sort by topics or questions depending on active tab
   const handleSortOrderChange = (order: SortOrder) => {

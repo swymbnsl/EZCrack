@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
 import Branch from "@/models/branch-model";
-import Subject from "@/models/subjects-model";
 interface BranchDocument {
   name: string;
   subject_ids: Array<{
@@ -11,9 +10,9 @@ interface BranchDocument {
   }>;
 }
 
-export const GET = async (req: Request) => {
+export async function GET(request: Request) {
   try {
-    const url = new URL(req.url);
+    const url = new URL(request.url);
     const branch = url.searchParams.get("branch")?.toLowerCase();
     const sem = url.searchParams.get("sem");
 
@@ -41,4 +40,4 @@ export const GET = async (req: Request) => {
       { status: 500 }
     );
   }
-};
+}

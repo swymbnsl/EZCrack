@@ -2,13 +2,10 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
 import Subject from "@/models/subjects-model";
 
-interface RouteParams {
-  params: {
-    subjectId: string;
-  };
-}
-
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ subjectId: string }> }
+) {
   const { subjectId } = await params;
   if (!subjectId) {
     return NextResponse.json(

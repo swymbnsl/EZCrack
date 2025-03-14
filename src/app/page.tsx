@@ -9,7 +9,7 @@ import { Hero } from "@/components/home/Hero";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Navbar } from "@/components/layout/Navbar";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { School, BookOpen, AlertTriangle } from "lucide-react";
+import { School, BookOpen } from "lucide-react";
 import { branches, semesters } from "@/constants/lists";
 
 export default function Home() {
@@ -35,10 +35,6 @@ export default function Home() {
         `/branch/${selectedBranch.toLowerCase()}/semester/${semNumber}`
       );
     }
-  };
-
-  const handleBranchSemSelect = (branch: string, sem: string) => {
-    router.push(`/branch/${branch.toLowerCase()}/semester/${sem}`);
   };
 
   return (

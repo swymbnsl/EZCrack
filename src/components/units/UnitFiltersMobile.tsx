@@ -7,7 +7,6 @@ import {
   BarChart2,
   ChevronUp,
   ListOrdered,
-  Sliders,
   Calculator,
   Filter,
   X,

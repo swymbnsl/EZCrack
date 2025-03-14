@@ -12,7 +12,7 @@ interface QuestionCardProps {
   delay: number;
 }
 
-export function QuestionCard({ question, index, delay }: QuestionCardProps) {
+export function QuestionCard({ question, delay }: QuestionCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}

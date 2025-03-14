@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
 import Question from "@/models/questions-model";
 
-export const GET = async (
-  req: Request,
-  { params }: { params: { subjectId: string } }
-) => {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ subjectId: string }> }
+) {
   try {
     const { subjectId } = await params;
 
@@ -37,4 +37,4 @@ export const GET = async (
       { status: 500 }
     );
   }
-};
+}

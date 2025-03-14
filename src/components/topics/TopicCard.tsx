@@ -1,11 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, FileText, BookOpen } from "lucide-react";
-
-interface Note {
-  topic: string;
-  content: string;
-  createdAt: string;
-}
+import { Calendar, FileText } from "lucide-react";
 
 interface TopicCardProps {
   topic: {

@@ -4,7 +4,7 @@ import Unit from "@/models/units-model";
 
 export const GET = async (
   req: Request,
-  { params }: { params: { unitId: string } }
+  { params }: { params: Promise<{ unitId: string }> }
 ) => {
   try {
     const { unitId } = await params;

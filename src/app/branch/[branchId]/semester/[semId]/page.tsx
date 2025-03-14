@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { BookOpen, Book, PlusCircle } from "lucide-react";
+import { Book } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { SubjectCard } from "@/components/subjects/SubjectCard";

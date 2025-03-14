@@ -50,7 +50,7 @@ export function UnitYearFilter({
           </div>
         </button>
 
-        {availableYears.map((year, index) => (
+        {availableYears.map((year) => (
           <button
             key={year}
             onClick={() => setYearFilter(year)}

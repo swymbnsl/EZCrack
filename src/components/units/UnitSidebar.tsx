@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
 import { UnitTabs } from "./UnitTabs";
-import { UnitSortControls } from "./UnitSortControls";
 import { UnitYearFilter } from "./UnitYearFilter";
 import {
-  BookOpen,
   ChevronDown,
   ChevronUp,
   ListOrdered,

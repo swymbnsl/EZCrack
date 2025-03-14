@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, Linkedin } from "lucide-react";
+import Image from "next/image";
 
 interface Contributor {
   name: string;
@@ -20,10 +21,12 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
         <div className="flex items-center gap-2 sm:gap-4">
           <div className="relative group">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-purple-500/20 group-hover:border-purple-500/40 transition-colors">
-              <img
+              <Image
                 src={contributor.avatar}
                 alt={contributor.name}
                 className="w-full h-full object-cover"
+                width={48}
+                height={48}
               />
             </div>
             <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-purple-500/20 rounded-full flex items-center justify-center">

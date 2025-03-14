@@ -4,9 +4,8 @@ import { motion } from "framer-motion";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Navbar } from "@/components/layout/Navbar";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Users, Github } from "lucide-react";
+import { Users } from "lucide-react";
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 interface Contributor {
   id: string;

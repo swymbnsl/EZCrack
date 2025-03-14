@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { BookOpen, FileText, Calculator } from "lucide-react";
+import { FileText, Calculator } from "lucide-react";
 
 interface UnitCardProps {
   unit: {

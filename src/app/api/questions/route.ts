@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
 import Question from "@/models/questions-model";
 
-export const GET = async (req: Request) => {
+export async function GET(request: Request) {
   try {
-    const url = new URL(req.url);
+    const url = new URL(request.url);
     const unit = url.searchParams.get("unit");
     const subjectId = url.searchParams.get("subjectId");
 
@@ -36,4 +36,4 @@ export const GET = async (req: Request) => {
       { status: 500 }
     );
   }
-};
+}
