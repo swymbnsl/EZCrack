@@ -141,11 +141,6 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
               </li>
             </ul>
           </div>
-
-          <p className="text-xs text-gray-400 italic">
-            Note: If no questions are available for a topic, weightage is
-            distributed equally among all topics.
-          </p>
         </div>
       </div>
     </>,

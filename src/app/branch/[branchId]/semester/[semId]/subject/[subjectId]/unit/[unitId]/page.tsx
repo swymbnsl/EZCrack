@@ -143,7 +143,7 @@ export default function UnitPage() {
       }
     );
 
-    // Calculate total raw score
+    // Calculate total raw score only from topics that have questions
     const totalRawScore = topicsWithRawScores.reduce(
       (sum: number, topic: TopicWithRawScore) => sum + topic.rawScore,
       0
@@ -155,8 +155,8 @@ export default function UnitPage() {
       topics: topicsWithRawScores.map((topic: TopicWithRawScore) => ({
         ...topic,
         weightage:
-          totalRawScore === 0
-            ? Math.round(100 / topicsWithRawScores.length) // Equal distribution if no questions
+          topic.rawScore === 0
+            ? 0
             : Math.round((topic.rawScore / totalRawScore) * 100),
       })),
     };

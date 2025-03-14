@@ -191,6 +191,64 @@ export default function UnitsPage() {
   // Pluralize years correctly
   const yearText = sortedYears.length === 1 ? "year" : "years";
 
+  const generateAnalysisData = (rawUnit: any, questionsData: any): Unit => {
+    const questions = questionsData.foundQuestions || [];
+
+    interface TopicWithRawScore {
+      title: string;
+      rawScore: number;
+      years: number[];
+      questions: Question[];
+    }
+
+    // First pass: calculate raw scores for each topic
+    const topicsWithRawScores: TopicWithRawScore[] = rawUnit.topics.map(
+      (topic: string) => {
+        const topicQuestions = questions.filter((q: any) => q.topic === topic);
+        const years = [...new Set(topicQuestions.map((q: any) => q.year))];
+        const totalMarks = topicQuestions.reduce(
+          (sum: number, q: any) => sum + (q.marks || 0),
+          0
+        );
+        const frequency = topicQuestions.length;
+
+        // Raw score combines marks and frequency
+        const rawScore = totalMarks * frequency;
+
+        return {
+          title: topic,
+          rawScore,
+          years,
+          questions: topicQuestions.map((q: any) => ({
+            id: q._id,
+            text: q.question,
+            marks: q.marks,
+            year: q.year,
+            midsem: q.midsem,
+          })),
+        };
+      }
+    );
+
+    // Calculate total raw score
+    const totalRawScore = topicsWithRawScores.reduce(
+      (sum: number, topic: TopicWithRawScore) => sum + topic.rawScore,
+      0
+    );
+
+    // Second pass: normalize to percentages
+    return {
+      ...rawUnit,
+      topics: topicsWithRawScores.map((topic: TopicWithRawScore) => ({
+        ...topic,
+        weightage:
+          totalRawScore === 0
+            ? 0
+            : Math.round((topic.rawScore / totalRawScore) * 100),
+      })),
+    };
+  };
+
   return (
     <PageWrapper>
       <div className="relative z-10 min-h-screen sm:h-screen flex flex-col">
