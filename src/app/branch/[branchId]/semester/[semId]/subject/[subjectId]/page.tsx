@@ -6,11 +6,17 @@ import { PageWrapper } from "@/components/layout/PageWrapper";
 import {
   BookOpen,
   Calendar,
+  FileText,
+  Users,
   ChevronRight,
   ChevronDown,
+  Clock,
+  CheckCircle,
   Repeat,
   FileQuestion,
   AlertCircle,
+  Brain,
+  Layout,
 } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
@@ -226,40 +232,42 @@ export default function UnitsPage() {
                       <div className="flex flex-row">
                         <button
                           onClick={() => setViewMode("units")}
-                          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                             viewMode === "units"
                               ? "bg-purple-500/20 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                           }`}
                         >
-                          <BookOpen className="w-4 h-4" />
-                          <span className="text-sm sm:text-base">
+                          <BookOpen className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                          <span className="text-xs sm:text-base whitespace-nowrap">
                             Unit-wise
                           </span>
                         </button>
                         <button
                           onClick={() => setViewMode("yearwise")}
-                          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                             viewMode === "yearwise"
                               ? "bg-purple-500/20 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                           }`}
                         >
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-sm sm:text-base">
+                          <Calendar className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                          <span className="text-xs sm:text-base whitespace-nowrap">
                             Year-wise
                           </span>
                         </button>
                         <button
                           onClick={() => setViewMode("repeated")}
-                          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                             viewMode === "repeated"
                               ? "bg-purple-500/20 text-white"
                               : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                           }`}
                         >
-                          <Repeat className="w-4 h-4" />
-                          <span className="text-sm sm:text-base">Repeated</span>
+                          <Repeat className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                          <span className="text-xs sm:text-base whitespace-nowrap">
+                            Repeated
+                          </span>
                         </button>
                       </div>
                     </div>
@@ -269,33 +277,41 @@ export default function UnitsPage() {
                         <div className="flex flex-row">
                           <button
                             onClick={() => setExamFilter("all")}
-                            className={`flex-1 flex items-center justify-center px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                            className={`flex-1 flex items-center justify-center px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                               examFilter === "all"
                                 ? "bg-amber-500/20 text-white"
                                 : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                             }`}
                           >
-                            <span className="text-sm sm:text-base">All</span>
+                            <span className="text-xs sm:text-base whitespace-nowrap">
+                              All
+                            </span>
                           </button>
                           <button
                             onClick={() => setExamFilter("midterm")}
-                            className={`flex-1 flex items-center justify-center px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                            className={`flex-1 flex items-center justify-center px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                               examFilter === "midterm"
                                 ? "bg-amber-500/20 text-white"
                                 : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                             }`}
                           >
-                            <span className="text-sm sm:text-base">Mid</span>
+                            <span className="text-xs sm:text-base whitespace-nowrap">
+                              <span className="hidden sm:inline">Midterm</span>
+                              <span className="sm:hidden">Mid</span>
+                            </span>
                           </button>
                           <button
                             onClick={() => setExamFilter("endterm")}
-                            className={`flex-1 flex items-center justify-center px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                            className={`flex-1 flex items-center justify-center px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                               examFilter === "endterm"
                                 ? "bg-amber-500/20 text-white"
                                 : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                             }`}
                           >
-                            <span className="text-sm sm:text-base">End</span>
+                            <span className="text-xs sm:text-base whitespace-nowrap">
+                              <span className="hidden sm:inline">Endterm</span>
+                              <span className="sm:hidden">End</span>
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -476,32 +492,38 @@ export default function UnitsPage() {
                         exit={{ opacity: 0, y: -20 }}
                         className="max-w-5xl mx-auto space-y-6"
                       >
-                        <div className="max-w-xl mx-auto bg-gray-800/50 backdrop-blur-sm rounded-lg sm:rounded-2xl p-1 sm:p-1.5 border border-gray-700/50">
+                        <div className="mt-2 sm:mt-4 max-w-xl mx-auto bg-gray-800/50 backdrop-blur-sm rounded-lg sm:rounded-2xl p-1 sm:p-1.5 border border-gray-700/50">
                           <div className="flex flex-row">
                             <button
                               onClick={() => setRepeatedType("concept")}
-                              className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                              className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                                 repeatedType === "concept"
                                   ? "bg-purple-500/20 text-white"
                                   : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                               }`}
                             >
-                              <BookOpen className="w-4 h-4" />
-                              <span className="text-sm sm:text-base">
+                              <BookOpen className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                              <span className="hidden sm:inline text-base">
                                 Concept Based
+                              </span>
+                              <span className="sm:hidden text-xs whitespace-nowrap">
+                                Concept
                               </span>
                             </button>
                             <button
                               onClick={() => setRepeatedType("pattern")}
-                              className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-xl transition-all ${
+                              className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-6 py-2 sm:py-3 rounded-md sm:rounded-xl transition-all ${
                                 repeatedType === "pattern"
                                   ? "bg-amber-500/20 text-white"
                                   : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                               }`}
                             >
-                              <Repeat className="w-4 h-4" />
-                              <span className="text-sm sm:text-base">
+                              <Repeat className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                              <span className="hidden sm:inline text-base">
                                 Pattern Based
+                              </span>
+                              <span className="sm:hidden text-xs whitespace-nowrap">
+                                Pattern
                               </span>
                             </button>
                           </div>
@@ -555,13 +577,13 @@ export default function UnitsPage() {
                                                 className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
                                               >
                                                 <div className="p-3 sm:p-5 bg-purple-500/10 border-b border-purple-500/20">
-                                                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+                                                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
                                                     <h4 className="text-base sm:text-lg font-medium text-purple-400 break-words">
                                                       {repeatedQuestion.concept}
                                                     </h4>
-                                                    <div className="flex items-center text-xs sm:text-sm text-purple-400">
-                                                      <span className="sm:hidden font-medium">
-                                                        ×
+                                                    <div className="flex items-center justify-end text-xs sm:text-sm text-purple-400">
+                                                      <span className="sm:hidden font-medium bg-purple-500/20 px-2 py-1 rounded-md">
+                                                        Repeated ×
                                                         {
                                                           repeatedQuestion.frequency
                                                         }
@@ -683,13 +705,13 @@ export default function UnitsPage() {
                                                 className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
                                               >
                                                 <div className="p-3 sm:p-5 bg-amber-500/10 border-b border-amber-500/20">
-                                                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+                                                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
                                                     <h4 className="text-base sm:text-lg font-medium text-amber-400 break-words">
                                                       {repeatedQuestion.pattern}
                                                     </h4>
-                                                    <div className="flex items-center text-xs sm:text-sm text-amber-400">
-                                                      <span className="sm:hidden font-medium">
-                                                        ×
+                                                    <div className="flex items-center justify-end text-xs sm:text-sm text-amber-400">
+                                                      <span className="sm:hidden font-medium bg-amber-500/20 px-2 py-1 rounded-md">
+                                                        Repeated ×
                                                         {
                                                           repeatedQuestion.frequency
                                                         }
