@@ -30,7 +30,6 @@ export const GET = async (req: Request) => {
       .lean()) as BranchDocument | null;
 
     if (!branchDoc) {
-      console.log("Branch not found");
       return NextResponse.json({ subjects: [] });
     }
 

@@ -42,13 +42,10 @@ export function UnitFiltersMobile({
   const [showFilters, setShowFilters] = useState(false);
 
   // Debugging for sort changes
-  useEffect(() => {
-    console.log("Mobile component sort order:", sortOrder);
-  }, [sortOrder]);
+  useEffect(() => {}, [sortOrder]);
 
   // Helper function to handle sort order changes
   const handleSortOrderChange = (order: SortOrder) => {
-    console.log("Attempting to change sort order to:", order);
     onSortOrderChange(order);
   };
 

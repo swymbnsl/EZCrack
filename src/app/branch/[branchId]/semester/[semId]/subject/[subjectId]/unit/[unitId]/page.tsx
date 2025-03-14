@@ -266,13 +266,10 @@ export default function UnitPage() {
   }, [uniqueYears]);
 
   // Update when sortOrder changes (debugging)
-  useEffect(() => {
-    console.log("Sort order changed:", sortOrder);
-  }, [sortOrder]);
+  useEffect(() => {}, [sortOrder]);
 
   // Sort by topics or questions depending on active tab
   const handleSortOrderChange = (order: SortOrder) => {
-    console.log("Parent component changing sort order to:", order);
     setSortOrder(order);
   };
 
