@@ -32,7 +32,10 @@ export default function SubjectsPage() {
           `/api/subjects?branch=${branchId}&sem=${semId}`
         );
         const data = response.data;
-        setSubjects(data.subjects || []);
+        const sortedSubjects = [...(data.subjects || [])].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        setSubjects(sortedSubjects);
       } catch (error) {
         console.error("Error fetching subjects:", error);
       } finally {
