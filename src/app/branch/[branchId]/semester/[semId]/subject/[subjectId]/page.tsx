@@ -60,7 +60,7 @@ interface Question {
   question: string;
   marks: number;
   year: number;
-  topic: string;
+  topics: string[];
   unit: number;
   midsem: boolean;
 }
@@ -413,9 +413,29 @@ export default function UnitsPage() {
                                                   >
                                                     <div className="flex flex-col gap-3">
                                                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-                                                        <span className="text-xs sm:text-sm font-medium text-purple-400 bg-purple-500/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full break-words">
-                                                          {question.topic}
-                                                        </span>
+                                                        <div className="flex flex-wrap gap-1.5">
+                                                          {question.topics &&
+                                                          question.topics
+                                                            .length > 0 ? (
+                                                            question.topics.map(
+                                                              (
+                                                                topic,
+                                                                tIndex
+                                                              ) => (
+                                                                <span
+                                                                  key={`${question._id}-topic-${tIndex}`}
+                                                                  className="text-xs sm:text-sm font-medium text-purple-400 bg-purple-500/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full break-words"
+                                                                >
+                                                                  {topic}
+                                                                </span>
+                                                              )
+                                                            )
+                                                          ) : (
+                                                            <span className="text-xs sm:text-sm font-medium text-gray-400 bg-gray-500/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full break-words">
+                                                              No topic
+                                                            </span>
+                                                          )}
+                                                        </div>
                                                         <div className="flex items-center gap-2">
                                                           <div className="hidden sm:flex items-center gap-2">
                                                             <span className="text-xs sm:text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 sm:px-3 py-0.5 sm:py-1.5 rounded-full">
@@ -568,17 +588,18 @@ export default function UnitsPage() {
                                                     </h4>
                                                     <div className="flex items-center justify-end text-xs sm:text-sm text-purple-400">
                                                       <span className="sm:hidden font-medium bg-purple-500/20 px-2 py-1 rounded-md">
-                                                        Repeated ×
+                                                        Repeated&nbsp;
                                                         {
                                                           repeatedQuestion.frequency
                                                         }
+                                                        x
                                                       </span>
-                                                      <span className="hidden sm:inline bg-purple-500/20 px-3 py-1.5 rounded-full">
-                                                        Repeated{" "}
+                                                      <span className="hidden sm:inline bg-purple-500/20 px-3 py-1.5 rounded-full whitespace-nowrap">
+                                                        Repeated&nbsp;
                                                         {
                                                           repeatedQuestion.frequency
-                                                        }{" "}
-                                                        times
+                                                        }
+                                                        x
                                                       </span>
                                                     </div>
                                                   </div>
@@ -696,17 +717,18 @@ export default function UnitsPage() {
                                                     </h4>
                                                     <div className="flex items-center justify-end text-xs sm:text-sm text-amber-400">
                                                       <span className="sm:hidden font-medium bg-amber-500/20 px-2 py-1 rounded-md">
-                                                        Repeated ×
+                                                        Repeated&nbsp;
                                                         {
                                                           repeatedQuestion.frequency
                                                         }
+                                                        x
                                                       </span>
-                                                      <span className="hidden sm:inline bg-amber-500/20 px-3 py-1.5 rounded-full">
-                                                        Repeated{" "}
+                                                      <span className="hidden sm:inline bg-amber-500/20 px-3 py-1.5 rounded-full whitespace-nowrap">
+                                                        Repeated&nbsp;
                                                         {
                                                           repeatedQuestion.frequency
-                                                        }{" "}
-                                                        times
+                                                        }
+                                                        x
                                                       </span>
                                                     </div>
                                                   </div>

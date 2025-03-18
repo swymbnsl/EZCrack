@@ -69,9 +69,27 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
             </div>
 
             <div>
-              <p className="mb-2">2. Calculate percentage:</p>
+              <p className="mb-2">2. Calculate initial weightage:</p>
               <div className="pl-4 font-mono bg-purple-500/10 p-2 sm:p-3 rounded text-center">
-                Weightage = (Topic Raw Score ÷ Total Raw Score) × 100
+                Initial Weightage = (Topic Raw Score ÷ Total Raw Score) × 100
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-2">3. Apply minimum weightage rule:</p>
+              <div className="pl-4 font-mono bg-purple-500/10 p-2 sm:p-3 rounded text-center">
+                Final Weightage = max(1%, Initial Weightage) for topics with
+                questions
+              </div>
+              <p className="mt-1 text-xs text-gray-400">
+                Topics with no questions always get 0%
+              </p>
+            </div>
+
+            <div>
+              <p className="mb-2">4. Balance the total:</p>
+              <div className="pl-4 font-mono bg-purple-500/10 p-2 sm:p-3 rounded text-center">
+                Adjust weightages so they sum to exactly 100%
               </div>
             </div>
           </div>
@@ -112,19 +130,36 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
 
               <div className="text-xs">
                 <p>Total Raw Score = 45 + 20 + 5 = 70</p>
-                <p className="mt-2">Weightage calculations:</p>
+                <p className="mt-2">Initial weightage calculations:</p>
                 <ul className="list-disc pl-5 space-y-1 mt-1">
                   <li>
-                    Thermodynamics: (45 ÷ 70) × 100 ={" "}
+                    Thermodynamics: (45 ÷ 70) × 100 = 64.29% → rounded to{" "}
                     <span className="text-purple-400 font-medium">64%</span>
                   </li>
                   <li>
-                    Heat Transfer: (20 ÷ 70) × 100 ={" "}
+                    Heat Transfer: (20 ÷ 70) × 100 = 28.57% → rounded to{" "}
                     <span className="text-purple-400 font-medium">29%</span>
                   </li>
                   <li>
-                    Combustion: (5 ÷ 70) × 100 ={" "}
+                    Combustion: (5 ÷ 70) × 100 = 7.14% → rounded to{" "}
                     <span className="text-purple-400 font-medium">7%</span>
+                  </li>
+                </ul>
+                <p className="mt-2">Special cases:</p>
+                <ul className="list-disc pl-5 space-y-1 mt-1">
+                  <li>
+                    If a topic has questions but would calculate to less than
+                    1%, it still receives{" "}
+                    <span className="text-purple-400 font-medium">
+                      at least 1%
+                    </span>
+                  </li>
+                  <li>
+                    If no topics have questions, all topics receive{" "}
+                    <span className="text-purple-400 font-medium">0%</span>
+                  </li>
+                  <li>
+                    Final adjustments ensure the percentages sum to exactly 100%
                   </li>
                 </ul>
               </div>
@@ -132,12 +167,14 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div>
-            <p className="mb-2">This approach ensures that topics with:</p>
+            <p className="mb-2">This approach ensures that:</p>
             <ul className="list-disc pl-5 space-y-1">
               <li>More frequent questions get higher weightage</li>
               <li>Higher mark allocation get higher weightage</li>
+              <li>Every topic with questions shows a non-zero weightage</li>
+              <li>Topics with no questions have zero weightage</li>
               <li>
-                Both frequency and marks together determine the final importance
+                The total weightage across all topics always adds up to 100%
               </li>
             </ul>
           </div>

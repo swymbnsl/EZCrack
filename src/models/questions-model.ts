@@ -8,9 +8,10 @@ const questionSchema = new mongoose.Schema({
   year: {
     type: String,
   },
-  topic: {
-    type: String,
+  topics: {
+    type: [String],
     required: true,
+    default: [],
   },
   midsem: {
     type: Boolean,

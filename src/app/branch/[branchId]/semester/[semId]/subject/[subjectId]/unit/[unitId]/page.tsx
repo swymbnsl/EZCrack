@@ -75,7 +75,7 @@ interface Unit {
 
 interface RawQuestion {
   _id: string;
-  topic: string;
+  topics: string[];
   question: string;
   marks: number;
   year: number;
@@ -138,8 +138,9 @@ export default function UnitPage() {
     // First pass: calculate raw scores for each topic
     const topicsWithRawScores: TopicWithRawScore[] = rawUnit.topics.map(
       (topic: string) => {
+        // Find questions that include this topic in their topics array
         const topicQuestions = questions.filter(
-          (q: RawQuestion) => q.topic === topic
+          (q: RawQuestion) => q.topics && q.topics.includes(topic)
         );
         const years = [
           ...new Set(topicQuestions.map((q: RawQuestion) => q.year)),
@@ -151,7 +152,7 @@ export default function UnitPage() {
         const frequency = topicQuestions.length;
 
         // Raw score combines marks and frequency
-        const rawScore = totalMarks * frequency;
+        const rawScore = frequency > 0 ? totalMarks * frequency : 0;
 
         return {
           title: topic,
@@ -168,22 +169,96 @@ export default function UnitPage() {
       }
     );
 
-    // Calculate total raw score only from topics that have questions
-    const totalRawScore = topicsWithRawScores.reduce(
+    // Calculate total raw score from topics that have questions
+    const topicsWithQuestions = topicsWithRawScores.filter(
+      (topic) => topic.questions.length > 0
+    );
+
+    // If no topics have questions, avoid division by zero
+    const totalRawScore = topicsWithQuestions.reduce(
       (sum: number, topic: TopicWithRawScore) => sum + topic.rawScore,
       0
     );
 
-    // Second pass: normalize to percentages
+    // Calculate initial weightages
+    const topicsWithWeightage = topicsWithRawScores.map(
+      (topic: TopicWithRawScore) => {
+        // Only topics with questions should have weightage
+        const hasQuestions = topic.questions.length > 0;
+
+        // If topic has questions but totalRawScore is 0, give it full weightage
+        if (hasQuestions && totalRawScore === 0) {
+          return {
+            ...topic,
+            // If there's only one topic with questions, give it 100%
+            // Otherwise divide evenly among topics with questions
+            weightage:
+              topicsWithQuestions.length === 1
+                ? 100
+                : Math.floor(100 / topicsWithQuestions.length),
+            exactWeightage: 100 / topicsWithQuestions.length,
+          };
+        }
+
+        // Calculate exact weightage for topics with questions
+        const exactWeightage = hasQuestions
+          ? (topic.rawScore / totalRawScore) * 100
+          : 0;
+
+        // Ensure any topic with questions gets minimum 1% weightage
+        // This prevents rounding down to zero for topics with very small weightage
+        let weightage = 0;
+        if (hasQuestions) {
+          // If the exact weightage is very small but not zero, ensure minimum 1%
+          weightage =
+            exactWeightage < 1 && exactWeightage > 0
+              ? 1
+              : Math.round(exactWeightage);
+        }
+
+        return {
+          ...topic,
+          weightage,
+          exactWeightage,
+        };
+      }
+    );
+
+    // Adjust weightages to ensure they sum to 100% (only if we have topics with questions)
+    if (topicsWithQuestions.length > 0) {
+      // Get the sum of all rounded weightages
+      const weightageSum = topicsWithWeightage.reduce(
+        (sum, topic) => sum + topic.weightage,
+        0
+      );
+
+      // If the sum is not 100, adjust accordingly
+      if (weightageSum !== 100) {
+        // Sort by exact weightage descending (to adjust largest topics first)
+        const sortedTopics = [...topicsWithWeightage]
+          .filter((t) => t.questions.length > 0)
+          .sort((a, b) => b.exactWeightage - a.exactWeightage);
+
+        let remaining = 100 - weightageSum;
+
+        // Distribute the difference among topics with questions
+        // Either add or subtract to reach exactly 100%
+        for (let i = 0; i < sortedTopics.length && remaining !== 0; i++) {
+          const adjustment = remaining > 0 ? 1 : -1;
+          const index = topicsWithWeightage.findIndex(
+            (t) => t.title === sortedTopics[i].title
+          );
+
+          topicsWithWeightage[index].weightage += adjustment;
+          remaining -= adjustment;
+        }
+      }
+    }
+
+    // Return the final unit with adjusted weightages
     return {
       ...rawUnit,
-      topics: topicsWithRawScores.map((topic: TopicWithRawScore) => ({
-        ...topic,
-        weightage:
-          topic.rawScore === 0
-            ? 0
-            : Math.round((topic.rawScore / totalRawScore) * 100),
-      })),
+      topics: topicsWithWeightage.map(({ ...topic }) => topic),
     };
   };
 
