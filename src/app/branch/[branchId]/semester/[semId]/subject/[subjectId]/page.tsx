@@ -11,6 +11,10 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import axios from "axios";
 import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 const formatExamType = (examType: string) => {
   const type = examType.toLowerCase();
@@ -460,9 +464,26 @@ export default function UnitsPage() {
                                                           </div>
                                                         </div>
                                                       </div>
-                                                      <p className="text-sm sm:text-base text-gray-200">
-                                                        {question.question}
-                                                      </p>
+                                                      <div className="text-sm sm:text-base text-gray-200">
+                                                        <ReactMarkdown
+                                                          remarkPlugins={[
+                                                            remarkGfm,
+                                                            remarkMath,
+                                                          ]}
+                                                          rehypePlugins={[
+                                                            [
+                                                              rehypeKatex,
+                                                              {
+                                                                throwOnError:
+                                                                  false,
+                                                                strict: false,
+                                                              },
+                                                            ],
+                                                          ]}
+                                                        >
+                                                          {question.question}
+                                                        </ReactMarkdown>
+                                                      </div>
                                                     </div>
                                                   </motion.div>
                                                 )
@@ -639,9 +660,27 @@ export default function UnitsPage() {
                                                               </span>
                                                             </div>
                                                           </div>
-                                                          <p className="text-gray-200">
-                                                            {q.question}
-                                                          </p>
+                                                          <div className="text-gray-200">
+                                                            <ReactMarkdown
+                                                              remarkPlugins={[
+                                                                remarkGfm,
+                                                                remarkMath,
+                                                              ]}
+                                                              rehypePlugins={[
+                                                                [
+                                                                  rehypeKatex,
+                                                                  {
+                                                                    throwOnError:
+                                                                      false,
+                                                                    strict:
+                                                                      false,
+                                                                  },
+                                                                ],
+                                                              ]}
+                                                            >
+                                                              {q.question}
+                                                            </ReactMarkdown>
+                                                          </div>
                                                         </div>
                                                       </div>
                                                     )
@@ -768,9 +807,27 @@ export default function UnitsPage() {
                                                               </span>
                                                             </div>
                                                           </div>
-                                                          <p className="text-gray-200">
-                                                            {q.question}
-                                                          </p>
+                                                          <div className="text-gray-200">
+                                                            <ReactMarkdown
+                                                              remarkPlugins={[
+                                                                remarkGfm,
+                                                                remarkMath,
+                                                              ]}
+                                                              rehypePlugins={[
+                                                                [
+                                                                  rehypeKatex,
+                                                                  {
+                                                                    throwOnError:
+                                                                      false,
+                                                                    strict:
+                                                                      false,
+                                                                  },
+                                                                ],
+                                                              ]}
+                                                            >
+                                                              {q.question}
+                                                            </ReactMarkdown>
+                                                          </div>
                                                         </div>
                                                       </div>
                                                     )

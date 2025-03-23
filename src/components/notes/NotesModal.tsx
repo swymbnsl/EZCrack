@@ -2,6 +2,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 interface Note {
   topic: string;
@@ -63,7 +66,12 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
               </div>
               <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-purple-500/50 scrollbar-thumb-rounded-full">
                 <div className="prose prose-invert prose-purple max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[
+                      [rehypeKatex, { throwOnError: false, strict: false }],
+                    ]}
+                  >
                     {note.content}
                   </ReactMarkdown>
                 </div>

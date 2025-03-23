@@ -52,6 +52,18 @@ const config: Config = {
             "code::after": {
               content: '""',
             },
+            ".katex": {
+              fontSize: "1.1em",
+            },
+            ".katex-display": {
+              overflow: "auto hidden",
+              margin: "1em 0",
+            },
+            ".math.math-inline": {
+              padding: "0.1em 0.25em",
+              backgroundColor: "rgba(147, 51, 234, 0.1)",
+              borderRadius: "0.25rem",
+            },
           },
         },
       },
