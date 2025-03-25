@@ -64,7 +64,7 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-purple-500/50 scrollbar-thumb-rounded-full">
+              <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-purple-500/50 scrollbar-thumb-rounded-full pb-16">
                 <div className="prose prose-invert prose-purple max-w-none">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkMath]}

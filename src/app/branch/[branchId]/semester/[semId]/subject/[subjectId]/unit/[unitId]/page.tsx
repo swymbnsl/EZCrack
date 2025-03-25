@@ -14,6 +14,10 @@ import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
 import { EmptyState } from "@/components/ui/EmptyState";
 import axios from "axios";
 import { BookOpen, FileQuestion, AlertCircle } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import remarkGfm from "remark-gfm";
 
 interface Topic {
   title: string;
@@ -528,9 +532,25 @@ export default function UnitPage() {
                                                 </span>
                                               </div>
                                             </div>
-                                            <p className="text-sm sm:text-base text-gray-200">
-                                              {question.text}
-                                            </p>
+                                            <div className="text-sm sm:text-base text-gray-200">
+                                              <ReactMarkdown
+                                                remarkPlugins={[
+                                                  remarkGfm,
+                                                  remarkMath,
+                                                ]}
+                                                rehypePlugins={[
+                                                  [
+                                                    rehypeKatex,
+                                                    {
+                                                      throwOnError: false,
+                                                      strict: false,
+                                                    },
+                                                  ],
+                                                ]}
+                                              >
+                                                {question.text}
+                                              </ReactMarkdown>
+                                            </div>
                                           </div>
                                         </motion.div>
                                       )
