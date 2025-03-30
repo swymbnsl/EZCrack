@@ -53,11 +53,7 @@ export function SubjectCard({
                 isLight ? "text-black" : "text-white"
               }`}>
                 <motion.span 
-                  className={`absolute -inset-2 -z-10 ${
-                    isLight 
-                      ? "bg-[#76ABAE] border-4 border-black" 
-                      : "bg-[#4ECDC4] border-4 border-white"
-                  } transform -rotate-2`}
+                  className={`absolute -inset-2 -z-10 transform -rotate-2`}
                   initial={{ rotate: 5 }}
                   animate={{ rotate: -2 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}

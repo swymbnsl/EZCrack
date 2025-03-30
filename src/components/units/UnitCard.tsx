@@ -112,7 +112,7 @@ export function UnitCard({
                   : "bg-[#252525] text-white border-white"
               } border`}>
                 <Calculator className="w-3 h-3" />
-                <span>Formulas</span>
+                <span>Formulas Sheet</span>
               </div>
             )}
           </div>

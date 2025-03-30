@@ -25,14 +25,14 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
         isLight 
           ? "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" 
           : "bg-[#1E1E1E] border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)]"
-      } border-4 transform rotate-1 p-3 sm:p-4`}>
+      } border-4 p-3 sm:p-4`}>
         <div className="flex items-center gap-2 sm:gap-4">
           <div className="relative group">
             <div className={`w-10 h-10 sm:w-12 sm:h-12 overflow-hidden ${
               isLight 
                 ? "border-black" 
                 : "border-white"
-            } border-3 transform -rotate-2`}>
+            } border-3`}>
               <Image
                 src={contributor.avatar}
                 alt={contributor.name}
@@ -45,7 +45,7 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
               isLight 
                 ? "bg-[#FFD56B] border-black" 
                 : "bg-[#4ECDC4] border-white"
-            } border-2 flex items-center justify-center transform rotate-12`}>
+            } border-2 flex items-center justify-center`}>
               <BookOpen className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${isLight ? "text-black" : "text-[#121212]"}`} />
             </div>
           </div>
@@ -64,14 +64,14 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
                 isLight 
                   ? "bg-[#76ABAE] text-black border-black" 
                   : "bg-[#4ECDC4] text-[#121212] border-white"
-              } border-2 transform rotate-1 truncate`}>
+              } border-2 truncate`}>
                 {contributor.branch}
               </span>
               <span className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 ${
                 isLight 
                   ? "bg-[#FFD56B] text-black border-black" 
                   : "bg-[#FFE66D] text-[#121212] border-white"
-              } border-2 transform -rotate-1 whitespace-nowrap`}>
+              } border-2 whitespace-nowrap`}>
                 Sem {contributor.semester}
               </span>
             </div>
@@ -87,7 +87,7 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
               isLight 
                 ? "bg-[#FF7B54] text-black border-black hover:bg-[#FFD56B]" 
                 : "bg-[#FF6B6B] text-[#121212] border-white hover:bg-[#4ECDC4]"
-            } border-2 transform rotate-3 transition-colors flex items-center justify-center self-center shrink-0`}
+            } border-2 transition-colors flex items-center justify-center self-center shrink-0`}
           >
             <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
           </motion.a>

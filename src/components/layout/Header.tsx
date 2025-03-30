@@ -45,14 +45,14 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
         isLight 
           ? "bg-white border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" 
           : "bg-[#1E1E1E] border-white shadow-[8px_8px_0px_0px_rgba(255,255,255,0.8)]"
-      } border-4 rounded-xl p-4 sm:p-6 z-[10000] transform rotate-1`}>
+      } border-4 rounded-xl p-4 sm:p-6 z-[10000] `}>
         <div className={`flex justify-between items-center mb-4 border-b-4 pb-3 ${isLight ? "border-black" : "border-white"}`}>
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 ${
               isLight 
                 ? "bg-[#76ABAE] border-black" 
                 : "bg-[#4ECDC4] border-white"
-            } border-3 flex items-center justify-center transform -rotate-3`}>
+            } border-3 flex items-center justify-center`}>
               <Info className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
             </div>
             <h4 className={`text-base sm:text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
@@ -65,7 +65,7 @@ function FormulaModal({ onClose }: { onClose: () => void }) {
               isLight 
                 ? "bg-[#FF7B54] border-black hover:bg-[#FFD56B]" 
                 : "bg-[#FF6B6B] border-white hover:bg-[#4ECDC4]"
-            } border-2 flex items-center justify-center transform -rotate-3 transition-colors`}
+            } border-2 flex items-center justify-center transition-colors`}
           >
             <X className={`w-4 h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
           </button>
@@ -231,7 +231,7 @@ function WeightageInfo() {
       isLight 
         ? "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" 
         : "bg-[#1E1E1E] border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)]"
-    } border-4 transform rotate-1 p-3 sm:p-4`}>
+    } border-4 p-3 sm:p-4`}>
       <div className="flex items-center gap-2 sm:gap-4">
         <div className="relative">
           <button
@@ -240,7 +240,7 @@ function WeightageInfo() {
               isLight 
                 ? "bg-[#76ABAE] border-black" 
                 : "bg-[#4ECDC4] border-white"
-            } border-3 transform -rotate-3 flex items-center justify-center`}
+            } border-3  flex items-center justify-center`}
           >
             <Info className={`w-5 h-5 sm:w-6 sm:h-6 ${isLight ? "text-black" : "text-[#121212]"}`} />
           </button>
@@ -263,7 +263,7 @@ function WeightageInfo() {
               isLight 
                 ? "bg-[#FFD56B] text-black border-black" 
                 : "bg-[#FFE66D] text-[#121212] border-white"
-            } border-2 transform -rotate-1 truncate`}>
+            } border-2 truncate`}>
               Based on marks and frequency
             </span>
           </div>
@@ -317,7 +317,7 @@ export function Header({
                 isLight 
                   ? "bg-[#FFD56B] text-black border-black" 
                   : "bg-[#4ECDC4] text-[#121212] border-white"
-              } border-2 transform rotate-1`}>
+              } border-2`}>
                 {Array.isArray(branchId)
                   ? branchId[0].toUpperCase()
                   : branchId?.toUpperCase()}
@@ -326,7 +326,7 @@ export function Header({
                 isLight 
                   ? "bg-[#76ABAE] text-black border-black" 
                   : "bg-[#FFE66D] text-[#121212] border-white"
-              } border-2 transform -rotate-1`}>
+              } border-2`}>
                 Sem {semId}
               </span>
               <div className="hidden sm:block">
@@ -399,7 +399,7 @@ function StatCard({ value, label, isLight }: { value: number | string; label: st
       isLight 
         ? "bg-white border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" 
         : "bg-[#1E1E1E] border-white text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)]"
-    } border-4 transform rotate-1 flex flex-col items-center justify-center`}>
+    } border-4  flex flex-col items-center justify-center`}>
       <div className={`text-xl sm:text-2xl font-bold ${
         isLight ? "text-[#FF7B54]" : "text-[#4ECDC4]"
       }`}>

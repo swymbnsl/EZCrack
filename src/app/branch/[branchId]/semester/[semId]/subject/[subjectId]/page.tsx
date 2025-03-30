@@ -220,7 +220,7 @@ export default function UnitsPage() {
               ) : (
                 <>
                   <div className="mb-4 sm:mb-8">
-                    <div className={`max-w-xl mx-auto ${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 p-1.5 sm:p-2 transform rotate-1`}>
+                    <div className={`max-w-xl mx-auto ${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 p-1.5 sm:p-2`}>
                       <div className="flex flex-row">
                         <button
                           onClick={() => setViewMode("units")}
@@ -277,7 +277,7 @@ export default function UnitsPage() {
                     </div>
 
                     {viewMode === "yearwise" && (
-                      <div className={`mt-4 sm:mt-6 max-w-xl mx-auto ${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 p-1.5 sm:p-2 transform -rotate-1`}>
+                      <div className={`mt-4 sm:mt-6 max-w-xl mx-auto ${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 p-1.5 sm:p-2`}>
                         <div className="flex flex-row">
                           <button
                             onClick={() => setExamFilter("all")}
@@ -334,7 +334,7 @@ export default function UnitsPage() {
                     )}
                     
                     {viewMode === "repeated" && (
-                      <div className={`mt-4 sm:mt-6 max-w-xl mx-auto ${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 p-1.5 sm:p-2 transform -rotate-1`}>
+                      <div className={`mt-4 sm:mt-6 max-w-xl mx-auto ${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 p-1.5 sm:p-2`}>
                         <div className="flex flex-row">
                           <button
                             onClick={() => setRepeatedType("concept")}
@@ -415,7 +415,7 @@ export default function UnitsPage() {
                           sortedYears.map((year) => (
                             <div
                               key={year}
-                              className={`${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 transform ${expandedYears[year] ? "rotate-1" : "-rotate-1"} overflow-hidden`}
+                              className={`${isLight ? "bg-white border-black" : "bg-[#1E1E1E] border-white"} border-4 overflow-hidden`}
                             >
                               <button
                                 onClick={() => toggleYear(year)}
@@ -430,14 +430,14 @@ export default function UnitsPage() {
                                     isLight 
                                       ? "bg-[#76ABAE] border-black" 
                                       : "bg-[#4ECDC4] border-white"
-                                  } border-3 flex items-center justify-center transform -rotate-3`}>
+                                  } border-3 flex items-center justify-center`}>
                                     <Calendar className={`w-5 h-5 sm:w-6 sm:h-6 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                   </div>
                                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
                                     <h2 className={`text-xl sm:text-2xl font-bold ${isLight ? "text-black" : "text-white"}`}>
                                       {year}
                                     </h2>
-                                    <span className={`text-xs sm:text-sm px-2 sm:px-2.5 py-0.5 sm:py-1 border-2 transform rotate-1 ${
+                                    <span className={`text-xs sm:text-sm px-2 sm:px-2.5 py-0.5 sm:py-1 border-2 ${
                                       isLight 
                                         ? "bg-[#FFD56B] text-black border-black" 
                                         : "bg-[#FFE66D] text-[#121212] border-white"
@@ -447,7 +447,7 @@ export default function UnitsPage() {
                                   </div>
                                 </div>
                                 <ChevronDown
-                                  className={`w-5 h-5 ${isLight ? "text-black" : "text-white"} transition-transform duration-200 ${
+                                  className={`w-5 h-5 ${isLight ? "text-black" : "text-white"} ${
                                     expandedYears[year] ? "rotate-180" : ""
                                   }`}
                                 />
@@ -475,7 +475,7 @@ export default function UnitsPage() {
                                                 isLight 
                                                   ? "bg-[#76ABAE] border-black" 
                                                   : "bg-[#4ECDC4] border-white"
-                                              } border-2 flex items-center justify-center transform rotate-3`}>
+                                              } border-2 flex items-center justify-center`}>
                                                 <BookOpen className={`w-3 h-3 sm:w-4 sm:h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                               </div>
                                               <h3 className={`text-base sm:text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
@@ -490,19 +490,19 @@ export default function UnitsPage() {
                                                     isLight 
                                                       ? "bg-white border-black" 
                                                       : "bg-[#1E1E1E] border-white"
-                                                  } border-2 p-3 sm:p-4 transform ${question.midsem ? "rotate-1" : "-rotate-1"}`}
+                                                  } border-2 p-3 sm:p-4`}
                                                 >
                                                   <div className="flex justify-between items-start gap-4">
                                                     <div className="flex-1">
                                                       <div className="flex gap-2 items-start mb-2">
-                                                        <div className={`px-1.5 py-0.5 text-xs border-2 transform rotate-1 ${
+                                                        <div className={`px-1.5 py-0.5 text-xs border-2 ${
                                                           isLight 
                                                             ? question.midsem ? "bg-[#FFD56B] border-black" : "bg-[#FF7B54] border-black"
                                                             : question.midsem ? "bg-[#FFE66D] border-white" : "bg-[#FF6B6B] border-white"
                                                         }`}>
                                                           {question.midsem ? "Midterm" : "Endterm"}
                                                         </div>
-                                                        <div className={`px-1.5 py-0.5 text-xs border-2 transform -rotate-1 ${
+                                                        <div className={`px-1.5 py-0.5 text-xs border-2 ${
                                                           isLight 
                                                             ? "bg-[#76ABAE] border-black" 
                                                             : "bg-[#4ECDC4] border-white"
@@ -510,9 +510,16 @@ export default function UnitsPage() {
                                                           {question.marks} marks
                                                         </div>
                                                       </div>
-                                                      <p className={`text-sm sm:text-base ${isLight ? "text-black" : "text-white"}`}>
-                                                        {question.question}
-                                                      </p>
+                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""}`}>
+                                                        <ReactMarkdown
+                                                          remarkPlugins={[remarkGfm, remarkMath]}
+                                                          rehypePlugins={[
+                                                            [rehypeKatex, { throwOnError: false, strict: false }],
+                                                          ]}
+                                                        >
+                                                          {question.question}
+                                                        </ReactMarkdown>
+                                                      </div>
                                                       <div className="flex flex-wrap gap-1 mt-2">
                                                         {question.topics.map((topic, i) => (
                                                           <span
@@ -588,7 +595,7 @@ export default function UnitsPage() {
                                   isLight 
                                     ? "bg-white border-black" 
                                     : "bg-[#1E1E1E] border-white"
-                                } border-4 transform rotate-1 overflow-hidden`}
+                                } border-4 overflow-hidden`}
                               >
                                 <div className={`p-4 sm:p-6 border-b-4 ${isLight ? "border-black" : "border-white"}`}>
                                   <div className="flex items-center gap-3">
@@ -596,7 +603,7 @@ export default function UnitsPage() {
                                       isLight 
                                         ? "bg-[#76ABAE] border-black" 
                                         : "bg-[#4ECDC4] border-white"
-                                    } border-3 flex items-center justify-center transform -rotate-3`}>
+                                    } border-3 flex items-center justify-center`}>
                                       <BookOpen className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                     </div>
                                     <h2 className={`text-xl font-bold ${isLight ? "text-black" : "text-white"}`}>
@@ -616,14 +623,14 @@ export default function UnitsPage() {
                                               isLight 
                                                 ? "bg-[#F5F5F5] border-black" 
                                                 : "bg-[#252525] border-white"
-                                            } border-2 p-4 transform rotate-1`}
+                                            } border-2 p-4`}
                                           >
                                             <div className="mb-3">
                                               <div className="flex items-center justify-between mb-2">
                                                 <h3 className={`text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
                                                   {concept.concept}
                                                 </h3>
-                                                <span className={`inline-flex items-center text-sm px-2 py-1 border-2 transform -rotate-1 ${
+                                                <span className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
                                                   isLight 
                                                     ? "bg-[#FFD56B] border-black" 
                                                     : "bg-[#FFE66D] text-[#121212] border-white"
@@ -665,9 +672,16 @@ export default function UnitsPage() {
                                                           )}
                                                         </div>
                                                       </div>
-                                                      <p className={`text-sm ${isLight ? "text-black" : "text-white"}`}>
-                                                        {question.question}
-                                                      </p>
+                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""}`}>
+                                                        <ReactMarkdown
+                                                          remarkPlugins={[remarkGfm, remarkMath]}
+                                                          rehypePlugins={[
+                                                            [rehypeKatex, { throwOnError: false, strict: false }],
+                                                          ]}
+                                                        >
+                                                          {question.question}
+                                                        </ReactMarkdown>
+                                                      </div>
                                                     </div>
                                                   )
                                                 )}
@@ -687,14 +701,14 @@ export default function UnitsPage() {
                                               isLight 
                                                 ? "bg-[#F5F5F5] border-black" 
                                                 : "bg-[#252525] border-white"
-                                            } border-2 p-4 transform rotate-1`}
+                                            } border-2 p-4`}
                                           >
                                             <div className="mb-3">
                                               <div className="flex items-center justify-between mb-2">
                                                 <h3 className={`text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
                                                   {pattern.pattern}
                                                 </h3>
-                                                <span className={`inline-flex items-center text-sm px-2 py-1 border-2 transform -rotate-1 ${
+                                                <span className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
                                                   isLight 
                                                     ? "bg-[#FFD56B] border-black" 
                                                     : "bg-[#FFE66D] text-[#121212] border-white"
@@ -736,9 +750,16 @@ export default function UnitsPage() {
                                                           )}
                                                         </div>
                                                       </div>
-                                                      <p className={`text-sm ${isLight ? "text-black" : "text-white"}`}>
-                                                        {question.question}
-                                                      </p>
+                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""}`}>
+                                                        <ReactMarkdown
+                                                          remarkPlugins={[remarkGfm, remarkMath]}
+                                                          rehypePlugins={[
+                                                            [rehypeKatex, { throwOnError: false, strict: false }],
+                                                          ]}
+                                                        >
+                                                          {question.question}
+                                                        </ReactMarkdown>
+                                                      </div>
                                                     </div>
                                                   )
                                                 )}

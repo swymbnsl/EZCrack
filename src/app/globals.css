@@ -83,3 +83,45 @@
 .light-katex .katex .minner {
   color: black !important;
 }
+
+/* Improve LaTeX rendering in question cards */
+.light-katex .katex-display {
+  margin: 0.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.light-katex p {
+  margin-bottom: 0.5rem;
+}
+
+.light-katex .katex-display > .katex {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Dark mode KaTeX styling */
+:not(.light-katex) .katex .mord,
+:not(.light-katex) .katex .mbin,
+:not(.light-katex) .katex .mrel,
+:not(.light-katex) .katex .mopen,
+:not(.light-katex) .katex .mclose,
+:not(.light-katex) .katex .mpunct,
+:not(.light-katex) .katex .minner {
+  color: white !important;
+}
+
+/* Question card LaTeX styling */
+.prose.text-sm.sm\:text-base {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose.text-sm.sm\:text-base > *:first-child {
+  margin-top: 0;
+}
+
+.prose.text-sm.sm\:text-base > *:last-child {
+  margin-bottom: 0;
+}
