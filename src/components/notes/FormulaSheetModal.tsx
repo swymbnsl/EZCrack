@@ -39,7 +39,7 @@ export function FormulaSheetModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+            className={`fixed inset-0 ${isLight ? "bg-gray-500/50" : "bg-black/70"} backdrop-blur-sm z-50`}
             onClick={onClose}
           />
           <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none p-4">
@@ -93,7 +93,7 @@ export function FormulaSheetModal({
               <div className={`p-6 overflow-y-auto max-h-[calc(85vh-80px)] ${
                 isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"
               }`}>
-                <div className={`prose ${isLight ? "prose-black" : "prose-invert"} max-w-none`}>
+                <div className={`prose ${isLight ? "prose-black max-w-none prose-headings:text-black prose-strong:text-black prose-em:text-black/80" : "prose-invert max-w-none"} ${isLight ? "light-katex" : ""} ${isLight ? "text-black" : "text-white"}`}>
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[

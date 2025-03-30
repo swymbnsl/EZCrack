@@ -330,7 +330,7 @@ export function Header({
                 Sem {semId}
               </span>
               <div className="hidden sm:block">
-                <ThemeToggle minimal={true} />
+                <ThemeToggle />
               </div>
             </div>
           </div>
@@ -356,7 +356,7 @@ export function Header({
                 </p>
               </div>
               <div className="block sm:hidden">
-                <ThemeToggle minimal={true} />
+                <ThemeToggle />
               </div>
             </div>
 

@@ -60,3 +60,26 @@
     border-radius: 9999px;
   }
 }
+
+/* KaTeX light mode styles */
+.light-katex .katex {
+  color: black !important;
+}
+
+.light-katex .katex-display {
+  color: black !important;
+}
+
+.light-katex .katex .katex-html {
+  color: black !important;
+}
+
+.light-katex .katex .mord,
+.light-katex .katex .mbin,
+.light-katex .katex .mrel,
+.light-katex .katex .mopen,
+.light-katex .katex .mclose,
+.light-katex .katex .mpunct,
+.light-katex .katex .minner {
+  color: black !important;
+}

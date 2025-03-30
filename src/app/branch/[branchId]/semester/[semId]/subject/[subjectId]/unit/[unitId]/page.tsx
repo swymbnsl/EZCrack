@@ -18,6 +18,7 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface Topic {
   title: string;
@@ -125,6 +126,8 @@ export default function UnitPage() {
   const [activeRepeatedType, setActiveRepeatedType] = useState<
     "concept" | "pattern"
   >("concept");
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const generateAnalysisData = (
     rawUnit: RawUnit,
@@ -468,18 +471,30 @@ export default function UnitPage() {
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: topicIndex * 0.1 }}
-                              className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                              className={`${
+                                isLight 
+                                  ? "bg-white border-black" 
+                                  : "bg-[#1E1E1E] border-white"
+                              } border-4 transform rotate-1 rounded-xl overflow-hidden`}
                             >
-                              <div className="px-6 py-4 border-b border-gray-700/50 flex items-center justify-between">
+                              <div className={`px-6 py-4 border-b-4 ${isLight ? "border-black" : "border-white"} flex items-center justify-between`}>
                                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                                  <div className="w-10 h-10 shrink-0 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                                    <BookOpen className="w-5 h-5 text-purple-400" />
+                                  <div className={`w-10 h-10 ${
+                                    isLight 
+                                      ? "bg-[#76ABAE] border-black" 
+                                      : "bg-[#4ECDC4] border-white"
+                                  } border-3 flex items-center justify-center transform -rotate-3`}>
+                                    <BookOpen className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                   </div>
-                                  <h2 className="text-lg font-semibold text-white break-words">
+                                  <h2 className={`text-lg font-semibold ${isLight ? "text-black" : "text-white"} break-words`}>
                                     {topic.title}
                                   </h2>
                                 </div>
-                                <span className="text-sm shrink-0 ml-3 text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full">
+                                <span className={`text-sm shrink-0 ml-3 ${
+                                  isLight 
+                                    ? "bg-[#FFD56B] text-black border-black" 
+                                    : "bg-[#4ECDC4] text-[#121212] border-white"
+                                } border-2 transform rotate-1 px-3 py-1.5 rounded-none`}>
                                   <span className="hidden sm:inline">
                                     {filteredQuestions.length} questions
                                   </span>
@@ -488,7 +503,7 @@ export default function UnitPage() {
                                   </span>
                                 </span>
                               </div>
-                              <div className="p-6 space-y-4">
+                              <div className={`p-6 space-y-4 ${isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"} h-full`}>
                                 {filteredQuestions.length > 0 ? (
                                   filteredQuestions.map(
                                     (question, qIndex) => (
@@ -500,38 +515,54 @@ export default function UnitPage() {
                                           delay:
                                             topicIndex * 0.1 + qIndex * 0.05,
                                         }}
-                                        className="group relative bg-gray-800/30 hover:bg-gray-800/50 border border-gray-700/30 hover:border-purple-500/30 rounded-xl p-3 sm:p-5 transition-all"
+                                        className={`group relative ${
+                                          isLight 
+                                            ? "bg-white hover:bg-[#F5F5F5] border-black/30 hover:border-black/50" 
+                                            : "bg-gray-800/30 hover:bg-gray-800/50 border-gray-700/30 hover:border-[#4ECDC4]/30"
+                                        } border-2 transform rotate-1 p-3 sm:p-5 transition-all`}
                                       >
                                         <div className="flex flex-col gap-2 sm:gap-3">
                                           <div className="flex items-center text-xs">
                                             <div className="hidden sm:flex flex-wrap items-center gap-2">
-                                              <span className="text-sm font-medium text-white bg-purple-500/20 px-3 py-1.5 rounded-full">
+                                              <span className={`text-sm font-medium px-3 py-1.5 border-2 transform rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#76ABAE] text-black border-black" 
+                                                  : "bg-[#4ECDC4] text-[#121212] border-white"
+                                              }`}>
                                                 {question.year}
                                               </span>
-                                              <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                                              <span className={`text-sm font-medium px-3 py-1.5 border-2 transform -rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#FFD56B] text-black border-black" 
+                                                  : "bg-[#FFE66D] text-[#121212] border-white"
+                                              }`}>
                                                 {question.marks} marks
                                               </span>
-                                              <span className="text-sm font-medium text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full">
+                                              <span className={`text-sm font-medium px-3 py-1.5 border-2 transform rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#FF7B54] text-black border-black" 
+                                                  : "bg-[#FF6B6B] text-[#121212] border-white"
+                                              }`}>
                                                 {question.midsem
                                                   ? "Midterm"
                                                   : "Endterm"}
                                               </span>
                                             </div>
                                             <div className="sm:hidden flex items-center text-xs divide-x divide-gray-700">
-                                              <span className="font-medium text-white pr-2">
+                                              <span className={`font-medium pr-2 ${isLight ? "text-black" : "text-white"}`}>
                                                 {question.year}
                                               </span>
-                                              <span className="font-medium text-emerald-400 px-2">
+                                              <span className={`font-medium px-2 ${isLight ? "text-[#76ABAE]" : "text-emerald-400"}`}>
                                                 {question.marks}m
                                               </span>
-                                              <span className="font-medium text-amber-400 pl-2">
+                                              <span className={`font-medium pl-2 ${isLight ? "text-[#FF7B54]" : "text-amber-400"}`}>
                                                 {question.midsem
                                                   ? "Mid"
                                                   : "End"}
                                               </span>
                                             </div>
                                           </div>
-                                          <div className="text-sm sm:text-base text-gray-200">
+                                          <div className={`text-sm sm:text-base ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                             <ReactMarkdown
                                               remarkPlugins={[
                                                 remarkGfm,
@@ -586,48 +617,72 @@ export default function UnitPage() {
                   ) : (
                     <div className="space-y-6 sm:space-y-8">
                       <div className="flex justify-center">
-                        <div className="hidden sm:block bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full p-1 mb-6">
+                        <div className={`hidden sm:block ${
+                          isLight 
+                            ? "bg-white border-black" 
+                            : "bg-[#1E1E1E] border-white"
+                        } border-4 p-1 mb-6 overflow-hidden`}>
                           <div className="flex items-center">
                             <button
                               onClick={() => setActiveRepeatedType("concept")}
-                              className={`px-6 py-2 rounded-full text-sm transition-colors ${
+                              className={`px-6 py-2 text-sm transition-colors ${
                                 activeRepeatedType === "concept"
-                                  ? "bg-purple-500 text-white"
-                                  : "text-gray-300 hover:text-gray-100"
+                                  ? isLight 
+                                    ? "bg-[#76ABAE] text-black" 
+                                    : "bg-[#4ECDC4] text-[#121212]"
+                                  : isLight
+                                    ? "text-black hover:bg-gray-100" 
+                                    : "text-white hover:bg-gray-800"
                               }`}
                             >
                               Concept Based
                             </button>
                             <button
                               onClick={() => setActiveRepeatedType("pattern")}
-                              className={`px-6 py-2 rounded-full text-sm transition-colors ${
+                              className={`px-6 py-2 text-sm transition-colors ${
                                 activeRepeatedType === "pattern"
-                                  ? "bg-purple-500 text-white"
-                                  : "text-gray-300 hover:text-gray-100"
+                                  ? isLight 
+                                    ? "bg-[#76ABAE] text-black" 
+                                    : "bg-[#4ECDC4] text-[#121212]"
+                                  : isLight
+                                    ? "text-black hover:bg-gray-100" 
+                                    : "text-white hover:bg-gray-800"
                               }`}
                             >
                               Pattern Based
                             </button>
                           </div>
                         </div>
-                        <div className="sm:hidden bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-full p-1 mb-4">
+                        <div className={`sm:hidden ${
+                          isLight 
+                            ? "bg-white border-black" 
+                            : "bg-[#1E1E1E] border-white"
+                        } border-4 p-1 mb-4 overflow-hidden`}>
                           <div className="flex items-center">
                             <button
                               onClick={() => setActiveRepeatedType("concept")}
-                              className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+                              className={`px-4 py-1.5 text-xs transition-colors ${
                                 activeRepeatedType === "concept"
-                                  ? "bg-purple-500 text-white"
-                                  : "text-gray-300 hover:text-gray-100"
+                                  ? isLight 
+                                    ? "bg-[#76ABAE] text-black" 
+                                    : "bg-[#4ECDC4] text-[#121212]"
+                                  : isLight
+                                    ? "text-black hover:bg-gray-100" 
+                                    : "text-white hover:bg-gray-800"
                               }`}
                             >
                               Concept Based
                             </button>
                             <button
                               onClick={() => setActiveRepeatedType("pattern")}
-                              className={`px-4 py-1.5 rounded-full text-xs transition-colors ${
+                              className={`px-4 py-1.5 text-xs transition-colors ${
                                 activeRepeatedType === "pattern"
-                                  ? "bg-purple-500 text-white"
-                                  : "text-gray-300 hover:text-gray-100"
+                                  ? isLight 
+                                    ? "bg-[#76ABAE] text-black" 
+                                    : "bg-[#4ECDC4] text-[#121212]"
+                                  : isLight
+                                    ? "text-black hover:bg-gray-100" 
+                                    : "text-white hover:bg-gray-800"
                               }`}
                             >
                               Pattern Based
@@ -643,35 +698,65 @@ export default function UnitPage() {
                               (concept, idx) => (
                                 <div
                                   key={`${concept.concept}-${idx}`}
-                                  className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                                  className={`${
+                                    isLight 
+                                      ? "bg-white border-black" 
+                                      : "bg-[#1E1E1E] border-white"
+                                  } border-4 transform rotate-1 rounded-xl overflow-hidden`}
                                 >
-                                  <div className="bg-purple-500/10 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/50">
-                                    <h2 className="text-base sm:text-lg font-medium text-white">
+                                  <div className={`${
+                                    isLight ? "bg-[#76ABAE]/20" : "bg-purple-500/10"
+                                  } px-4 sm:px-6 py-3 sm:py-4 border-b-4 ${
+                                    isLight ? "border-black" : "border-white"
+                                  }`}>
+                                    <h2 className={`text-base sm:text-lg font-medium ${
+                                      isLight ? "text-black" : "text-white"
+                                    }`}>
                                       {concept.concept}
                                     </h2>
                                   </div>
-                                  <div className="px-4 sm:px-6 py-3 sm:py-4">
+                                  <div className={`px-4 sm:px-6 py-3 sm:py-4 ${
+                                    isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"
+                                  }`}>
                                     <div className="space-y-3 sm:space-y-4">
                                       {concept.questions.map((q, qIdx) => (
                                         <div
                                           key={`${q._id || qIdx}`}
-                                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg p-3 sm:p-4"
+                                          className={`${
+                                            isLight 
+                                              ? "bg-white border-black/30" 
+                                              : "bg-gray-900/50 border-gray-700/50"
+                                          } border-2 transform rotate-1 p-3 sm:p-4 rounded-none`}
                                         >
                                           <div className="flex flex-col gap-2 sm:gap-3">
                                             <div className="flex flex-wrap items-center gap-2">
-                                              <span className="text-xs sm:text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 border-2 transform rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#FFD56B] text-black border-black" 
+                                                  : "bg-[#FFE66D] text-[#121212] border-white"
+                                              }`}>
                                                 {q.marks} marks
                                               </span>
-                                              <span className="text-xs sm:text-sm font-medium text-amber-400 bg-amber-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 border-2 transform -rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#FF7B54] text-black border-black" 
+                                                  : "bg-[#FF6B6B] text-[#121212] border-white"
+                                              }`}>
                                                 {q.midsem
                                                   ? "Midterm"
                                                   : "Endterm"}
                                               </span>
-                                              <span className="text-xs sm:text-sm font-medium text-blue-400 bg-blue-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 border-2 transform rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#76ABAE] text-black border-black" 
+                                                  : "bg-[#4ECDC4] text-[#121212] border-white"
+                                              }`}>
                                                 {q.year}
                                               </span>
                                             </div>
-                                            <p className="text-sm sm:text-base text-gray-200">
+                                            <p className={`text-sm sm:text-base ${
+                                              isLight ? "text-[#2D2A32]" : "text-gray-200"
+                                            }`}>
                                               {q.question}
                                             </p>
                                           </div>
@@ -692,35 +777,65 @@ export default function UnitPage() {
                               (pattern, idx) => (
                                 <div
                                   key={`${pattern.pattern}-${idx}`}
-                                  className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl overflow-hidden"
+                                  className={`${
+                                    isLight 
+                                      ? "bg-white border-black" 
+                                      : "bg-[#1E1E1E] border-white"
+                                  } border-4 transform rotate-1 rounded-xl overflow-hidden`}
                                 >
-                                  <div className="bg-purple-500/10 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-700/50">
-                                    <h2 className="text-base sm:text-lg font-medium text-white">
+                                  <div className={`${
+                                    isLight ? "bg-[#76ABAE]/20" : "bg-purple-500/10"
+                                  } px-4 sm:px-6 py-3 sm:py-4 border-b-4 ${
+                                    isLight ? "border-black" : "border-white"
+                                  }`}>
+                                    <h2 className={`text-base sm:text-lg font-medium ${
+                                      isLight ? "text-black" : "text-white"
+                                    }`}>
                                       {pattern.pattern}
                                     </h2>
                                   </div>
-                                  <div className="px-4 sm:px-6 py-3 sm:py-4">
+                                  <div className={`px-4 sm:px-6 py-3 sm:py-4 ${
+                                    isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"
+                                  }`}>
                                     <div className="space-y-3 sm:space-y-4">
                                       {pattern.questions.map((q, qIdx) => (
                                         <div
                                           key={`${q._id || qIdx}`}
-                                          className="bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg p-3 sm:p-4"
+                                          className={`${
+                                            isLight 
+                                              ? "bg-white border-black/30" 
+                                              : "bg-gray-900/50 border-gray-700/50"
+                                          } border-2 transform rotate-1 p-3 sm:p-4 rounded-none`}
                                         >
                                           <div className="flex flex-col gap-2 sm:gap-3">
                                             <div className="flex flex-wrap items-center gap-2">
-                                              <span className="text-xs sm:text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 border-2 transform rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#FFD56B] text-black border-black" 
+                                                  : "bg-[#FFE66D] text-[#121212] border-white"
+                                              }`}>
                                                 {q.marks} marks
                                               </span>
-                                              <span className="text-xs sm:text-sm font-medium text-amber-400 bg-amber-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 border-2 transform -rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#FF7B54] text-black border-black" 
+                                                  : "bg-[#FF6B6B] text-[#121212] border-white"
+                                              }`}>
                                                 {q.midsem
                                                   ? "Midterm"
                                                   : "Endterm"}
                                               </span>
-                                              <span className="text-xs sm:text-sm font-medium text-blue-400 bg-blue-500/10 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full">
+                                              <span className={`text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 sm:py-1 border-2 transform rotate-1 ${
+                                                isLight 
+                                                  ? "bg-[#76ABAE] text-black border-black" 
+                                                  : "bg-[#4ECDC4] text-[#121212] border-white"
+                                              }`}>
                                                 {q.year}
                                               </span>
                                             </div>
-                                            <p className="text-sm sm:text-base text-gray-200">
+                                            <p className={`text-sm sm:text-base ${
+                                              isLight ? "text-[#2D2A32]" : "text-gray-200"
+                                            }`}>
                                               {q.question}
                                             </p>
                                           </div>

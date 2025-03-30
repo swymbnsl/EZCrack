@@ -3,10 +3,18 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
+import { usePathname } from "next/navigation";
 
 export const AnimatedBackground = () => {
   const { theme } = useTheme();
   const isLight = theme === "light";
+  const pathname = usePathname();
+  
+  // Only show the animated background on the homepage
+  const isHomepage = pathname === "/" || pathname === "/home";
+  
+  // If not on homepage, don't render anything
+  if (!isHomepage) return null;
   
   // Create interactive shape state
   const [hoveredShape, setHoveredShape] = useState<number | null>(null);
