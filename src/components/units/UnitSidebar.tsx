@@ -8,6 +8,7 @@ import {
   BarChart2,
   Calculator,
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type SortOrder = "asc" | "desc" | "original";
 type YearFilter = "all" | number;
@@ -35,20 +36,35 @@ export function UnitSidebar({
   hasFormulaSheet = false,
   onFormulaSheetClick,
 }: UnitSidebarProps) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="w-full sm:w-80 sm:min-w-[320px] sm:border-r border-b-2 sm:border-b-0 border-gray-800 rounded-b-xl sm:rounded-none bg-gray-950/90 backdrop-blur-sm sm:bg-gray-900/70 sm:backdrop-blur-sm flex flex-col mb-4 sm:mb-0"
+      className={`w-full sm:w-80 sm:min-w-[320px] border-b-4 sm:border-r-4 sm:border-b-0 ${
+        isLight 
+          ? "border-black bg-white" 
+          : "border-white bg-[#1E1E1E]"
+      } flex flex-col mb-4 sm:mb-0`}
     >
       <div className="p-4 sm:p-8 space-y-4 sm:space-y-8">
         {hasFormulaSheet && (
           <button
             onClick={onFormulaSheetClick}
-            className="w-full flex items-center gap-3 px-4 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl transition-colors"
+            className={`w-full flex items-center gap-3 px-4 py-3 ${
+              isLight 
+                ? "bg-[#FFD56B] text-black border-black" 
+                : "bg-[#4ECDC4] text-[#121212] border-white"
+            } border-4 transition-colors`}
           >
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-              <Calculator className="w-4 h-4" />
+            <div className={`w-8 h-8 ${
+              isLight 
+                ? "bg-white border-black" 
+                : "bg-[#252525] border-white"
+            } border-2 flex items-center justify-center`}>
+              <Calculator className={`w-4 h-4 ${isLight ? "text-black" : "text-white"}`} />
             </div>
             <div className="flex flex-col items-start">
               <span className="font-medium">View Formula Sheet</span>
@@ -60,38 +76,58 @@ export function UnitSidebar({
         )}
         <UnitTabs activeTab={activeTab} setActiveTab={onTabChange} />
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-gray-400 mb-4 flex items-center gap-2">
+          <h3 className={`text-sm font-medium ${
+            isLight ? "text-gray-600" : "text-gray-400"
+          } mb-4 flex items-center gap-2`}>
             <BarChart2 className="w-4 h-4" />
             {activeTab === "topics" ? "Sort Topics By" : "Sort Questions By"}
           </h3>
 
-          <div className="bg-gray-800/40 rounded-xl border border-gray-700/50 overflow-hidden">
+          <div className={`${
+            isLight 
+              ? "bg-white border-black" 
+              : "bg-[#1E1E1E] border-white"
+          } border-4 overflow-hidden`}>
             <button
               onClick={() => onSortOrderChange("original")}
               className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
                 sortOrder === "original"
-                  ? "bg-purple-500/20 text-white"
-                  : "text-gray-300 hover:bg-gray-700/50"
-              }`}
+                  ? isLight 
+                    ? "bg-[#76ABAE] text-black" 
+                    : "bg-[#4ECDC4] text-[#121212]"
+                  : isLight
+                    ? "text-black" 
+                    : "text-white"
+              } ${isLight ? "border-black" : "border-white"} border-b-4`}
             >
               <div
-                className={`w-8 h-8 rounded-lg ${
+                className={`w-8 h-8 ${
                   sortOrder === "original"
-                    ? "bg-purple-500/20"
-                    : "bg-gray-700/50"
-                } flex items-center justify-center`}
+                    ? isLight 
+                      ? "bg-white border-black" 
+                      : "bg-[#1E1E1E] border-white"
+                    : isLight 
+                      ? "bg-[#F5F5F5] border-black" 
+                      : "bg-[#252525] border-white"
+                } border-2 flex items-center justify-center`}
               >
                 <ListOrdered
                   className={`w-4 h-4 ${
-                    sortOrder === "original"
-                      ? "text-purple-400"
-                      : "text-gray-400"
+                    isLight ? "text-black" : "text-white"
                   }`}
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-medium">Syllabus Order</span>
-                <span className="text-xs text-gray-400">
+                <span className={`text-xs ${
+                  sortOrder === "original"
+                    ? isLight 
+                      ? "text-black opacity-80" 
+                      : "text-black opacity-80"
+                    : isLight 
+                      ? "text-gray-600" 
+                      : "text-gray-400"
+                }`}>
                   As defined in curriculum
                 </span>
               </div>
@@ -101,18 +137,28 @@ export function UnitSidebar({
               onClick={() => onSortOrderChange("desc")}
               className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
                 sortOrder === "desc"
-                  ? "bg-purple-500/20 text-white"
-                  : "text-gray-300 hover:bg-gray-700/50"
-              }`}
+                  ? isLight 
+                    ? "bg-[#76ABAE] text-black" 
+                    : "bg-[#4ECDC4] text-[#121212]"
+                  : isLight
+                    ? "text-black" 
+                    : "text-white"
+              } ${isLight ? "border-black" : "border-white"} border-b-4`}
             >
               <div
-                className={`w-8 h-8 rounded-lg ${
-                  sortOrder === "desc" ? "bg-purple-500/20" : "bg-gray-700/50"
-                } flex items-center justify-center`}
+                className={`w-8 h-8 ${
+                  sortOrder === "desc"
+                    ? isLight 
+                      ? "bg-white border-black" 
+                      : "bg-[#1E1E1E] border-white"
+                    : isLight 
+                      ? "bg-[#F5F5F5] border-black" 
+                      : "bg-[#252525] border-white"
+                } border-2 flex items-center justify-center`}
               >
                 <ChevronDown
                   className={`w-4 h-4 ${
-                    sortOrder === "desc" ? "text-purple-400" : "text-gray-400"
+                    isLight ? "text-black" : "text-white"
                   }`}
                 />
               </div>
@@ -122,7 +168,15 @@ export function UnitSidebar({
                     ? "Highest Weightage"
                     : "Highest First"}
                 </span>
-                <span className="text-xs text-gray-400">
+                <span className={`text-xs ${
+                  sortOrder === "desc"
+                    ? isLight 
+                      ? "text-black opacity-80" 
+                      : "text-black opacity-80"
+                    : isLight 
+                      ? "text-gray-600" 
+                      : "text-gray-400"
+                }`}>
                   {activeTab === "topics"
                     ? "Most important first"
                     : "Sort by importance"}
@@ -134,18 +188,28 @@ export function UnitSidebar({
               onClick={() => onSortOrderChange("asc")}
               className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
                 sortOrder === "asc"
-                  ? "bg-purple-500/20 text-white"
-                  : "text-gray-300 hover:bg-gray-700/50"
+                  ? isLight 
+                    ? "bg-[#76ABAE] text-black" 
+                    : "bg-[#4ECDC4] text-[#121212]"
+                  : isLight
+                    ? "text-black" 
+                    : "text-white"
               }`}
             >
               <div
-                className={`w-8 h-8 rounded-lg ${
-                  sortOrder === "asc" ? "bg-purple-500/20" : "bg-gray-700/50"
-                } flex items-center justify-center`}
+                className={`w-8 h-8 ${
+                  sortOrder === "asc"
+                    ? isLight 
+                      ? "bg-white border-black" 
+                      : "bg-[#1E1E1E] border-white"
+                    : isLight 
+                      ? "bg-[#F5F5F5] border-black" 
+                      : "bg-[#252525] border-white"
+                } border-2 flex items-center justify-center`}
               >
                 <ChevronUp
                   className={`w-4 h-4 ${
-                    sortOrder === "asc" ? "text-purple-400" : "text-gray-400"
+                    isLight ? "text-black" : "text-white"
                   }`}
                 />
               </div>
@@ -153,7 +217,15 @@ export function UnitSidebar({
                 <span className="font-medium">
                   {activeTab === "topics" ? "Lowest Weightage" : "Lowest First"}
                 </span>
-                <span className="text-xs text-gray-400">
+                <span className={`text-xs ${
+                  sortOrder === "asc"
+                    ? isLight 
+                      ? "text-black opacity-80" 
+                      : "text-black opacity-80"
+                    : isLight 
+                      ? "text-gray-600" 
+                      : "text-gray-400"
+                }`}>
                   {activeTab === "topics"
                     ? "Least important first"
                     : "Sort by importance"}

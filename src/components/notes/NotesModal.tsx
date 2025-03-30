@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface Note {
   topic: string;
@@ -19,6 +20,9 @@ interface NotesModalProps {
 }
 
 export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   if (!isOpen || !note) return null;
 
   return (
@@ -32,23 +36,31 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
             onClick={onClose}
           />
-          <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none p-2 sm:p-0">
+          <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-2xl max-h-[80vh] bg-gray-800/90 backdrop-blur-md border border-gray-700/50 rounded-2xl shadow-xl overflow-hidden pointer-events-auto"
+              className={`w-full max-w-2xl max-h-[85vh] ${
+                isLight 
+                  ? "bg-white border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" 
+                  : "bg-[#1E1E1E] border-white shadow-[8px_8px_0px_0px_rgba(255,255,255,0.8)]"
+              } border-4 pointer-events-auto transform -rotate-1`}
             >
-              <div className="p-6 border-b border-gray-700/50 flex items-center justify-between">
+              <div className={`p-6 border-b-4 ${isLight ? "border-black" : "border-white"} flex items-center justify-between`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-purple-400" />
+                  <div className={`w-10 h-10 ${
+                    isLight 
+                      ? "bg-[#76ABAE] border-black" 
+                      : "bg-[#4ECDC4] border-white"
+                  } border-3 flex items-center justify-center transform rotate-3`}>
+                    <FileText className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-white">
+                    <h2 className={`text-xl font-bold ${isLight ? "text-black" : "text-white"}`}>
                       {note.topic}
                     </h2>
-                    <p className="text-sm text-gray-400">
+                    <p className={`text-sm ${isLight ? "text-[#2D2A32]" : "text-gray-400"}`}>
                       {new Date(note.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
@@ -59,13 +71,19 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 rounded-full bg-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                  className={`w-8 h-8 ${
+                    isLight 
+                      ? "bg-[#FF7B54] border-black hover:bg-[#FFD56B]" 
+                      : "bg-[#FF6B6B] border-white hover:bg-[#4ECDC4]"
+                  } border-2 flex items-center justify-center transform -rotate-3 transition-colors`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className={`w-4 h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
                 </button>
               </div>
-              <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)] scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-purple-500/50 scrollbar-thumb-rounded-full pb-16">
-                <div className="prose prose-invert prose-purple max-w-none">
+              <div className={`p-6 overflow-y-auto max-h-[calc(85vh-80px)] ${
+                isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"
+              }`}>
+                <div className={`prose ${isLight ? "prose-black" : "prose-invert"} max-w-none`}>
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[

@@ -1,4 +1,5 @@
 import { Calendar, CalendarDays } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type YearFilter = "all" | number;
 
@@ -13,61 +14,98 @@ export function UnitYearFilter({
   setYearFilter,
   availableYears,
 }: UnitYearFilterProps) {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   if (!availableYears || availableYears.length === 0) return null;
 
   return (
     <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-400 mb-4 flex items-center gap-2">
+      <h3 className={`text-sm font-medium ${
+        isLight ? "text-gray-600" : "text-gray-400"
+      } mb-4 flex items-center gap-2`}>
         <CalendarDays className="w-4 h-4" />
         Filter by Year
       </h3>
 
-      <div className="bg-gray-800/40 rounded-xl border border-gray-700/50 overflow-hidden">
+      <div className={`${
+        isLight 
+          ? "bg-white border-black" 
+          : "bg-[#1E1E1E] border-white"
+      } border-4 overflow-hidden`}>
         <button
           onClick={() => setYearFilter("all")}
           className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
             yearFilter === "all"
-              ? "bg-purple-500/20 text-white"
-              : "text-gray-300 hover:bg-gray-700/50"
-          } `}
+              ? isLight 
+                ? "bg-[#76ABAE] text-black" 
+                : "bg-[#4ECDC4] text-[#121212]"
+              : isLight
+                ? "text-black" 
+                : "text-white"
+          } ${isLight ? "border-black" : "border-white"} border-b-4`}
         >
           <div
-            className={`w-8 h-8 rounded-lg ${
-              yearFilter === "all" ? "bg-purple-500/20" : "bg-gray-700/50"
-            } flex items-center justify-center`}
+            className={`w-8 h-8 ${
+              yearFilter === "all"
+                ? isLight 
+                  ? "bg-white border-black" 
+                  : "bg-[#1E1E1E] border-white"
+                : isLight 
+                  ? "bg-[#F5F5F5] border-black" 
+                  : "bg-[#252525] border-white"
+            } border-2 flex items-center justify-center`}
           >
             <Calendar
               className={`w-4 h-4 ${
-                yearFilter === "all" ? "text-purple-400" : "text-gray-400"
+                isLight ? "text-black" : "text-white"
               }`}
             />
           </div>
           <div className="flex flex-col">
             <span className="font-medium">All Years</span>
-            <span className="text-xs text-gray-400">
+            <span className={`text-xs ${
+              yearFilter === "all"
+                ? isLight 
+                  ? "text-black opacity-80" 
+                  : "text-black opacity-90"
+                : isLight 
+                  ? "text-gray-600" 
+                  : "text-gray-400"
+            }`}>
               {availableYears.length} years of questions
             </span>
           </div>
         </button>
 
-        {availableYears.map((year) => (
+        {availableYears.map((year, index) => (
           <button
             key={year}
             onClick={() => setYearFilter(year)}
             className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${
               yearFilter === year
-                ? "bg-purple-500/20 text-white"
-                : "text-gray-300 hover:bg-gray-700/50"
-            }`}
+                ? isLight 
+                  ? "bg-[#76ABAE] text-black" 
+                  : "bg-[#4ECDC4] text-[#121212]"
+                : isLight
+                  ? "text-black" 
+                  : "text-white"
+            } ${index !== availableYears.length - 1 ? (isLight ? "border-black" : "border-white") + " border-b-4" : ""}`}
           >
             <div
-              className={`w-8 h-8 rounded-lg ${
-                yearFilter === year ? "bg-purple-500/20" : "bg-gray-700/50"
-              } flex items-center justify-center`}
+              className={`w-8 h-8 ${
+                yearFilter === year
+                  ? isLight 
+                    ? "bg-white border-black" 
+                    : "bg-[#1E1E1E] border-white"
+                  : isLight 
+                    ? "bg-[#F5F5F5] border-black" 
+                    : "bg-[#252525] border-white"
+              } border-2 flex items-center justify-center`}
             >
               <span
                 className={`text-sm font-medium ${
-                  yearFilter === year ? "text-purple-400" : "text-gray-400"
+                  isLight ? "text-black" : "text-white"
                 }`}
               >
                 {year}
