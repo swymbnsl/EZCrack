@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MessageCircle, Home, Code, Users } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export const Navbar = () => {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+  
   return (
     <>
       {/* Navigation bar - mobile centered, desktop right-aligned */}
@@ -11,10 +16,10 @@ export const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         className="fixed top-4 left-0 right-0 z-40 px-4 flex justify-center sm:justify-end sm:top-6 sm:right-8 sm:left-auto sm:px-0"
       >
-        <div className="flex items-center bg-gray-800/80 backdrop-blur-lg rounded-full border border-gray-700/50 shadow-lg p-1 mx-4 sm:mx-0 max-w-[calc(100%-2rem)] sm:max-w-none">
+        <div className={`flex items-center ${isLight ? "bg-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]" : "bg-[#1E1E1E] border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"} border-4 rounded-none p-1 mx-4 sm:mx-0 max-w-[calc(100%-2rem)] sm:max-w-none`}>
           <Link
             href="/"
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
           >
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">Home</span>
@@ -22,7 +27,7 @@ export const Navbar = () => {
           <Link
             href="https://swymbnsl.com"
             target="_blank"
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
           >
             <Code className="w-4 h-4" />
             <span className="hidden sm:inline">Developer</span>
@@ -30,11 +35,14 @@ export const Navbar = () => {
           </Link>
           <Link
             href="/contributors"
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
           >
             <Users className="w-4 h-4" />
             <span>Contributors</span>
           </Link>
+          <div className="ml-2">
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Desktop Join Community button - separate from navbar */}
@@ -42,14 +50,13 @@ export const Navbar = () => {
           href="https://chat.whatsapp.com/C3GiFPCLBob97COM0fXwI8"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden sm:flex items-center gap-2 ml-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white px-4 py-2.5 rounded-full shadow-lg transition-all"
-          whileHover={{ y: -2 }}
+          className={`hidden sm:flex items-center gap-2 ml-3 bg-[#4AC959] text-white border-4 ${isLight ? "border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]" : "border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)] hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.8)]"} rounded-none px-4 py-2.5 hover:translate-y-1 hover:translate-x-1 transition-all`}
           whileTap={{ scale: 0.98 }}
         >
           <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
             <MessageCircle className="w-3.5 h-3.5" />
           </span>
-          <span className="font-medium">Join Community</span>
+          <span className="font-bold">Join Community</span>
         </motion.a>
       </motion.nav>
 
@@ -58,11 +65,10 @@ export const Navbar = () => {
         href="https://chat.whatsapp.com/C3GiFPCLBob97COM0fXwI8"
         target="_blank"
         rel="noopener noreferrer"
-        className="sm:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-xl"
+        className={`sm:hidden fixed bottom-6 right-6 z-40 flex items-center justify-center w-16 h-16 bg-[#4AC959] text-white border-4 ${isLight ? "border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" : "border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)]"}`}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.5, type: "spring" }}
-        whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
         <MessageCircle className="w-6 h-6" />

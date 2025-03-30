@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import "katex/dist/katex.min.css";
 import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -27,7 +28,7 @@ export default function RootLayout({
           className={`${poppins.variable} font-poppins antialiased`}
           suppressHydrationWarning
         >
-          {children}
+          <ThemeProvider>{children}</ThemeProvider>
         </body>
       </html>
       <Analytics />

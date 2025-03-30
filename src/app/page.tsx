@@ -11,6 +11,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { School, BookOpen } from "lucide-react";
 import { branches, semesters } from "@/constants/lists";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Home() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [availableBranches, setAvailableBranches] = useState<string[]>([]);
   const [availableSemesters, setAvailableSemesters] = useState<string[]>([]);
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   useEffect(() => {
     // In a real app, you might fetch this data from an API
@@ -43,41 +46,86 @@ export default function Home() {
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="w-full max-w-5xl mx-auto pt-16 sm:pt-24 md:pt-32 px-4 sm:px-6 md:px-8 relative z-10 min-h-[calc(100vh-80px)] flex flex-col justify-center"
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-5xl mx-auto px-4 sm:px-6 md:px-8 relative z-10 min-h-[calc(100vh-80px)] flex flex-col justify-center pb-16 pt-24 sm:pt-20 sm:py-6"
       >
         <Hero />
 
         {isLoading ? (
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="flex justify-center items-center py-8 sm:py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="flex justify-center items-center py-4 sm:py-8"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+            <motion.div 
+              className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-4 ${isLight 
+                ? "border-[#FF7B54]/30 border-t-[#FF7B54]" 
+                : "border-[#FF6B6B]/30 border-t-[#FF6B6B]"
+              } rounded-none`}
+              animate={{ 
+                rotate: 360,
+                boxShadow: [
+                  isLight 
+                    ? "4px 4px 0px rgba(0,0,0,1)" 
+                    : "4px 4px 0px rgba(255,255,255,0.8)",
+                  isLight 
+                    ? "1px 1px 0px rgba(0,0,0,1)" 
+                    : "1px 1px 0px rgba(255,255,255,0.8)",
+                  isLight 
+                    ? "4px 4px 0px rgba(0,0,0,1)" 
+                    : "4px 4px 0px rgba(255,255,255,0.8)"
+                ]
+              }}
+              transition={{ 
+                rotate: { duration: 1.5, repeat: Infinity, ease: "linear" },
+                boxShadow: { 
+                  repeat: Infinity, 
+                  duration: 1.5,
+                  ease: "easeInOut" 
+                }
+              }}
+            />
           </motion.div>
         ) : availableBranches.length > 0 && availableSemesters.length > 0 ? (
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-4 sm:space-y-6 md:space-y-8 w-full max-w-xl mx-auto px-2 sm:px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-3 sm:space-y-4 md:space-y-6 w-full max-w-xl mx-auto px-0 sm:px-2 mt-4 sm:mt-0"
           >
-            <Dropdown
-              options={availableBranches}
-              value={selectedBranch}
-              onChange={setSelectedBranch}
-              placeholder="Select Branch"
-            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+            >
+              <Dropdown
+                options={availableBranches}
+                value={selectedBranch}
+                onChange={setSelectedBranch}
+                placeholder="Select Branch"
+              />
+            </motion.div>
 
-            <Dropdown
-              options={availableSemesters}
-              value={selectedSemester}
-              onChange={setSelectedSemester}
-              placeholder="Select Semester"
-            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            >
+              <Dropdown
+                options={availableSemesters}
+                value={selectedSemester}
+                onChange={setSelectedSemester}
+                placeholder="Select Semester"
+              />
+            </motion.div>
 
-            <div className="pt-2 sm:pt-4">
+            <motion.div 
+              className="pt-1 sm:pt-2 md:pt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.3 }}
+            >
               <GradientButton
                 onClick={handleGetStarted}
                 disabled={!selectedBranch || !selectedSemester}
@@ -85,14 +133,14 @@ export default function Home() {
               >
                 Get Started
               </GradientButton>
-            </div>
+            </motion.div>
           </motion.div>
         ) : (
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="w-full max-w-xl mx-auto mt-6 sm:mt-8 md:mt-12 px-2 sm:px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-xl mx-auto mt-4 sm:mt-6 md:mt-8 px-0 sm:px-2"
           >
             <EmptyState
               icon={availableBranches.length === 0 ? School : BookOpen}
@@ -108,8 +156,8 @@ export default function Home() {
               }
               iconColor={
                 availableBranches.length === 0
-                  ? "text-blue-400"
-                  : "text-purple-400"
+                  ? isLight ? "text-[#76ABAE]" : "text-[#4ECDC4]"
+                  : isLight ? "text-[#FF7B54]" : "text-[#FF6B6B]"
               }
             />
           </motion.div>
