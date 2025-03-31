@@ -501,14 +501,14 @@ export default function UnitsPage() {
                                                   <div className="flex justify-between items-start gap-4">
                                                     <div className="flex-1">
                                                       <div className="flex gap-2 items-start mb-2">
-                                                        <div className={`px-1.5 py-0.5 text-xs border-2 ${
+                                                        <div className={`px-1.5 py-0.5 text-xs border-2 text-black ${
                                                           isLight 
                                                             ? question.midsem ? "bg-[#FFD56B] border-black" : "bg-[#FF7B54] border-black"
                                                             : question.midsem ? "bg-[#FFE66D] border-white" : "bg-[#FF6B6B] border-white"
                                                         }`}>
                                                           {question.midsem ? "Midterm" : "Endterm"}
                                                         </div>
-                                                        <div className={`px-1.5 py-0.5 text-xs border-2 ${
+                                                        <div className={`px-1.5 py-0.5 text-black text-xs border-2 ${
                                                           isLight 
                                                             ? "bg-[#76ABAE] border-black" 
                                                             : "bg-[#4ECDC4] border-white"

@@ -10,6 +10,7 @@ import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import axios from "axios";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface Subject {
   _id: string;
@@ -24,6 +25,7 @@ export default function SubjectsPage() {
   const { branchId, semId } = params;
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -71,9 +73,13 @@ export default function SubjectsPage() {
           showContributor={false}
         />
 
-        <div className="flex-1 overflow-visible sm:overflow-hidden mt-6 sm:mt-0 bg-gradient-to-b from-gray-950 to-black sm:bg-none rounded-t-xl sm:rounded-none">
-          <div className="sm:h-full sm:overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
-            <div className="p-4 sm:p-8">
+        <div className={`flex-1 flex flex-col overflow-hidden mt-6 sm:mt-0 ${theme === "light" ? "bg-white sm:bg-[#F8F8F8]" : "bg-gradient-to-b from-gray-950 to-black sm:bg-[#121212]"}`}>
+          <div className={`overflow-y-auto flex-1 h-full scrollbar-thin scrollbar-thumb-rounded-full ${
+            theme === "light" 
+              ? "scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60" 
+              : "scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
+          }`}>
+            <div className="p-3 sm:p-8">
               {isLoading ? (
                 <LoadingSpinner text="Loading subjects..." />
               ) : subjects.length > 0 ? (

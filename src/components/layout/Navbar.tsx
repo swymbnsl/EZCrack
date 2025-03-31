@@ -14,12 +14,12 @@ export const Navbar = () => {
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="fixed top-4 left-0 right-0 z-40 px-4 flex justify-center sm:justify-end sm:top-6 sm:right-8 sm:left-auto sm:px-0"
+        className="fixed top-4 left-0 right-0 z-40 px-3 sm:px-4 flex justify-center sm:justify-end sm:top-6 sm:right-8 sm:left-auto sm:px-0"
       >
-        <div className={`flex items-center ${isLight ? "bg-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]" : "bg-[#1E1E1E] border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"} border-4 rounded-none p-1 mx-4 sm:mx-0 max-w-[calc(100%-2rem)] sm:max-w-none`}>
+        <div className={`flex items-center ${isLight ? "bg-white border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]" : "bg-[#1E1E1E] border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"} border-4 rounded-none p-1 mx-2 sm:mx-0 max-w-[calc(100%-1rem)] sm:max-w-none`}>
           <Link
             href="/"
-            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
+            className={`flex items-center justify-center gap-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
           >
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">Home</span>
@@ -27,7 +27,7 @@ export const Navbar = () => {
           <Link
             href="https://swymbnsl.com"
             target="_blank"
-            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
+            className={`flex items-center justify-center gap-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
           >
             <Code className="w-4 h-4" />
             <span className="hidden sm:inline">Developer</span>
@@ -35,12 +35,12 @@ export const Navbar = () => {
           </Link>
           <Link
             href="/contributors"
-            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
+            className={`flex items-center justify-center gap-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold ${isLight ? "text-black hover:bg-[#FFD56B]" : "text-white hover:bg-[#4ECDC4] hover:text-[#121212]"} transition-colors`}
           >
             <Users className="w-4 h-4" />
-            <span>Contributors</span>
+            <span className="text-[11px] sm:text-sm">Contributors</span>
           </Link>
-          <div className="ml-2">
+          <div className="ml-1 sm:ml-2">
             <ThemeToggle />
           </div>
         </div>
