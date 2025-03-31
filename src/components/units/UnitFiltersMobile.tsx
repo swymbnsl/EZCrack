@@ -11,6 +11,7 @@ import {
   Filter,
   X,
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type SortOrder = "asc" | "desc" | "original";
 type YearFilter = "all" | number;
@@ -39,6 +40,8 @@ export function UnitFiltersMobile({
   onFormulaSheetClick,
 }: UnitFiltersMobileProps) {
   const [showFilters, setShowFilters] = useState(false);
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   // Debugging for sort changes
   useEffect(() => {}, [sortOrder]);
@@ -50,17 +53,21 @@ export function UnitFiltersMobile({
 
   // Group buttons in a compact layout
   return (
-    <div className="sm:hidden w-full bg-gray-950/90 backdrop-blur-sm border-b border-gray-800 overflow-hidden">
+    <div className={`sm:hidden w-full ${isLight ? "bg-white/90 backdrop-blur-sm border-b border-black/20" : "bg-gray-950/90 backdrop-blur-sm border-b border-gray-800"} overflow-hidden`}>
       {/* Controls bar with formula sheet toggle */}
       <div className="flex items-center gap-2 px-3 py-2">
         {/* Tab buttons */}
-        <div className="flex flex-1 bg-gray-800/50 rounded-lg border border-gray-700/50 p-0.5">
+        <div className={`flex flex-1 ${isLight ? "bg-gray-100 rounded-lg border border-gray-300/50" : "bg-gray-800/50 rounded-lg border border-gray-700/50"} p-0.5`}>
           <button
             onClick={() => onTabChange("topics")}
             className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-md transition-all ${
               activeTab === "topics"
-                ? "bg-purple-500/20 text-white"
-                : "text-gray-400"
+                ? isLight 
+                  ? "bg-[#76ABAE]/40 text-black" 
+                  : "bg-purple-500/20 text-white"
+                : isLight
+                  ? "text-gray-600" 
+                  : "text-gray-400"
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -70,8 +77,12 @@ export function UnitFiltersMobile({
             onClick={() => onTabChange("questions")}
             className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-md transition-all ${
               activeTab === "questions"
-                ? "bg-purple-500/20 text-white"
-                : "text-gray-400"
+                ? isLight 
+                  ? "bg-[#76ABAE]/40 text-black" 
+                  : "bg-purple-500/20 text-white"
+                : isLight
+                  ? "text-gray-600" 
+                  : "text-gray-400"
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -84,9 +95,13 @@ export function UnitFiltersMobile({
           onClick={() => setShowFilters(!showFilters)}
           className={`flex items-center justify-center h-10 w-10 rounded-lg ${
             showFilters
-              ? "bg-purple-500/20 text-white"
-              : "bg-gray-800/50 text-gray-400"
-          } border border-gray-700/50`}
+              ? isLight 
+                ? "bg-[#76ABAE]/40 text-black" 
+                : "bg-purple-500/20 text-white"
+              : isLight
+                ? "bg-gray-100 text-gray-600 border border-gray-300/50" 
+                : "bg-gray-800/50 text-gray-400 border border-gray-700/50"
+          }`}
         >
           {showFilters ? (
             <X className="w-4 h-4" />
@@ -99,7 +114,11 @@ export function UnitFiltersMobile({
         {hasFormulaSheet && onFormulaSheetClick && (
           <button
             onClick={onFormulaSheetClick}
-            className="flex items-center justify-center h-10 w-10 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+            className={`flex items-center justify-center h-10 w-10 rounded-lg ${
+              isLight
+                ? "bg-[#FFD56B]/30 text-black border border-[#FFD56B]/50"
+                : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+            }`}
           >
             <Calculator className="w-4 h-4" />
           </button>
@@ -112,8 +131,8 @@ export function UnitFiltersMobile({
           {/* Sort topics options - always visible regardless of tab */}
           <div className="overflow-hidden">
             <div className="flex items-center px-2 py-1.5">
-              <BarChart2 className="w-3.5 h-3.5 text-purple-400 mr-1.5" />
-              <span className="text-xs font-medium text-gray-300">
+              <BarChart2 className={`w-3.5 h-3.5 ${isLight ? "text-[#76ABAE]" : "text-purple-400"} mr-1.5`} />
+              <span className={`text-xs font-medium ${isLight ? "text-gray-700" : "text-gray-300"}`}>
                 {activeTab === "topics"
                   ? "Sort by Weightage"
                   : "Sort by Topics"}
@@ -124,8 +143,12 @@ export function UnitFiltersMobile({
                 onClick={() => handleSortOrderChange("original")}
                 className={`py-2 px-1 rounded-md flex flex-col items-center justify-center ${
                   sortOrder === "original"
-                    ? "bg-purple-500/20 text-white"
-                    : "bg-gray-800/30 text-gray-300"
+                    ? isLight 
+                      ? "bg-[#76ABAE]/40 text-black" 
+                      : "bg-purple-500/20 text-white"
+                    : isLight
+                      ? "bg-gray-100 text-gray-700" 
+                      : "bg-gray-800/30 text-gray-300"
                 }`}
               >
                 <ListOrdered className="w-3.5 h-3.5 mb-0.5" />
@@ -135,8 +158,12 @@ export function UnitFiltersMobile({
                 onClick={() => handleSortOrderChange("desc")}
                 className={`py-2 px-1 rounded-md flex flex-col items-center justify-center ${
                   sortOrder === "desc"
-                    ? "bg-purple-500/20 text-white"
-                    : "bg-gray-800/30 text-gray-300"
+                    ? isLight 
+                      ? "bg-[#76ABAE]/40 text-black" 
+                      : "bg-purple-500/20 text-white"
+                    : isLight
+                      ? "bg-gray-100 text-gray-700" 
+                      : "bg-gray-800/30 text-gray-300"
                 }`}
               >
                 <ChevronDown className="w-3.5 h-3.5 mb-0.5" />
@@ -146,8 +173,12 @@ export function UnitFiltersMobile({
                 onClick={() => handleSortOrderChange("asc")}
                 className={`py-2 px-1 rounded-md flex flex-col items-center justify-center ${
                   sortOrder === "asc"
-                    ? "bg-purple-500/20 text-white"
-                    : "bg-gray-800/30 text-gray-300"
+                    ? isLight 
+                      ? "bg-[#76ABAE]/40 text-black" 
+                      : "bg-purple-500/20 text-white"
+                    : isLight
+                      ? "bg-gray-100 text-gray-700" 
+                      : "bg-gray-800/30 text-gray-300"
                 }`}
               >
                 <ChevronUp className="w-3.5 h-3.5 mb-0.5" />
@@ -160,8 +191,8 @@ export function UnitFiltersMobile({
           {availableYears.length > 0 && (
             <div className="overflow-hidden">
               <div className="flex items-center px-2 py-1.5">
-                <Calendar className="w-3.5 h-3.5 text-purple-400 mr-1.5" />
-                <span className="text-xs font-medium text-gray-300">
+                <Calendar className={`w-3.5 h-3.5 ${isLight ? "text-[#76ABAE]" : "text-purple-400"} mr-1.5`} />
+                <span className={`text-xs font-medium ${isLight ? "text-gray-700" : "text-gray-300"}`}>
                   {activeTab === "questions"
                     ? "Filter by Year"
                     : "Filter by Year"}
@@ -172,8 +203,12 @@ export function UnitFiltersMobile({
                   onClick={() => onYearFilterChange("all")}
                   className={`py-2 px-1 rounded-md flex items-center justify-center ${
                     yearFilter === "all"
-                      ? "bg-purple-500/20 text-white"
-                      : "bg-gray-800/30 text-gray-300"
+                      ? isLight 
+                        ? "bg-[#76ABAE]/40 text-black" 
+                        : "bg-purple-500/20 text-white"
+                      : isLight
+                        ? "bg-gray-100 text-gray-700" 
+                        : "bg-gray-800/30 text-gray-300"
                   }`}
                 >
                   <span className="text-xs">All</span>
@@ -184,8 +219,12 @@ export function UnitFiltersMobile({
                     onClick={() => onYearFilterChange(year)}
                     className={`py-2 px-1 rounded-md flex items-center justify-center ${
                       yearFilter === year
-                        ? "bg-purple-500/20 text-white"
-                        : "bg-gray-800/30 text-gray-300"
+                        ? isLight 
+                          ? "bg-[#76ABAE]/40 text-black" 
+                          : "bg-purple-500/20 text-white"
+                        : isLight
+                          ? "bg-gray-100 text-gray-700" 
+                          : "bg-gray-800/30 text-gray-300"
                     }`}
                   >
                     <span className="text-xs">{year}</span>

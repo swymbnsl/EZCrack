@@ -41,13 +41,13 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className={`w-full max-w-2xl max-h-[85vh] ${
+              className={`w-full max-w-2xl max-h-[85vh] flex flex-col ${
                 isLight 
-                  ? "bg-white border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" 
-                  : "bg-[#1E1E1E] border-white shadow-[8px_8px_0px_0px_rgba(255,255,255,0.8)]"
+                  ? "bg-white border-black" 
+                  : "bg-[#1E1E1E] border-white"
               } border-4 pointer-events-auto`}
             >
-              <div className={`p-6 border-b-4 ${isLight ? "border-black" : "border-white"} flex items-center justify-between`}>
+              <div className={`p-6 border-b-4 ${isLight ? "border-black" : "border-white"} flex items-center justify-between flex-shrink-0`}>
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 ${
                     isLight 
@@ -80,7 +80,7 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
                   <X className={`w-4 h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
                 </button>
               </div>
-              <div className={`p-6 overflow-y-auto max-h-[calc(85vh-80px)] ${
+              <div className={`p-6 overflow-y-auto flex-grow ${
                 isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"
               }`}>
                 <div className={`prose ${isLight ? "prose-black max-w-none prose-headings:text-black prose-strong:text-black prose-em:text-black/80" : "prose-invert max-w-none"} ${isLight ? "light-katex" : ""} ${isLight ? "text-black" : "text-white"}`}>

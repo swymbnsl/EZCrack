@@ -212,8 +212,12 @@ export default function UnitsPage() {
           }}
         />
 
-        <div className="flex-1 overflow-visible sm:overflow-hidden mt-2 sm:mt-0 bg-gradient-to-b from-gray-950 to-black sm:bg-none">
-          <div className="sm:h-full sm:overflow-y-auto scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50 scrollbar-thumb-rounded-full">
+        <div className={`flex-1 overflow-visible sm:overflow-hidden mt-2 sm:mt-0 ${isLight ? "bg-white sm:bg-[#F8F8F8]" : "bg-gradient-to-b from-gray-950 to-black sm:bg-[#121212]"}`}>
+          <div className={`sm:h-full sm:overflow-y-auto ${
+            isLight 
+              ? "scrollbar-thin scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60" 
+              : "scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
+          } scrollbar-thumb-rounded-full`}>
             <div className="p-3 sm:p-8">
               {isLoading ? (
                 <LoadingSpinner text="Loading content..." />

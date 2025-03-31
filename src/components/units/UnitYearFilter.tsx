@@ -104,7 +104,7 @@ export function UnitYearFilter({
               } border-2 flex items-center justify-center`}
             >
               <span
-                className={`text-sm font-medium ${
+                className={`text-[0.65rem] font-medium ${
                   isLight ? "text-black" : "text-white"
                 }`}
               >
