@@ -528,7 +528,7 @@ export default function UnitPage() {
                                         }}
                                         className={`group relative ${
                                           isLight 
-                                            ? "bg-white border-3 border-black/70 hover:border-black shadow-[2px_2px_0px_rgba(0,0,0,0.1)]" 
+                                            ? "bg-white border-3 border-black/70 hover:border-black" 
                                             : "bg-[#1E1E1E] border-3 border-white/70 hover:border-white"
                                         } p-3 sm:p-5 transition-all`}
                                       >
