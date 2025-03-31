@@ -109,6 +109,18 @@ type SortOrder = "asc" | "desc" | "original";
 type YearFilter = "all" | number;
 type TabType = "topics" | "questions";
 
+interface Contributor {
+  name: string;
+  branch: string;
+  semester: number;
+  avatar: string;
+  linkedinUrl?: string;
+  subject_ids: {
+    _id: string;
+    name: string;
+  }[];
+}
+
 export default function UnitPage() {
   const params = useParams();
   const { branchId, semId, subjectId, unitId } = params;
@@ -119,10 +131,9 @@ export default function UnitPage() {
   const [yearFilter, setYearFilter] = useState<YearFilter>("all");
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [showNotesModal, setShowNotesModal] = useState(false);
-  const [selectedTopicNotes, setSelectedTopicNotes] = useState<Note | null>(
-    null
-  );
+  const [selectedTopicNotes, setSelectedTopicNotes] = useState<Note | null>(null);
   const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false);
+  const [contributor, setContributor] = useState<Contributor | undefined>(undefined);
   const { theme } = useTheme();
   const isLight = theme === "light";
 
@@ -267,28 +278,39 @@ export default function UnitPage() {
   };
 
   useEffect(() => {
-    const fetchUnit = async () => {
+    const fetchUnitData = async () => {
       try {
-        const response = await axios.get(`/api/units/${unitId}`);
-        const data = response.data;
+        const unitResponse = await axios.get(`/api/units/${unitId}`);
+        const unitData = unitResponse.data;
         const questionsResponse = await axios.get(`/api/questions`, {
           params: {
-            unit: data.unit.number,
+            unit: unitData.unit.number,
             subjectId: subjectId,
           },
         });
         const questionsData = questionsResponse.data;
 
-        setUnit(generateAnalysisData(data.unit, questionsData));
+        setUnit(generateAnalysisData(unitData.unit, questionsData));
       } catch (error) {
-        console.error("Error fetching unit:", error);
+        console.error("Error fetching unit data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
+    const fetchContributor = async () => {
+      try {
+        const response = await axios.get(`/api/subjects/${subjectId}/contributor`);
+        setContributor(response.data.contributor);
+      } catch (error) {
+        console.error("Error fetching contributor:", error);
+        setContributor(undefined); // Explicitly set to undefined on error
+      }
+    };
+
     if (unitId) {
-      fetchUnit();
+      fetchUnitData();
+      fetchContributor();
     }
   }, [unitId, subjectId]);
 
@@ -386,6 +408,7 @@ export default function UnitPage() {
                 label: "Years",
               },
             }}
+            contributor={contributor}
           />
         </div>
 

@@ -20,6 +20,17 @@ interface HeaderProps {
   };
   showContributor?: boolean;
   showWeightageInfo?: boolean;
+  contributor?: {
+    name: string;
+    branch: string;
+    semester: number;
+    avatar: string;
+    linkedinUrl?: string;
+    subject_ids: {
+      _id: string;
+      name: string;
+    }[];
+  };
 }
 
 function FormulaModal({ onClose }: { onClose: () => void }) {
@@ -283,18 +294,10 @@ export function Header({
   stats,
   showContributor = true,
   showWeightageInfo = false,
+  contributor,
 }: HeaderProps) {
   const { theme } = useTheme();
   const isLight = theme === "light";
-  
-  // Demo contributor data
-  const contributor = {
-    name: "Swayam Bansal",
-    branch: "ECE",
-    semester: 2,
-    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=Valentina",
-    linkedinUrl: "https://linkedin.com/in/swymbnsl",
-  };
 
   return (
     <div className={`border-b-4 ${isLight ? "border-black bg-[#FFFFFA]" : "border-white bg-[#121212]"} shadow-lg relative z-20`}>
@@ -367,7 +370,7 @@ export function Header({
                 </div>
               )}
 
-              {showContributor && (
+              {showContributor && contributor && (
                 <div className="w-full sm:w-auto">
                   <ContributorBadge contributor={contributor} />
                 </div>

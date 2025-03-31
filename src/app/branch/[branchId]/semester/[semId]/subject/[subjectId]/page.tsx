@@ -78,6 +78,18 @@ interface Subject {
   credits?: number;
 }
 
+interface Contributor {
+  name: string;
+  branch: string;
+  semester: number;
+  avatar: string;
+  linkedinUrl?: string;
+  subject_ids: {
+    _id: string;
+    name: string;
+  }[];
+}
+
 type ViewMode = "units" | "yearwise" | "repeated";
 type ExamFilter = "all" | "midterm" | "endterm";
 type RepeatedType = "concept" | "pattern";
@@ -99,6 +111,7 @@ export default function UnitsPage() {
   );
   const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+  const [contributor, setContributor] = useState<Contributor | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,8 +139,18 @@ export default function UnitsPage() {
       }
     };
 
+    const fetchContributor = async () => {
+      try {
+        const response = await axios.get(`/api/subjects/${subjectId}/contributor`);
+        setContributor(response.data.contributor || undefined);
+      } catch {
+        setContributor(undefined); // Explicitly set to undefined on error
+      }
+    };
+
     if (subjectId) {
       fetchData();
+      fetchContributor();
     }
   }, [subjectId]);
 
@@ -211,6 +234,7 @@ export default function UnitsPage() {
                 label: viewMode === "units" ? "Topics" : "Questions",
               },
             }}
+            contributor={contributor}
           />
         </div>
 

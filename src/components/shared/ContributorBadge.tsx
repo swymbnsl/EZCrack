@@ -8,7 +8,11 @@ interface Contributor {
   branch: string;
   semester: number;
   avatar: string;
-  linkedinUrl: string;
+  linkedinUrl?: string;
+  subject_ids: {
+    _id: string;
+    name: string;
+  }[];
 }
 
 interface ContributorBadgeProps {
@@ -18,7 +22,6 @@ interface ContributorBadgeProps {
 export function ContributorBadge({ contributor }: ContributorBadgeProps) {
   const { theme } = useTheme();
   const isLight = theme === "light";
-
   return (
     <div className="flex-1 lg:w-[30vw]">
       <div className={`${
@@ -56,10 +59,10 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
                 {contributor.name}
               </h3>
               <span className={`text-xs ${isLight ? "text-[#2D2A32]" : "text-gray-400"}`}>
-                • Contributor
+                • {contributor.subject_ids.length} subjects
               </span>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <span className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 ${
                 isLight 
                   ? "bg-[#76ABAE] text-black border-black" 
@@ -74,23 +77,32 @@ export function ContributorBadge({ contributor }: ContributorBadgeProps) {
               } border-2 whitespace-nowrap`}>
                 Sem {contributor.semester}
               </span>
+              <span className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 ${
+                isLight 
+                  ? "bg-[#FF7B54] text-black border-black" 
+                  : "bg-[#FF6B6B] text-[#121212] border-white"
+              } border-2 whitespace-nowrap`}>
+                {contributor.subject_ids.length} contributions
+              </span>
             </div>
           </div>
 
-          <motion.a
-            href={contributor.linkedinUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`p-1.5 sm:p-2 ${
-              isLight 
-                ? "bg-[#FF7B54] text-black border-black hover:bg-[#FFD56B]" 
-                : "bg-[#FF6B6B] text-[#121212] border-white hover:bg-[#4ECDC4]"
-            } border-2 transition-colors flex items-center justify-center self-center shrink-0`}
-          >
-            <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
-          </motion.a>
+          {contributor.linkedinUrl && (
+            <motion.a
+              href={contributor.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`p-1.5 sm:p-2 ${
+                isLight 
+                  ? "bg-[#FF7B54] text-black border-black hover:bg-[#FFD56B]" 
+                  : "bg-[#FF6B6B] text-[#121212] border-white hover:bg-[#4ECDC4]"
+              } border-2 transition-colors flex items-center justify-center self-center shrink-0`}
+            >
+              <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
+            </motion.a>
+          )}
         </div>
       </div>
     </div>
