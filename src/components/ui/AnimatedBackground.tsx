@@ -9,14 +9,6 @@ export const AnimatedBackground = () => {
   const { theme } = useTheme();
   const isLight = theme === "light";
   const pathname = usePathname();
-  
-  // Only show the animated background on the homepage
-  const isHomepage = pathname === "/" || pathname === "/home";
-  
-  // If not on homepage, don't render anything
-  if (!isHomepage) return null;
-  
-  // Create interactive shape state
   const [hoveredShape, setHoveredShape] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   
@@ -35,6 +27,12 @@ export const AnimatedBackground = () => {
     // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+  
+  // Only show the animated background on the homepage
+  const isHomepage = pathname === "/" || pathname === "/home";
+  
+  // If not on homepage, don't render anything
+  if (!isHomepage) return null;
   
   // Define shapes with their properties, fewer for mobile
   const shapes = [

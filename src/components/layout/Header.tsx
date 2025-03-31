@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ChevronLeft, Info, X, Moon, Sun } from "lucide-react";
+import { ChevronLeft, Info, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -284,7 +284,7 @@ export function Header({
   showContributor = true,
   showWeightageInfo = false,
 }: HeaderProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const isLight = theme === "light";
   
   // Demo contributor data

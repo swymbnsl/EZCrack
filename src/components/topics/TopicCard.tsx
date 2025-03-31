@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, FileText, Calculator } from "lucide-react";
+import { Calendar, FileText } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 interface TopicCardProps {
