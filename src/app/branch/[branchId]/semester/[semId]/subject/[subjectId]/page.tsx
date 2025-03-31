@@ -434,7 +434,7 @@ export default function UnitsPage() {
                                     <Calendar className={`w-5 h-5 sm:w-6 sm:h-6 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                   </div>
                                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
-                                    <h2 className={`text-xl sm:text-2xl font-bold ${isLight ? "text-black" : "text-white"}`}>
+                                    <h2 className={`text-xl sm:text-2xl font-bold ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                       {year}
                                     </h2>
                                     <span className={`text-xs sm:text-sm px-2 sm:px-2.5 py-0.5 sm:py-1 border-2 ${
@@ -447,7 +447,7 @@ export default function UnitsPage() {
                                   </div>
                                 </div>
                                 <ChevronDown
-                                  className={`w-5 h-5 ${isLight ? "text-black" : "text-white"} ${
+                                  className={`w-5 h-5 ${isLight ? "text-[#2D2A32]" : "text-gray-200"} ${
                                     expandedYears[year] ? "rotate-180" : ""
                                   }`}
                                 />
@@ -478,7 +478,7 @@ export default function UnitsPage() {
                                               } border-2 flex items-center justify-center`}>
                                                 <BookOpen className={`w-3 h-3 sm:w-4 sm:h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                               </div>
-                                              <h3 className={`text-base sm:text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
+                                              <h3 className={`text-base sm:text-lg font-bold ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                                 Unit {unit}
                                               </h3>
                                             </div>
@@ -510,7 +510,7 @@ export default function UnitsPage() {
                                                           {question.marks} marks
                                                         </div>
                                                       </div>
-                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""}`}>
+                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""} ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                                         <ReactMarkdown
                                                           remarkPlugins={[remarkGfm, remarkMath]}
                                                           rehypePlugins={[
@@ -606,7 +606,7 @@ export default function UnitsPage() {
                                     } border-3 flex items-center justify-center`}>
                                       <BookOpen className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
                                     </div>
-                                    <h2 className={`text-xl font-bold ${isLight ? "text-black" : "text-white"}`}>
+                                    <h2 className={`text-xl font-bold ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                       Unit {unit.number} - Repeated Questions
                                     </h2>
                                   </div>
@@ -627,7 +627,7 @@ export default function UnitsPage() {
                                           >
                                             <div className="mb-3">
                                               <div className="flex items-center justify-between mb-2">
-                                                <h3 className={`text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
+                                                <h3 className={`text-lg font-bold ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                                   {concept.concept}
                                                 </h3>
                                                 <span className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
@@ -672,7 +672,7 @@ export default function UnitsPage() {
                                                           )}
                                                         </div>
                                                       </div>
-                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""}`}>
+                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""} ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                                         <ReactMarkdown
                                                           remarkPlugins={[remarkGfm, remarkMath]}
                                                           rehypePlugins={[
@@ -705,7 +705,7 @@ export default function UnitsPage() {
                                           >
                                             <div className="mb-3">
                                               <div className="flex items-center justify-between mb-2">
-                                                <h3 className={`text-lg font-bold ${isLight ? "text-black" : "text-white"}`}>
+                                                <h3 className={`text-lg font-bold ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                                   {pattern.pattern}
                                                 </h3>
                                                 <span className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
@@ -750,7 +750,7 @@ export default function UnitsPage() {
                                                           )}
                                                         </div>
                                                       </div>
-                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""}`}>
+                                                      <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""} ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
                                                         <ReactMarkdown
                                                           remarkPlugins={[remarkGfm, remarkMath]}
                                                           rehypePlugins={[

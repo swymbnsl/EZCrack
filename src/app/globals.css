@@ -84,6 +84,32 @@
   color: black !important;
 }
 
+/* Additional styles to ensure KaTeX is visible */
+.prose .katex {
+  color: black !important;
+}
+
+.prose.prose-black .katex {
+  color: black !important;
+}
+
+.prose.prose-black .katex .katex-mathml,
+.prose.prose-black .katex .katex-html {
+  color: black !important;
+}
+
+/* Force all KaTeX elements to have correct color based on theme */
+body[data-theme="light"] .katex,
+body[data-theme="light"] .katex *,
+.light-katex .katex * {
+  color: black !important;
+}
+
+body[data-theme="dark"] .katex,
+body[data-theme="dark"] .katex *:not(.light-katex *) {
+  color: white !important;
+}
+
 /* Improve LaTeX rendering in question cards */
 .light-katex .katex-display {
   margin: 0.5em 0;
@@ -124,4 +150,29 @@
 
 .prose.text-sm.sm\:text-base > *:last-child {
   margin-bottom: 0;
+}
+
+/* Additional KaTeX specificity for light mode */
+body[data-theme="light"] .katex-display .katex,
+body[data-theme="light"] .katex-display .katex .katex-html {
+  color: black !important;
+}
+
+body[data-theme="light"] .katex-display .katex .katex-mathml,
+body[data-theme="light"] .katex-display .katex .katex-html * {
+  color: black !important;
+}
+
+/* Stronger rule to ensure math formulas are visible */
+body[data-theme="light"] .prose .katex,
+body[data-theme="light"] .prose .katex *,
+body[data-theme="light"] .prose.prose-black .katex,
+body[data-theme="light"] .prose.prose-black .katex * {
+  color: black !important;
+}
+
+/* Formula sheets and inline math */
+.text-sm.sm\:text-base.prose .katex,
+.text-sm.sm\:text-base.prose .katex * {
+  color: inherit !important;
 }

@@ -49,7 +49,7 @@ export function UnitSidebar({
           : "border-white bg-[#1E1E1E]"
       } flex flex-col mb-4 sm:mb-0`}
     >
-      <div className="p-4 sm:p-8 space-y-4 sm:space-y-8">
+      <div className="p-4 sm:p-8 space-y-4 sm:space-y-8 h-screen">
         {hasFormulaSheet && (
           <button
             onClick={onFormulaSheetClick}

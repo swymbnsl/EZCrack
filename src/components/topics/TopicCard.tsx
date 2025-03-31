@@ -45,7 +45,7 @@ export function TopicCard({
         isLight 
           ? "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]" 
           : "bg-[#1E1E1E] border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"
-      } border-4 transform rotate-1 p-6 transition-all cursor-pointer`}
+      } border-4 p-6 transition-all cursor-pointer`}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -67,7 +67,7 @@ export function TopicCard({
                 isLight 
                   ? "bg-[#FFD56B] text-black border-black" 
                   : "bg-[#FFE66D] text-[#121212] border-white"
-              } border-2 transform rotate-1`}>
+              } border-2`}>
                 {topic.weightage}% Weightage
               </span>
             </div>
@@ -105,7 +105,7 @@ export function TopicCard({
           {topic.years?.map((year) => (
             <span
               key={year}
-              className={`inline-flex items-center gap-1 px-2 py-1 text-sm border-2 transform rotate-1 ${
+              className={`inline-flex items-center gap-1 px-2 py-1 text-sm border-2 ${
                 isLight 
                   ? "bg-[#FF7B54] text-black border-black" 
                   : "bg-[#FF6B6B] text-[#121212] border-white"
@@ -118,7 +118,7 @@ export function TopicCard({
         </div>
 
         {hasNotes && (
-          <div className={`flex items-center gap-1 px-3 py-1.5 text-sm border-2 transform -rotate-1 ${
+          <div className={`flex items-center gap-1 px-3 py-1.5 text-sm border-2 ${
             isLight 
               ? "bg-[#76ABAE] text-black border-black" 
               : "bg-[#4ECDC4] text-[#121212] border-white"

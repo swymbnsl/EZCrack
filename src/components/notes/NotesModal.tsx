@@ -45,7 +45,7 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
                 isLight 
                   ? "bg-white border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" 
                   : "bg-[#1E1E1E] border-white shadow-[8px_8px_0px_0px_rgba(255,255,255,0.8)]"
-              } border-4 pointer-events-auto transform -rotate-1`}
+              } border-4 pointer-events-auto`}
             >
               <div className={`p-6 border-b-4 ${isLight ? "border-black" : "border-white"} flex items-center justify-between`}>
                 <div className="flex items-center gap-3">
@@ -53,7 +53,7 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
                     isLight 
                       ? "bg-[#76ABAE] border-black" 
                       : "bg-[#4ECDC4] border-white"
-                  } border-3 flex items-center justify-center transform rotate-3`}>
+                  } border-3 flex items-center justify-center`}>
                     <FileText className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
                   </div>
                   <div>
@@ -75,7 +75,7 @@ export function NotesModal({ isOpen, onClose, note }: NotesModalProps) {
                     isLight 
                       ? "bg-[#FF7B54] border-black hover:bg-[#FFD56B]" 
                       : "bg-[#FF6B6B] border-white hover:bg-[#4ECDC4]"
-                  } border-2 flex items-center justify-center transform -rotate-3 transition-colors`}
+                  } border-2 flex items-center justify-center transition-colors`}
                 >
                   <X className={`w-4 h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
                 </button>
