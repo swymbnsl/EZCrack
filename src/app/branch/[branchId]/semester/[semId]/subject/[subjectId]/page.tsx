@@ -185,39 +185,41 @@ export default function UnitsPage() {
 
   return (
     <PageWrapper>
-      <div className="relative z-10 min-h-screen sm:h-screen flex flex-col">
-        <Header
-          branchId={parsedBranchId}
-          semId={parsedSemId}
-          backLink={`/branch/${parsedBranchId}/semester/${parsedSemId}`}
-          backText="Back to Subjects"
-          title={subject?.name || "Loading..."}
-          subtitle={
-            viewMode === "units"
-              ? `${units.length} units to explore`
-              : `${totalFilteredQuestions} questions across ${sortedYears.length} ${yearText}`
-          }
-          stats={{
-            primary: {
-              value: viewMode === "units" ? units.length : sortedYears.length,
-              label: viewMode === "units" ? "Units" : yearText,
-            },
-            secondary: {
-              value:
-                viewMode === "units"
-                  ? units.reduce((acc, unit) => acc + unit.topics.length, 0)
-                  : totalFilteredQuestions,
-              label: viewMode === "units" ? "Topics" : "Questions",
-            },
-          }}
-        />
+      <div className="relative min-h-screen flex flex-col sm:h-screen overflow-auto sm:overflow-hidden">
+        <div className="z-20 bg-inherit sm:sticky sm:top-0">
+          <Header
+            branchId={parsedBranchId}
+            semId={parsedSemId}
+            backLink={`/branch/${parsedBranchId}/semester/${parsedSemId}`}
+            backText="Back to Subjects"
+            title={subject?.name || "Loading..."}
+            subtitle={
+              viewMode === "units"
+                ? `${units.length} units to explore`
+                : `${totalFilteredQuestions} questions across ${sortedYears.length} ${yearText}`
+            }
+            stats={{
+              primary: {
+                value: viewMode === "units" ? units.length : sortedYears.length,
+                label: viewMode === "units" ? "Units" : yearText,
+              },
+              secondary: {
+                value:
+                  viewMode === "units"
+                    ? units.reduce((acc, unit) => acc + unit.topics.length, 0)
+                    : totalFilteredQuestions,
+                label: viewMode === "units" ? "Topics" : "Questions",
+              },
+            }}
+          />
+        </div>
 
-        <div className={`flex-1 overflow-visible sm:overflow-hidden mt-2 sm:mt-0 ${isLight ? "bg-white sm:bg-[#F8F8F8]" : "bg-gradient-to-b from-gray-950 to-black sm:bg-[#121212]"}`}>
-          <div className={`sm:h-full sm:overflow-y-auto ${
+        <div className={`flex-1 flex flex-col sm:overflow-hidden ${isLight ? "bg-white sm:bg-[#F8F8F8]" : "bg-gradient-to-b from-gray-950 to-black sm:bg-[#121212]"}`}>
+          <div className={`h-full sm:overflow-y-auto sm:flex-1 scrollbar-thin scrollbar-thumb-rounded-full ${
             isLight 
-              ? "scrollbar-thin scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60" 
-              : "scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
-          } scrollbar-thumb-rounded-full`}>
+              ? "scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60" 
+              : "scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
+          }`}>
             <div className="p-3 sm:p-8">
               {isLoading ? (
                 <LoadingSpinner text="Loading content..." />

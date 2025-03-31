@@ -53,54 +53,54 @@ export function UnitFiltersMobile({
 
   // Group buttons in a compact layout
   return (
-    <div className={`sm:hidden w-full ${isLight ? "bg-white/90 backdrop-blur-sm border-b border-black/20" : "bg-gray-950/90 backdrop-blur-sm border-b border-gray-800"} overflow-hidden`}>
+    <div className={`sm:hidden w-full ${isLight ? "bg-[#FFFFFA] border-b-4 border-black" : "bg-[#121212] border-b-4 border-white"} overflow-hidden sticky top-0 z-20`}>
       {/* Controls bar with formula sheet toggle */}
-      <div className="flex items-center gap-2 px-3 py-2">
+      <div className="flex items-center gap-2 px-3 py-3">
         {/* Tab buttons */}
-        <div className={`flex flex-1 ${isLight ? "bg-gray-100 rounded-lg border border-gray-300/50" : "bg-gray-800/50 rounded-lg border border-gray-700/50"} p-0.5`}>
+        <div className={`flex flex-1 ${isLight ? "bg-white border-4 border-black" : "bg-[#1E1E1E] border-4 border-white"} p-0.5`}>
           <button
             onClick={() => onTabChange("topics")}
-            className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-md transition-all ${
+            className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 transition-all ${
               activeTab === "topics"
                 ? isLight 
-                  ? "bg-[#76ABAE]/40 text-black" 
-                  : "bg-purple-500/20 text-white"
+                  ? "bg-[#76ABAE] text-black" 
+                  : "bg-[#4ECDC4] text-[#121212]"
                 : isLight
-                  ? "text-gray-600" 
-                  : "text-gray-400"
+                  ? "text-black" 
+                  : "text-white"
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            <span className="text-sm">Topics</span>
+            <span className="text-sm font-medium">Topics</span>
           </button>
           <button
             onClick={() => onTabChange("questions")}
-            className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 rounded-md transition-all ${
+            className={`flex-1 flex items-center justify-center gap-1 py-2 px-2 transition-all ${
               activeTab === "questions"
                 ? isLight 
-                  ? "bg-[#76ABAE]/40 text-black" 
-                  : "bg-purple-500/20 text-white"
+                  ? "bg-[#76ABAE] text-black" 
+                  : "bg-[#4ECDC4] text-[#121212]"
                 : isLight
-                  ? "text-gray-600" 
-                  : "text-gray-400"
+                  ? "text-black" 
+                  : "text-white"
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span className="text-sm">Questions</span>
+            <span className="text-sm font-medium">Questions</span>
           </button>
         </div>
 
         {/* Filter toggle */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center justify-center h-10 w-10 rounded-lg ${
+          className={`flex items-center justify-center h-10 w-10 ${
             showFilters
               ? isLight 
-                ? "bg-[#76ABAE]/40 text-black" 
-                : "bg-purple-500/20 text-white"
+                ? "bg-[#76ABAE] text-black border-4 border-black" 
+                : "bg-[#4ECDC4] text-[#121212] border-4 border-white"
               : isLight
-                ? "bg-gray-100 text-gray-600 border border-gray-300/50" 
-                : "bg-gray-800/50 text-gray-400 border border-gray-700/50"
+                ? "bg-white text-black border-4 border-black" 
+                : "bg-[#1E1E1E] text-white border-4 border-white"
           }`}
         >
           {showFilters ? (
@@ -114,10 +114,10 @@ export function UnitFiltersMobile({
         {hasFormulaSheet && onFormulaSheetClick && (
           <button
             onClick={onFormulaSheetClick}
-            className={`flex items-center justify-center h-10 w-10 rounded-lg ${
+            className={`flex items-center justify-center h-10 w-10 ${
               isLight
-                ? "bg-[#FFD56B]/30 text-black border border-[#FFD56B]/50"
-                : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                ? "bg-[#FFD56B] text-black border-4 border-black"
+                : "bg-[#FFE66D] text-[#121212] border-4 border-white"
             }`}
           >
             <Calculator className="w-4 h-4" />
@@ -127,107 +127,107 @@ export function UnitFiltersMobile({
 
       {/* Expandable filters */}
       {showFilters && (
-        <div className="px-3 pb-3 space-y-2 animate-in slide-in-from-top duration-200">
+        <div className={`px-3 pb-3 space-y-3 animate-in slide-in-from-top duration-200 ${isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"}`}>
           {/* Sort topics options - always visible regardless of tab */}
-          <div className="overflow-hidden">
-            <div className="flex items-center px-2 py-1.5">
-              <BarChart2 className={`w-3.5 h-3.5 ${isLight ? "text-[#76ABAE]" : "text-purple-400"} mr-1.5`} />
-              <span className={`text-xs font-medium ${isLight ? "text-gray-700" : "text-gray-300"}`}>
+          <div className={`${isLight ? "bg-white border-4 border-black" : "bg-[#1E1E1E] border-4 border-white"} p-3`}>
+            <div className="flex items-center px-2 py-1.5 mb-2">
+              <BarChart2 className={`w-4 h-4 ${isLight ? "text-[#76ABAE]" : "text-[#4ECDC4]"} mr-2`} />
+              <span className={`text-sm font-medium ${isLight ? "text-black" : "text-white"}`}>
                 {activeTab === "topics"
                   ? "Sort by Weightage"
                   : "Sort by Topics"}
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-1 mt-1">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => handleSortOrderChange("original")}
-                className={`py-2 px-1 rounded-md flex flex-col items-center justify-center ${
+                className={`py-2 px-1 flex flex-col items-center justify-center ${
                   sortOrder === "original"
                     ? isLight 
-                      ? "bg-[#76ABAE]/40 text-black" 
-                      : "bg-purple-500/20 text-white"
+                      ? "bg-[#76ABAE] text-black border-3 border-black" 
+                      : "bg-[#4ECDC4] text-[#121212] border-3 border-white"
                     : isLight
-                      ? "bg-gray-100 text-gray-700" 
-                      : "bg-gray-800/30 text-gray-300"
+                      ? "bg-white text-black border-3 border-black/50" 
+                      : "bg-[#1E1E1E] text-white border-3 border-white/50"
                 }`}
               >
                 <ListOrdered className="w-3.5 h-3.5 mb-0.5" />
-                <span className="text-xs">Syllabus</span>
+                <span className="text-xs font-medium">Syllabus</span>
               </button>
               <button
                 onClick={() => handleSortOrderChange("desc")}
-                className={`py-2 px-1 rounded-md flex flex-col items-center justify-center ${
+                className={`py-2 px-1 flex flex-col items-center justify-center ${
                   sortOrder === "desc"
                     ? isLight 
-                      ? "bg-[#76ABAE]/40 text-black" 
-                      : "bg-purple-500/20 text-white"
+                      ? "bg-[#76ABAE] text-black border-3 border-black" 
+                      : "bg-[#4ECDC4] text-[#121212] border-3 border-white"
                     : isLight
-                      ? "bg-gray-100 text-gray-700" 
-                      : "bg-gray-800/30 text-gray-300"
+                      ? "bg-white text-black border-3 border-black/50" 
+                      : "bg-[#1E1E1E] text-white border-3 border-white/50"
                 }`}
               >
                 <ChevronDown className="w-3.5 h-3.5 mb-0.5" />
-                <span className="text-xs">Highest</span>
+                <span className="text-xs font-medium">Highest</span>
               </button>
               <button
                 onClick={() => handleSortOrderChange("asc")}
-                className={`py-2 px-1 rounded-md flex flex-col items-center justify-center ${
+                className={`py-2 px-1 flex flex-col items-center justify-center ${
                   sortOrder === "asc"
                     ? isLight 
-                      ? "bg-[#76ABAE]/40 text-black" 
-                      : "bg-purple-500/20 text-white"
+                      ? "bg-[#76ABAE] text-black border-3 border-black" 
+                      : "bg-[#4ECDC4] text-[#121212] border-3 border-white"
                     : isLight
-                      ? "bg-gray-100 text-gray-700" 
-                      : "bg-gray-800/30 text-gray-300"
+                      ? "bg-white text-black border-3 border-black/50" 
+                      : "bg-[#1E1E1E] text-white border-3 border-white/50"
                 }`}
               >
                 <ChevronUp className="w-3.5 h-3.5 mb-0.5" />
-                <span className="text-xs">Lowest</span>
+                <span className="text-xs font-medium">Lowest</span>
               </button>
             </div>
           </div>
 
           {/* Year filter/sorting options */}
           {availableYears.length > 0 && (
-            <div className="overflow-hidden">
-              <div className="flex items-center px-2 py-1.5">
-                <Calendar className={`w-3.5 h-3.5 ${isLight ? "text-[#76ABAE]" : "text-purple-400"} mr-1.5`} />
-                <span className={`text-xs font-medium ${isLight ? "text-gray-700" : "text-gray-300"}`}>
+            <div className={`${isLight ? "bg-white border-4 border-black" : "bg-[#1E1E1E] border-4 border-white"} p-3`}>
+              <div className="flex items-center px-2 py-1.5 mb-2">
+                <Calendar className={`w-4 h-4 ${isLight ? "text-[#76ABAE]" : "text-[#4ECDC4]"} mr-2`} />
+                <span className={`text-sm font-medium ${isLight ? "text-black" : "text-white"}`}>
                   {activeTab === "questions"
                     ? "Filter by Year"
                     : "Filter by Year"}
                 </span>
               </div>
-              <div className="grid grid-cols-4 gap-1 mt-1">
+              <div className="grid grid-cols-4 gap-2">
                 <button
                   onClick={() => onYearFilterChange("all")}
-                  className={`py-2 px-1 rounded-md flex items-center justify-center ${
+                  className={`py-2 px-1 flex items-center justify-center ${
                     yearFilter === "all"
                       ? isLight 
-                        ? "bg-[#76ABAE]/40 text-black" 
-                        : "bg-purple-500/20 text-white"
+                        ? "bg-[#76ABAE] text-black border-3 border-black" 
+                        : "bg-[#4ECDC4] text-[#121212] border-3 border-white"
                       : isLight
-                        ? "bg-gray-100 text-gray-700" 
-                        : "bg-gray-800/30 text-gray-300"
+                        ? "bg-white text-black border-3 border-black/50" 
+                        : "bg-[#1E1E1E] text-white border-3 border-white/50"
                   }`}
                 >
-                  <span className="text-xs">All</span>
+                  <span className="text-xs font-medium">All</span>
                 </button>
                 {availableYears.map((year) => (
                   <button
                     key={year}
                     onClick={() => onYearFilterChange(year)}
-                    className={`py-2 px-1 rounded-md flex items-center justify-center ${
+                    className={`py-2 px-1 flex items-center justify-center ${
                       yearFilter === year
                         ? isLight 
-                          ? "bg-[#76ABAE]/40 text-black" 
-                          : "bg-purple-500/20 text-white"
+                          ? "bg-[#76ABAE] text-black border-3 border-black" 
+                          : "bg-[#4ECDC4] text-[#121212] border-3 border-white"
                         : isLight
-                          ? "bg-gray-100 text-gray-700" 
-                          : "bg-gray-800/30 text-gray-300"
+                          ? "bg-white text-black border-3 border-black/50" 
+                          : "bg-[#1E1E1E] text-white border-3 border-white/50"
                     }`}
                   >
-                    <span className="text-xs">{year}</span>
+                    <span className="text-xs font-medium">{year}</span>
                   </button>
                 ))}
               </div>
