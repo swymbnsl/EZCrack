@@ -1,153 +1,159 @@
-"use client";
+"use client"
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useParams } from "next/navigation";
-import { PageWrapper } from "@/components/layout/PageWrapper";
-import { useEffect, useState, useMemo } from "react";
-import { Header } from "@/components/layout/Header";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { TopicCard } from "@/components/topics/TopicCard";
-import { UnitSidebar } from "@/components/units/UnitSidebar";
-import { UnitFiltersMobile } from "@/components/units/UnitFiltersMobile";
-import { NotesModal } from "@/components/notes/NotesModal";
-import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal";
-import { EmptyState } from "@/components/ui/EmptyState";
-import axios from "axios";
-import { BookOpen, FileQuestion, AlertCircle } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import remarkGfm from "remark-gfm";
-import { useTheme } from "@/contexts/ThemeContext";
+import { motion, AnimatePresence } from "framer-motion"
+import { useParams } from "next/navigation"
+import { PageWrapper } from "@/components/layout/PageWrapper"
+import { useEffect, useState, useMemo } from "react"
+import { Header } from "@/components/layout/Header"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
+import { TopicCard } from "@/components/topics/TopicCard"
+import { UnitSidebar } from "@/components/units/UnitSidebar"
+import { UnitFiltersMobile } from "@/components/units/UnitFiltersMobile"
+import { NotesModal } from "@/components/notes/NotesModal"
+import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal"
+import { EmptyState } from "@/components/ui/EmptyState"
+import axios from "axios"
+import { BookOpen, FileQuestion, AlertCircle } from "lucide-react"
+import ReactMarkdown from "react-markdown"
+import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex"
+import remarkGfm from "remark-gfm"
+import { useTheme } from "@/contexts/ThemeContext"
+import { useContributors } from "@/contexts/ContributorsContext"
 
 interface Topic {
-  title: string;
-  weightage: number;
-  questions: Question[];
-  years: number[];
+  title: string
+  weightage: number
+  questions: Question[]
+  years: number[]
 }
 
 interface Question {
-  id: string;
-  text: string;
-  marks: number;
-  year: number;
-  midsem: boolean;
+  id: string
+  text: string
+  marks: number
+  year: number
+  midsem: boolean
 }
 
 interface Note {
-  topic: string;
-  content: string;
-  createdAt: string;
+  topic: string
+  content: string
+  createdAt: string
 }
 
 interface Unit {
-  _id: string;
-  number: number;
-  topics: Topic[];
-  subject_id: string;
-  notes?: Note[];
+  _id: string
+  number: number
+  topics: Topic[]
+  subject_id: string
+  notes?: Note[]
   formulaSheet?: {
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+    content: string
+    createdAt: string
+    updatedAt: string
+  }
   repeatedQuestions?: {
     conceptBased: {
-      concept: string;
-      frequency: number;
+      concept: string
+      frequency: number
       questions: {
-        _id: string;
-        question: string;
-        marks: number;
-        year: string;
-        midsem: boolean;
-      }[];
-    }[];
+        _id: string
+        question: string
+        marks: number
+        year: string
+        midsem: boolean
+      }[]
+    }[]
     patternBased: {
-      pattern: string;
-      frequency: number;
+      pattern: string
+      frequency: number
       questions: {
-        _id: string;
-        question: string;
-        marks: number;
-        year: string;
-        midsem: boolean;
-      }[];
-    }[];
-  };
+        _id: string
+        question: string
+        marks: number
+        year: string
+        midsem: boolean
+      }[]
+    }[]
+  }
 }
 
 interface RawQuestion {
-  _id: string;
-  topics: string[];
-  question: string;
-  marks: number;
-  year: number;
-  midsem: boolean;
+  _id: string
+  topics: string[]
+  question: string
+  marks: number
+  year: number
+  midsem: boolean
 }
 
 interface QuestionsData {
-  foundQuestions: RawQuestion[];
+  foundQuestions: RawQuestion[]
 }
 
 interface RawUnit {
-  topics: string[];
-  number: number;
-  _id: string;
-  subject_id: string;
-  notes?: Note[];
+  topics: string[]
+  number: number
+  _id: string
+  subject_id: string
+  notes?: Note[]
   formulaSheet?: {
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-  repeatedQuestions?: Unit["repeatedQuestions"];
+    content: string
+    createdAt: string
+    updatedAt: string
+  }
+  repeatedQuestions?: Unit["repeatedQuestions"]
 }
 
-type SortOrder = "asc" | "desc" | "original";
-type YearFilter = "all" | number;
-type TabType = "topics" | "questions";
+type SortOrder = "asc" | "desc" | "original"
+type YearFilter = "all" | number
+type TabType = "topics" | "questions"
 
 interface Contributor {
-  name: string;
-  branch: string;
-  semester: number;
-  avatar: string;
-  linkedinUrl?: string;
+  name: string
+  branch: string
+  semester: number
+  avatar: string
+  linkedinUrl?: string
   subject_ids: {
-    _id: string;
-    name: string;
-  }[];
+    _id: string
+    name: string
+  }[]
 }
 
 export default function UnitPage() {
-  const params = useParams();
-  const { branchId, semId, subjectId, unitId } = params;
-  const [unit, setUnit] = useState<Unit | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabType>("topics");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("original");
-  const [yearFilter, setYearFilter] = useState<YearFilter>("all");
-  const [availableYears, setAvailableYears] = useState<number[]>([]);
-  const [showNotesModal, setShowNotesModal] = useState(false);
-  const [selectedTopicNotes, setSelectedTopicNotes] = useState<Note | null>(null);
-  const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false);
-  const [contributor, setContributor] = useState<Contributor | undefined>(undefined);
-  const { theme } = useTheme();
-  const isLight = theme === "light";
+  const params = useParams()
+  const { branchId, semId, subjectId, unitId } = params
+  const [unit, setUnit] = useState<Unit | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<TabType>("topics")
+  const [sortOrder, setSortOrder] = useState<SortOrder>("original")
+  const [yearFilter, setYearFilter] = useState<YearFilter>("all")
+  const [availableYears, setAvailableYears] = useState<number[]>([])
+  const [showNotesModal, setShowNotesModal] = useState(false)
+  const [selectedTopicNotes, setSelectedTopicNotes] = useState<Note | null>(
+    null
+  )
+  const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false)
+  const [contributor, setContributor] = useState<Contributor | undefined>(
+    undefined
+  )
+  const { theme } = useTheme()
+  const isLight = theme === "light"
+  const { getContributorBySubjectId } = useContributors()
 
   const generateAnalysisData = (
     rawUnit: RawUnit,
     questionsData: QuestionsData
   ): Unit => {
-    const questions = questionsData.foundQuestions || [];
+    const questions = questionsData.foundQuestions || []
 
     interface TopicWithRawScore {
-      title: string;
-      rawScore: number;
-      years: number[];
-      questions: Question[];
+      title: string
+      rawScore: number
+      years: number[]
+      questions: Question[]
     }
 
     // First pass: calculate raw scores for each topic
@@ -156,18 +162,18 @@ export default function UnitPage() {
         // Find questions that include this topic in their topics array
         const topicQuestions = questions.filter(
           (q: RawQuestion) => q.topics && q.topics.includes(topic)
-        );
+        )
         const years = [
           ...new Set(topicQuestions.map((q: RawQuestion) => q.year)),
-        ];
+        ]
         const totalMarks = topicQuestions.reduce(
           (sum: number, q: RawQuestion) => sum + (q.marks || 0),
           0
-        );
-        const frequency = topicQuestions.length;
+        )
+        const frequency = topicQuestions.length
 
         // Raw score combines marks and frequency
-        const rawScore = frequency > 0 ? totalMarks * frequency : 0;
+        const rawScore = frequency > 0 ? totalMarks * frequency : 0
 
         return {
           title: topic,
@@ -180,26 +186,26 @@ export default function UnitPage() {
             year: q.year,
             midsem: q.midsem,
           })),
-        };
+        }
       }
-    );
+    )
 
     // Calculate total raw score from topics that have questions
     const topicsWithQuestions = topicsWithRawScores.filter(
       (topic) => topic.questions.length > 0
-    );
+    )
 
     // If no topics have questions, avoid division by zero
     const totalRawScore = topicsWithQuestions.reduce(
       (sum: number, topic: TopicWithRawScore) => sum + topic.rawScore,
       0
-    );
+    )
 
     // Calculate initial weightages
     const topicsWithWeightage = topicsWithRawScores.map(
       (topic: TopicWithRawScore) => {
         // Only topics with questions should have weightage
-        const hasQuestions = topic.questions.length > 0;
+        const hasQuestions = topic.questions.length > 0
 
         // If topic has questions but totalRawScore is 0, give it full weightage
         if (hasQuestions && totalRawScore === 0) {
@@ -212,32 +218,32 @@ export default function UnitPage() {
                 ? 100
                 : Math.floor(100 / topicsWithQuestions.length),
             exactWeightage: 100 / topicsWithQuestions.length,
-          };
+          }
         }
 
         // Calculate exact weightage for topics with questions
         const exactWeightage = hasQuestions
           ? (topic.rawScore / totalRawScore) * 100
-          : 0;
+          : 0
 
         // Ensure any topic with questions gets minimum 1% weightage
         // This prevents rounding down to zero for topics with very small weightage
-        let weightage = 0;
+        let weightage = 0
         if (hasQuestions) {
           // If the exact weightage is very small but not zero, ensure minimum 1%
           weightage =
             exactWeightage < 1 && exactWeightage > 0
               ? 1
-              : Math.round(exactWeightage);
+              : Math.round(exactWeightage)
         }
 
         return {
           ...topic,
           weightage,
           exactWeightage,
-        };
+        }
       }
-    );
+    )
 
     // Adjust weightages to ensure they sum to 100% (only if we have topics with questions)
     if (topicsWithQuestions.length > 0) {
@@ -245,27 +251,27 @@ export default function UnitPage() {
       const weightageSum = topicsWithWeightage.reduce(
         (sum, topic) => sum + topic.weightage,
         0
-      );
+      )
 
       // If the sum is not 100, adjust accordingly
       if (weightageSum !== 100) {
         // Sort by exact weightage descending (to adjust largest topics first)
         const sortedTopics = [...topicsWithWeightage]
           .filter((t) => t.questions.length > 0)
-          .sort((a, b) => b.exactWeightage - a.exactWeightage);
+          .sort((a, b) => b.exactWeightage - a.exactWeightage)
 
-        let remaining = 100 - weightageSum;
+        let remaining = 100 - weightageSum
 
         // Distribute the difference among topics with questions
         // Either add or subtract to reach exactly 100%
         for (let i = 0; i < sortedTopics.length && remaining !== 0; i++) {
-          const adjustment = remaining > 0 ? 1 : -1;
+          const adjustment = remaining > 0 ? 1 : -1
           const index = topicsWithWeightage.findIndex(
             (t) => t.title === sortedTopics[i].title
-          );
+          )
 
-          topicsWithWeightage[index].weightage += adjustment;
-          remaining -= adjustment;
+          topicsWithWeightage[index].weightage += adjustment
+          remaining -= adjustment
         }
       }
     }
@@ -274,117 +280,114 @@ export default function UnitPage() {
     return {
       ...rawUnit,
       topics: topicsWithWeightage.map(({ ...topic }) => topic),
-    };
-  };
+    }
+  }
 
   useEffect(() => {
     const fetchUnitData = async () => {
       try {
-        const unitResponse = await axios.get(`/api/units/${unitId}`);
-        const unitData = unitResponse.data;
+        const unitResponse = await axios.get(`/api/units/${unitId}`)
+        const unitData = unitResponse.data
         const questionsResponse = await axios.get(`/api/questions`, {
           params: {
             unit: unitData.unit.number,
             subjectId: subjectId,
           },
-        });
-        const questionsData = questionsResponse.data;
+        })
+        const questionsData = questionsResponse.data
 
-        setUnit(generateAnalysisData(unitData.unit, questionsData));
+        setUnit(generateAnalysisData(unitData.unit, questionsData))
       } catch (error) {
-        console.error("Error fetching unit data:", error);
+        console.error("Error fetching unit data:", error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-
-    const fetchContributor = async () => {
-      try {
-        const response = await axios.get(`/api/subjects/${subjectId}/contributor`);
-        setContributor(response.data.contributor);
-      } catch (error) {
-        console.error("Error fetching contributor:", error);
-        setContributor(undefined); // Explicitly set to undefined on error
-      }
-    };
+    }
 
     if (unitId) {
-      fetchUnitData();
-      fetchContributor();
+      fetchUnitData()
     }
-  }, [unitId, subjectId]);
+  }, [unitId, subjectId])
+
+  // Get contributor from context
+  useEffect(() => {
+    if (subjectId) {
+      const subjectContributor = getContributorBySubjectId(subjectId as string)
+      setContributor(subjectContributor)
+    }
+  }, [subjectId, getContributorBySubjectId])
 
   const handleTopicClick = (topicTitle: string) => {
     if (unit?.notes) {
-      const note = unit.notes.find((note) => note.topic === topicTitle);
+      const note = unit.notes.find((note) => note.topic === topicTitle)
       if (note) {
-        setSelectedTopicNotes(note);
-        setShowNotesModal(true);
+        setSelectedTopicNotes(note)
+        setShowNotesModal(true)
       } else {
         // If no notes exist for this topic, fall back to showing questions
-        setActiveTab("questions");
+        setActiveTab("questions")
       }
     } else {
       // If no notes at all, fall back to showing questions
-      setActiveTab("questions");
+      setActiveTab("questions")
     }
-  };
+  }
 
   const hasTopicNotes = (topicTitle: string) => {
-    return unit?.notes?.some((note) => note.topic === topicTitle) || false;
-  };
+    return unit?.notes?.some((note) => note.topic === topicTitle) || false
+  }
 
-  const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || "";
-  const parsedSemId = Array.isArray(semId) ? semId[0] : semId || "";
+  const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || ""
+  const parsedSemId = Array.isArray(semId) ? semId[0] : semId || ""
 
   const sortedTopics = useMemo(() => {
-    if (!unit) return [];
+    if (!unit) return []
 
-    let filtered = [...unit.topics];
+    let filtered = [...unit.topics]
 
     // Apply year filter if not "all" and we're on topics tab
     if (yearFilter !== "all") {
       filtered = filtered.filter((topic) =>
         topic.years.includes(yearFilter as number)
-      );
+      )
     }
 
     if (sortOrder === "original") {
-      return filtered;
+      return filtered
     }
 
     return filtered.sort((a, b) => {
       if (sortOrder === "asc") {
-        return a.weightage - b.weightage;
+        return a.weightage - b.weightage
       } else {
-        return b.weightage - a.weightage;
+        return b.weightage - a.weightage
       }
-    });
-  }, [unit, sortOrder, yearFilter]);
+    })
+  }, [unit, sortOrder, yearFilter])
 
   // Get unique years from all topics
   const uniqueYears = useMemo(() => {
-    if (!unit) return [];
+    if (!unit) return []
 
-    const years = new Set<number>();
+    const years = new Set<number>()
     unit.topics.forEach((topic) => {
-      topic.years.forEach((year) => years.add(year));
-    });
+      topic.years.forEach((year) => years.add(year))
+    })
 
-    return Array.from(years).sort((a, b) => b - a); // Sort years in descending order
-  }, [unit]);
+    return Array.from(years).sort((a, b) => b - a) // Sort years in descending order
+  }, [unit])
 
   // Update available years when unit changes
   useEffect(() => {
     if (unit) {
-      setAvailableYears(uniqueYears);
+      setAvailableYears(uniqueYears)
     }
-  }, [uniqueYears, unit]);
+  }, [uniqueYears, unit])
 
   // Sort by topics or questions depending on active tab
   const handleSortOrderChange = (order: SortOrder) => {
-    setSortOrder(order);
-  };
+    setSortOrder(order)
+  }
 
   return (
     <PageWrapper>
@@ -412,12 +415,20 @@ export default function UnitPage() {
           />
         </div>
 
-        <div className={`flex-1 flex flex-col sm:flex-row sm:overflow-hidden mt-2 sm:mt-0 ${isLight ? "bg-white sm:bg-[#F8F8F8]" : "bg-gradient-to-b from-gray-950 to-black sm:bg-[#121212]"}`}>
-          <div className={`hidden sm:block sm:w-auto sm:min-w-[320px] h-full overflow-y-auto ${
-            isLight 
-              ? "bg-[#EFEFEF] scrollbar-thin scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60" 
-              : "scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
-          } scrollbar-thumb-rounded-full`}>
+        <div
+          className={`flex-1 flex flex-col sm:flex-row sm:overflow-hidden mt-2 sm:mt-0 ${
+            isLight
+              ? "bg-white sm:bg-[#F8F8F8]"
+              : "bg-gradient-to-b from-gray-950 to-black sm:bg-[#121212]"
+          }`}
+        >
+          <div
+            className={`hidden sm:block sm:w-auto sm:min-w-[320px] h-full overflow-y-auto ${
+              isLight
+                ? "bg-[#EFEFEF] scrollbar-thin scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60"
+                : "scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
+            } scrollbar-thumb-rounded-full`}
+          >
             <UnitSidebar
               activeTab={activeTab}
               onTabChange={(tab) => setActiveTab(tab)}
@@ -444,11 +455,13 @@ export default function UnitPage() {
             onFormulaSheetClick={() => setShowFormulaSheetModal(true)}
           />
 
-          <div className={`flex-1 sm:h-full sm:overflow-y-auto ${
-            isLight 
-              ? "scrollbar-thin scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60" 
-              : "scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
-          } scrollbar-thumb-rounded-full`}>
+          <div
+            className={`flex-1 sm:h-full sm:overflow-y-auto ${
+              isLight
+                ? "scrollbar-thin scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60"
+                : "scrollbar-thin scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
+            } scrollbar-thumb-rounded-full`}
+          >
             <div className="p-3 sm:p-8">
               {isLoading ? (
                 <LoadingSpinner text="Loading content..." />
@@ -491,9 +504,8 @@ export default function UnitPage() {
                       {sortedTopics && sortedTopics.length > 0 ? (
                         sortedTopics.map((topic, topicIndex) => {
                           const filteredQuestions = topic.questions.filter(
-                            (q) =>
-                              yearFilter === "all" || q.year === yearFilter
-                          );
+                            (q) => yearFilter === "all" || q.year === yearFilter
+                          )
 
                           return (
                             <motion.div
@@ -502,29 +514,47 @@ export default function UnitPage() {
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: topicIndex * 0.1 }}
                               className={`${
-                                isLight 
-                                  ? "bg-white border-black" 
+                                isLight
+                                  ? "bg-white border-black"
                                   : "bg-[#1E1E1E] border-white"
                               } border-4 rounded-xl overflow-hidden`}
                             >
-                              <div className={`px-6 py-4 border-b-4 ${isLight ? "border-black" : "border-white"} flex items-center justify-between`}>
+                              <div
+                                className={`px-6 py-4 border-b-4 ${
+                                  isLight ? "border-black" : "border-white"
+                                } flex items-center justify-between`}
+                              >
                                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                                  <div className={`w-10 h-10 ${
-                                    isLight 
-                                      ? "bg-[#76ABAE] border-black" 
-                                      : "bg-[#4ECDC4] border-white"
-                                  } border-3 flex items-center justify-center`}>
-                                    <BookOpen className={`w-5 h-5 ${isLight ? "text-black" : "text-[#121212]"}`} />
+                                  <div
+                                    className={`w-10 h-10 ${
+                                      isLight
+                                        ? "bg-[#76ABAE] border-black"
+                                        : "bg-[#4ECDC4] border-white"
+                                    } border-3 flex items-center justify-center`}
+                                  >
+                                    <BookOpen
+                                      className={`w-5 h-5 ${
+                                        isLight
+                                          ? "text-black"
+                                          : "text-[#121212]"
+                                      }`}
+                                    />
                                   </div>
-                                  <h2 className={`text-lg font-semibold ${isLight ? "text-black" : "text-white"} break-words`}>
+                                  <h2
+                                    className={`text-lg font-semibold ${
+                                      isLight ? "text-black" : "text-white"
+                                    } break-words`}
+                                  >
                                     {topic.title}
                                   </h2>
                                 </div>
-                                <span className={`text-sm shrink-0 ml-3 ${
-                                  isLight 
-                                    ? "bg-[#FFD56B] text-black border-black" 
-                                    : "bg-[#4ECDC4] text-[#121212] border-white"
-                                } border-2 px-3 py-1.5 rounded-none`}>
+                                <span
+                                  className={`text-sm shrink-0 ml-3 ${
+                                    isLight
+                                      ? "bg-[#FFD56B] text-black border-black"
+                                      : "bg-[#4ECDC4] text-[#121212] border-white"
+                                  } border-2 px-3 py-1.5 rounded-none`}
+                                >
                                   <span className="hidden sm:inline">
                                     {filteredQuestions.length} questions
                                   </span>
@@ -533,92 +563,125 @@ export default function UnitPage() {
                                   </span>
                                 </span>
                               </div>
-                              <div className={`p-6 space-y-4 ${
-                                isLight 
-                                  ? "bg-[#F5F5F0] bg-opacity-70" 
-                                  : "bg-[#121212]"
-                              } h-full`}>
+                              <div
+                                className={`p-6 space-y-4 ${
+                                  isLight
+                                    ? "bg-[#F5F5F0] bg-opacity-70"
+                                    : "bg-[#121212]"
+                                } h-full`}
+                              >
                                 {filteredQuestions.length > 0 ? (
-                                  filteredQuestions.map(
-                                    (question, qIndex) => (
-                                      <motion.div
-                                        key={`${question.id}-${qIndex}`}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{
-                                          delay:
-                                            topicIndex * 0.1 + qIndex * 0.05,
-                                        }}
-                                        className={`group relative ${
-                                          isLight 
-                                            ? "bg-white border-3 border-black/70 hover:border-black" 
-                                            : "bg-[#1E1E1E] border-3 border-white/70 hover:border-white"
-                                        } p-3 sm:p-5 transition-all`}
-                                      >
-                                        <div className="flex flex-col gap-2 sm:gap-3">
-                                          <div className="flex items-center text-xs">
-                                            <div className="hidden sm:flex flex-wrap items-center gap-2">
-                                              <span className={`text-sm font-medium px-3 py-1.5 border-2 ${
-                                                isLight 
-                                                  ? "bg-[#76ABAE] text-black border-black" 
+                                  filteredQuestions.map((question, qIndex) => (
+                                    <motion.div
+                                      key={`${question.id}-${qIndex}`}
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{
+                                        delay: topicIndex * 0.1 + qIndex * 0.05,
+                                      }}
+                                      className={`group relative ${
+                                        isLight
+                                          ? "bg-white border-3 border-black/70 hover:border-black"
+                                          : "bg-[#1E1E1E] border-3 border-white/70 hover:border-white"
+                                      } p-3 sm:p-5 transition-all`}
+                                    >
+                                      <div className="flex flex-col gap-2 sm:gap-3">
+                                        <div className="flex items-center text-xs">
+                                          <div className="hidden sm:flex flex-wrap items-center gap-2">
+                                            <span
+                                              className={`text-sm font-medium px-3 py-1.5 border-2 ${
+                                                isLight
+                                                  ? "bg-[#76ABAE] text-black border-black"
                                                   : "bg-[#4ECDC4] text-[#121212] border-white"
-                                              }`}>
-                                                {question.year}
-                                              </span>
-                                              <span className={`text-sm font-medium px-3 py-1.5 border-2 ${
-                                                isLight 
-                                                  ? "bg-[#FFD56B] text-black border-black" 
-                                                  : "bg-[#FFE66D] text-[#121212] border-white"
-                                              }`}>
-                                                {question.marks} marks
-                                              </span>
-                                              <span className={`text-sm font-medium px-3 py-1.5 border-2 ${
-                                                isLight 
-                                                  ? "bg-[#FF7B54] text-black border-black" 
-                                                  : "bg-[#FF6B6B] text-[#121212] border-white"
-                                              }`}>
-                                                {question.midsem
-                                                  ? "Midterm"
-                                                  : "Endterm"}
-                                              </span>
-                                            </div>
-                                            <div className="sm:hidden flex items-center text-xs divide-x divide-gray-700">
-                                              <span className={`font-medium pr-2 ${isLight ? "text-black" : "text-white"}`}>
-                                                {question.year}
-                                              </span>
-                                              <span className={`font-medium px-2 ${isLight ? "text-[#76ABAE]" : "text-emerald-400"}`}>
-                                                {question.marks}m
-                                              </span>
-                                              <span className={`font-medium pl-2 ${isLight ? "text-[#FF7B54]" : "text-amber-400"}`}>
-                                                {question.midsem
-                                                  ? "Mid"
-                                                  : "End"}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <div className={`text-sm sm:text-base prose ${isLight ? "prose-black" : "prose-invert"} max-w-none ${isLight ? "light-katex" : ""} ${isLight ? "text-[#2D2A32]" : "text-gray-200"}`}>
-                                            <ReactMarkdown
-                                              remarkPlugins={[
-                                                remarkGfm,
-                                                remarkMath,
-                                              ]}
-                                              rehypePlugins={[
-                                                [
-                                                  rehypeKatex,
-                                                  {
-                                                    throwOnError: false,
-                                                    strict: false,
-                                                  },
-                                                ],
-                                              ]}
+                                              }`}
                                             >
-                                              {question.text}
-                                            </ReactMarkdown>
+                                              {question.year}
+                                            </span>
+                                            <span
+                                              className={`text-sm font-medium px-3 py-1.5 border-2 ${
+                                                isLight
+                                                  ? "bg-[#FFD56B] text-black border-black"
+                                                  : "bg-[#FFE66D] text-[#121212] border-white"
+                                              }`}
+                                            >
+                                              {question.marks} marks
+                                            </span>
+                                            <span
+                                              className={`text-sm font-medium px-3 py-1.5 border-2 ${
+                                                isLight
+                                                  ? "bg-[#FF7B54] text-black border-black"
+                                                  : "bg-[#FF6B6B] text-[#121212] border-white"
+                                              }`}
+                                            >
+                                              {question.midsem
+                                                ? "Midterm"
+                                                : "Endterm"}
+                                            </span>
+                                          </div>
+                                          <div className="sm:hidden flex items-center text-xs divide-x divide-gray-700">
+                                            <span
+                                              className={`font-medium pr-2 ${
+                                                isLight
+                                                  ? "text-black"
+                                                  : "text-white"
+                                              }`}
+                                            >
+                                              {question.year}
+                                            </span>
+                                            <span
+                                              className={`font-medium px-2 ${
+                                                isLight
+                                                  ? "text-[#76ABAE]"
+                                                  : "text-emerald-400"
+                                              }`}
+                                            >
+                                              {question.marks}m
+                                            </span>
+                                            <span
+                                              className={`font-medium pl-2 ${
+                                                isLight
+                                                  ? "text-[#FF7B54]"
+                                                  : "text-amber-400"
+                                              }`}
+                                            >
+                                              {question.midsem ? "Mid" : "End"}
+                                            </span>
                                           </div>
                                         </div>
-                                      </motion.div>
-                                    )
-                                  )
+                                        <div
+                                          className={`text-sm sm:text-base prose ${
+                                            isLight
+                                              ? "prose-black"
+                                              : "prose-invert"
+                                          } max-w-none ${
+                                            isLight ? "light-katex" : ""
+                                          } ${
+                                            isLight
+                                              ? "text-[#2D2A32]"
+                                              : "text-gray-200"
+                                          }`}
+                                        >
+                                          <ReactMarkdown
+                                            remarkPlugins={[
+                                              remarkGfm,
+                                              remarkMath,
+                                            ]}
+                                            rehypePlugins={[
+                                              [
+                                                rehypeKatex,
+                                                {
+                                                  throwOnError: false,
+                                                  strict: false,
+                                                },
+                                              ],
+                                            ]}
+                                          >
+                                            {question.text}
+                                          </ReactMarkdown>
+                                        </div>
+                                      </div>
+                                    </motion.div>
+                                  ))
                                 ) : (
                                   <div className="py-8">
                                     <EmptyState
@@ -635,7 +698,7 @@ export default function UnitPage() {
                                 )}
                               </div>
                             </motion.div>
-                          );
+                          )
                         })
                       ) : (
                         <div className="col-span-2">
@@ -676,5 +739,5 @@ export default function UnitPage() {
         />
       </div>
     </PageWrapper>
-  );
+  )
 }

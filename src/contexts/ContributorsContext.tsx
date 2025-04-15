@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useRef,
 } from "react"
 import axios from "axios"
 
@@ -35,27 +36,68 @@ const ContributorsContext = createContext<ContributorsContextType | undefined>(
   undefined
 )
 
+// Create a singleton instance to track if data has been fetched
+let contributorsData: Contributor[] = []
+let isFetching = false
+let fetchPromise: Promise<void> | null = null
+
 export const ContributorsProvider = ({ children }: { children: ReactNode }) => {
-  const [contributors, setContributors] = useState<Contributor[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [contributors, setContributors] =
+    useState<Contributor[]>(contributorsData)
+  const [isLoading, setIsLoading] = useState(!contributorsData.length)
   const [error, setError] = useState<string | null>(null)
+  const isMounted = useRef(false)
 
   useEffect(() => {
+    isMounted.current = true
+
     const fetchContributors = async () => {
+      // If we already have data, don't fetch again
+      if (contributorsData.length > 0) {
+        setIsLoading(false)
+        return
+      }
+
+      // If we're already fetching, wait for that promise to resolve
+      if (isFetching && fetchPromise) {
+        await fetchPromise
+        return
+      }
+
       try {
+        isFetching = true
         setIsLoading(true)
-        const response = await axios.get("/api/contributors")
-        setContributors(response.data.contributors)
-        setError(null)
+
+        // Create a new promise for this fetch
+        fetchPromise = (async () => {
+          const response = await axios.get("/api/contributors")
+          contributorsData = response.data.contributors
+
+          if (isMounted.current) {
+            setContributors(contributorsData)
+            setError(null)
+          }
+        })()
+
+        await fetchPromise
       } catch (err) {
         console.error("Error fetching contributors:", err)
-        setError("Failed to fetch contributors")
+        if (isMounted.current) {
+          setError("Failed to fetch contributors")
+        }
       } finally {
-        setIsLoading(false)
+        isFetching = false
+        if (isMounted.current) {
+          setIsLoading(false)
+        }
       }
     }
 
     fetchContributors()
+
+    return () => {
+      isMounted.current = false
+    }
   }, [])
 
   const getContributorBySubjectId = (subjectId: string) => {
