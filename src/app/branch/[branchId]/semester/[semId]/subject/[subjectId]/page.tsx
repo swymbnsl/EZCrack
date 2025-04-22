@@ -690,7 +690,6 @@ export default function UnitsPage() {
                                 ? `No ${examFilter} questions found. Try selecting 'All Exams'.`
                                 : "No questions available for this subject yet."
                             }
-                            iconColor="text-purple-400"
                           />
                         )}
                       </motion.div>
