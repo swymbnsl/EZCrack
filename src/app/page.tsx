@@ -1,44 +1,45 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Dropdown } from "@/components/ui/Dropdown";
-import { GradientButton } from "@/components/ui/GradientButton";
-import { Hero } from "@/components/home/Hero";
-import { PageWrapper } from "@/components/layout/PageWrapper";
-import { Navbar } from "@/components/layout/Navbar";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { School, BookOpen } from "lucide-react";
-import { branches, semesters } from "@/constants/lists";
-import { useTheme } from "@/contexts/ThemeContext";
+import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Dropdown } from "@/components/ui/Dropdown"
+import { GradientButton } from "@/components/ui/GradientButton"
+import { Hero } from "@/components/home/Hero"
+import { PageWrapper } from "@/components/layout/PageWrapper"
+import { Navbar } from "@/components/layout/Navbar"
+import { EmptyState } from "@/components/ui/EmptyState"
+import { School, BookOpen } from "lucide-react"
+import { branches, semesters } from "@/constants/lists"
+import { useTheme } from "@/contexts/ThemeContext"
+import { AttentionNotice } from "@/components/ui/AttentionNotice"
 
 export default function Home() {
-  const router = useRouter();
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [selectedSemester, setSelectedSemester] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [availableBranches, setAvailableBranches] = useState<string[]>([]);
-  const [availableSemesters, setAvailableSemesters] = useState<string[]>([]);
-  const { theme } = useTheme();
-  const isLight = theme === "light";
+  const router = useRouter()
+  const [selectedBranch, setSelectedBranch] = useState("")
+  const [selectedSemester, setSelectedSemester] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [availableBranches, setAvailableBranches] = useState<string[]>([])
+  const [availableSemesters, setAvailableSemesters] = useState<string[]>([])
+  const { theme } = useTheme()
+  const isLight = theme === "light"
 
   useEffect(() => {
     // In a real app, you might fetch this data from an API
     // For now, we'll use the static data from constants
-    setAvailableBranches(branches);
-    setAvailableSemesters(semesters);
-    setIsLoading(false);
-  }, []);
+    setAvailableBranches(branches)
+    setAvailableSemesters(semesters)
+    setIsLoading(false)
+  }, [])
 
   const handleGetStarted = () => {
     if (selectedBranch && selectedSemester) {
-      const semNumber = selectedSemester.replace("Semester ", "");
+      const semNumber = selectedSemester.replace("Semester ", "")
       router.push(
         `/branch/${selectedBranch.toLowerCase()}/semester/${semNumber}`
-      );
+      )
     }
-  };
+  }
 
   return (
     <PageWrapper>
@@ -58,32 +59,33 @@ export default function Home() {
             transition={{ duration: 0.3 }}
             className="flex justify-center items-center py-4 sm:py-8"
           >
-            <motion.div 
-              className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-4 ${isLight 
-                ? "border-[#FF7B54]/30 border-t-[#FF7B54]" 
-                : "border-[#FF6B6B]/30 border-t-[#FF6B6B]"
+            <motion.div
+              className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-4 ${
+                isLight
+                  ? "border-[#FF7B54]/30 border-t-[#FF7B54]"
+                  : "border-[#FF6B6B]/30 border-t-[#FF6B6B]"
               } rounded-none`}
-              animate={{ 
+              animate={{
                 rotate: 360,
                 boxShadow: [
-                  isLight 
-                    ? "4px 4px 0px rgba(0,0,0,1)" 
+                  isLight
+                    ? "4px 4px 0px rgba(0,0,0,1)"
                     : "4px 4px 0px rgba(255,255,255,0.8)",
-                  isLight 
-                    ? "1px 1px 0px rgba(0,0,0,1)" 
+                  isLight
+                    ? "1px 1px 0px rgba(0,0,0,1)"
                     : "1px 1px 0px rgba(255,255,255,0.8)",
-                  isLight 
-                    ? "4px 4px 0px rgba(0,0,0,1)" 
-                    : "4px 4px 0px rgba(255,255,255,0.8)"
-                ]
+                  isLight
+                    ? "4px 4px 0px rgba(0,0,0,1)"
+                    : "4px 4px 0px rgba(255,255,255,0.8)",
+                ],
               }}
-              transition={{ 
+              transition={{
                 rotate: { duration: 1.5, repeat: Infinity, ease: "linear" },
-                boxShadow: { 
-                  repeat: Infinity, 
+                boxShadow: {
+                  repeat: Infinity,
                   duration: 1.5,
-                  ease: "easeInOut" 
-                }
+                  ease: "easeInOut",
+                },
               }}
             />
           </motion.div>
@@ -120,7 +122,7 @@ export default function Home() {
               />
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="pt-1 sm:pt-2 md:pt-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -156,13 +158,18 @@ export default function Home() {
               }
               iconColor={
                 availableBranches.length === 0
-                  ? isLight ? "text-[#76ABAE]" : "text-[#4ECDC4]"
-                  : isLight ? "text-[#FF7B54]" : "text-[#FF6B6B]"
+                  ? isLight
+                    ? "text-[#76ABAE]"
+                    : "text-[#4ECDC4]"
+                  : isLight
+                  ? "text-[#FF7B54]"
+                  : "text-[#FF6B6B]"
               }
             />
           </motion.div>
         )}
       </motion.main>
+      <AttentionNotice message="Only 1st year material has been uploaded yet, rest will be uploaded soon. Join the whatsapp community to request material or contribute for some." />
     </PageWrapper>
-  );
+  )
 }
