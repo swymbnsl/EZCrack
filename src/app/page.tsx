@@ -169,7 +169,15 @@ export default function Home() {
           </motion.div>
         )}
       </motion.main>
-      <AttentionNotice message="Only 1st year material has been uploaded yet, rest will be uploaded soon. Join the whatsapp community to request material or contribute for some." />
+      <AttentionNotice 
+        message={
+          <>
+            <p>The platform is still under development, and the material is yet to be improved a lot.</p>
+            <p className="mt-2">Only 1st year material has been uploaded yet, rest will be uploaded soon.</p>
+            <p className="mt-2">Join the whatsapp community to request material or contribute for some.</p>
+          </>
+        } 
+      />
     </PageWrapper>
   )
 }

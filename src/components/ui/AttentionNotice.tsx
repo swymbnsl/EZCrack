@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, ReactNode } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bell, X } from "lucide-react"
+import {  X, Info } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
 
 interface AttentionNoticeProps {
-  message: string
+  message: ReactNode
 }
 
 export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
@@ -14,41 +14,36 @@ export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
   const isLight = theme === "light"
 
   useEffect(() => {
+    // Check if the notice has been closed before
+    const hasNoticeClosed = localStorage.getItem("attentionNoticeClosed") === "true"
+    
     // Display button after a slight delay
     const timer = setTimeout(() => {
       setIsOpen(true)
     }, 1000)
+    
+    // If not closed before, show the modal after a slight delay
+    if (!hasNoticeClosed) {
+      setTimeout(() => {
+        setIsNoticeOpen(true)
+      }, 1500)
+    }
+    
     return () => clearTimeout(timer)
   }, [])
+  
+  // Handle closing the notice and saving to localStorage
+  const handleCloseNotice = () => {
+    setIsNoticeOpen(false)
+    localStorage.setItem("attentionNoticeClosed", "true")
+  }
 
   return (
     <>
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            className="fixed sm:right-6 right-auto left-6 sm:left-auto bottom-6 z-40"
-            animate={{
-              scale: [1, 1.1, 0.9, 1.15, 1],
-              rotate: [0, -10, 10, -5, 0],
-            }}
-            transition={{
-              duration: 1.2,
-              repeat: Infinity,
-              repeatDelay: 1,
-            }}
-          >
-            <motion.button
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              whileTap={{ scale: 0.9 }}
-              transition={{
-                opacity: { duration: 0.3 },
-                scale: { type: "spring", stiffness: 400, damping: 10 },
-              }}
-              exit={{ scale: 0, opacity: 0 }}
+          <div className="fixed sm:right-6 right-auto left-6 sm:left-auto bottom-6 z-40">
+            <button
               onClick={() => setIsNoticeOpen(true)}
               className={`relative flex items-center justify-center w-[70px] h-[70px] 
                 ${
@@ -60,30 +55,16 @@ export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
                 hover:translate-x-0.5 hover:translate-y-0.5 
                 transition-all`}
             >
-              <motion.div
-                animate={{
-                  rotateZ: [0, 15, 0, -15, 0],
-                }}
-                transition={{
-                  duration: 0.5,
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  ease: "easeInOut",
-                  repeatDelay: 0.2,
-                }}
-              >
-                <Bell
-                  className={`w-9 h-9 ${
-                    isLight ? "text-white" : "text-[#121212]"
-                  }`}
-                />
-              </motion.div>
+              <Info
+                className={`w-9 h-9 ${
+                  isLight ? "text-white" : "text-[#121212]"
+                }`}
+              />
 
-              {/* Ping dot */}
-              <span className="absolute top-0 right-0 w-4 h-4 rounded-full bg-[#4ECDC4] animate-ping"></span>
+              {/* Notification dot */}
               <span className="absolute top-0 right-0 w-4 h-4 rounded-full bg-[#4ECDC4]"></span>
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         )}
       </AnimatePresence>
 
@@ -97,7 +78,7 @@ export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
               className={`fixed inset-0 ${
                 isLight ? "bg-gray-500/50" : "bg-black/70"
               } backdrop-blur-sm z-50`}
-              onClick={() => setIsNoticeOpen(false)}
+              onClick={handleCloseNotice}
             />
             <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none p-4">
               <motion.div
@@ -131,7 +112,7 @@ export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
                     <div
                       className={`w-10 h-10 bg-white/20 rounded-full flex items-center justify-center`}
                     >
-                      <Bell
+                      <Info
                         className={`w-5 h-5 ${
                           isLight ? "text-white" : "text-[#121212]"
                         }`}
@@ -140,7 +121,7 @@ export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
                     <h2 className="text-xl font-bold">Important Note!</h2>
                   </div>
                   <button
-                    onClick={() => setIsNoticeOpen(false)}
+                    onClick={handleCloseNotice}
                     className={`w-8 h-8 ${
                       isLight
                         ? "bg-white/20 hover:bg-white/30"
@@ -157,18 +138,18 @@ export const AttentionNotice = ({ message }: AttentionNoticeProps) => {
                 <div
                   className={`p-6 ${isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"}`}
                 >
-                  <p
+                  <div
                     className={`text-lg font-medium ${
                       isLight ? "text-black" : "text-white"
                     }`}
                   >
                     {message}
-                  </p>
+                  </div>
                   <div className="mt-4 flex justify-center">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setIsNoticeOpen(false)}
+                      onClick={handleCloseNotice}
                       className={`px-6 py-2 font-bold text-center
                         ${
                           isLight
