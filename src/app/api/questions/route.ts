@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     await connectToDB();
     const foundQuestions = await Question.find({
       unit: unit,
-      subjectId: subjectId,
+      subject_id: subjectId,
     }).lean();
 
     if (!foundQuestions) {
