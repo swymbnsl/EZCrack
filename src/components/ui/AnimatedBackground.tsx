@@ -28,11 +28,11 @@ export const AnimatedBackground = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  // Only show the animated background on the homepage
-  const isHomepage = pathname === "/" || pathname === "/home";
+  // Show the animated background on the homepage and notice page
+  const showOnPages = pathname === "/" || pathname === "/home" || pathname === "/notice";
   
-  // If not on homepage, don't render anything
-  if (!isHomepage) return null;
+  // If not on allowed pages, don't render anything
+  if (!showOnPages) return null;
   
   // Define shapes with their properties, fewer for mobile
   const shapes = [
