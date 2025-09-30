@@ -172,9 +172,9 @@ export default function Home() {
       <AttentionNotice 
         message={
           <>
-            <p>The platform is still under development, and the material is yet to be improved a lot.</p>
-            <p className="mt-2">Only 1st year material has been uploaded yet, rest will be uploaded soon.</p>
-            <p className="mt-2">Join the whatsapp community to request material or contribute for some.</p>
+            <p>The platform is still under development, and the material will be significantly improved.</p>
+            <p className="mt-2">Currently, only 1st-year and some 2rd-year material have been uploaded. The rest will be added soon.</p>
+            <p className="mt-2">Join the WhatsApp community to request material or contribute your own.</p>
           </>
         } 
       />
