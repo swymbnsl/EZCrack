@@ -110,6 +110,9 @@ export default function UnitsPage() {
   const [expandedYears, setExpandedYears] = useState<Record<number, boolean>>(
     {}
   )
+  const [expandedUnits, setExpandedUnits] = useState<Record<number, boolean>>(
+    {}
+  )
   const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false)
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null)
   const { getContributorBySubjectId } = useContributors()
@@ -196,6 +199,14 @@ export default function UnitsPage() {
     setExpandedYears((prev) => ({
       ...prev,
       [year]: !prev[year],
+    }))
+  }
+
+  // Toggle unit expansion in repeated questions
+  const toggleUnit = (unitNumber: number) => {
+    setExpandedUnits((prev) => ({
+      ...prev,
+      [unitNumber]: !prev[unitNumber],
     }))
   }
 
@@ -721,6 +732,7 @@ export default function UnitsPage() {
                                     unit.repeatedQuestions.patternBased.length >
                                       0))
                             )
+                            .sort((a, b) => a.number - b.number)
                             .map((unit) => (
                               <div
                                 key={unit._id}
@@ -730,10 +742,11 @@ export default function UnitsPage() {
                                     : "bg-[#1E1E1E] border-white"
                                 } border-4 overflow-hidden`}
                               >
-                                <div
-                                  className={`p-4 sm:p-6 border-b-4 ${
+                                <button
+                                  onClick={() => toggleUnit(unit.number)}
+                                  className={`w-full p-4 sm:p-6 border-b-4 ${
                                     isLight ? "border-black" : "border-white"
-                                  }`}
+                                  } transition-colors flex items-center justify-between`}
                                 >
                                   <div className="flex items-center gap-3">
                                     <div
@@ -761,9 +774,24 @@ export default function UnitsPage() {
                                       Unit {unit.number} - Repeated Questions
                                     </h2>
                                   </div>
-                                </div>
+                                  <ChevronDown
+                                    className={`w-5 h-5 ${
+                                      isLight ? "text-[#2D2A32]" : "text-gray-200"
+                                    } transition-transform ${
+                                      expandedUnits[unit.number] ? "rotate-180" : ""
+                                    }`}
+                                  />
+                                </button>
 
-                                <div className="p-4 sm:p-6 space-y-4">
+                                <AnimatePresence>
+                                  {expandedUnits[unit.number] && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.2 }}
+                                    >
+                                      <div className="p-4 sm:p-6 space-y-4">
                                   {repeatedType === "concept" ? (
                                     <div className="space-y-4">
                                       {unit.repeatedQuestions?.conceptBased.map(
@@ -1002,6 +1030,9 @@ export default function UnitsPage() {
                                     </div>
                                   )}
                                 </div>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
                               </div>
                             ))
                         ) : (
