@@ -5,6 +5,7 @@ import "katex/dist/katex.min.css"
 import { Analytics } from "@vercel/analytics/react"
 import { ThemeProvider } from "@/contexts/ThemeContext"
 import { ContributorsProvider } from "@/contexts/ContributorsContext"
+import { GoogleAnalytics } from "@next/third-parties/google"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
             <ContributorsProvider>{children}</ContributorsProvider>
           </ThemeProvider>
         </body>
+        <GoogleAnalytics gaId="G-GR8VWP7FMD" />
       </html>
       <Analytics />
     </>
