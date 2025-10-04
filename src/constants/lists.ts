@@ -3,6 +3,7 @@ export const branches = [
   "AIML",
   "Civil",
   "CSE",
+  "CST",
   "ECE",
   "EEE",
   "IT",
