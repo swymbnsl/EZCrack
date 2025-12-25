@@ -1,9 +1,12 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const questionSchema = new mongoose.Schema({
   question: {
     type: String,
     required: true,
+  },
+  answer: {
+    type: String,
   },
   year: {
     type: String,
@@ -38,9 +41,9 @@ const questionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
+})
 
 const Question =
-  mongoose.models.Question || mongoose.model("Question", questionSchema);
+  mongoose.models.Question || mongoose.model("Question", questionSchema)
 
-export default Question;
+export default Question

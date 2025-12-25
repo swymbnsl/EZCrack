@@ -3,7 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useParams } from "next/navigation"
 import { PageWrapper } from "@/components/layout/PageWrapper"
-import { BookOpen, Calendar, ChevronDown, Repeat } from "lucide-react"
+import {
+  BookOpen,
+  Calendar,
+  ChevronDown,
+  Repeat,
+  MessageSquare,
+} from "lucide-react"
 import { useEffect, useState, useMemo } from "react"
 import { Header } from "@/components/layout/Header"
 import { UnitCard } from "@/components/units/UnitCard"
@@ -11,6 +17,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { EmptyState } from "@/components/ui/EmptyState"
 import axios from "axios"
 import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal"
+import { AnswerModal } from "@/components/questions/AnswerModal"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import remarkMath from "remark-math"
@@ -33,6 +40,7 @@ interface BaseRepeatedQuestion {
     question: string
     year: string
     examType: string
+    answer?: string
   }[]
 }
 
@@ -69,6 +77,7 @@ interface Question {
   topics: string[]
   unit: number
   midsem: boolean
+  answer?: string
 }
 
 interface Subject {
@@ -115,6 +124,11 @@ export default function UnitsPage() {
   )
   const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false)
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null)
+  const [showAnswerModal, setShowAnswerModal] = useState(false)
+  const [selectedAnswer, setSelectedAnswer] = useState<{
+    question: string
+    answer: string
+  } | null>(null)
   const { getContributorBySubjectId } = useContributors()
   const [contributor, setContributor] = useState<Contributor | undefined>(
     undefined
@@ -680,6 +694,35 @@ export default function UnitsPage() {
                                                         )}
                                                       </div>
                                                     </div>
+                                                    {question.answer && (
+                                                      <button
+                                                        onClick={() => {
+                                                          setSelectedAnswer({
+                                                            question:
+                                                              question.question,
+                                                            answer:
+                                                              question.answer!,
+                                                          })
+                                                          setShowAnswerModal(
+                                                            true
+                                                          )
+                                                        }}
+                                                        className={`shrink-0 w-8 h-8 sm:w-10 sm:h-10 ${
+                                                          isLight
+                                                            ? "bg-[#76ABAE] border-black hover:bg-[#5a8f91]"
+                                                            : "bg-[#4ECDC4] border-white hover:bg-[#3dbdb5]"
+                                                        } border-2 flex items-center justify-center transition-colors`}
+                                                        title="View Answer"
+                                                      >
+                                                        <MessageSquare
+                                                          className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                                                            isLight
+                                                              ? "text-black"
+                                                              : "text-[#121212]"
+                                                          }`}
+                                                        />
+                                                      </button>
+                                                    )}
                                                   </div>
                                                 </div>
                                               ))}
@@ -776,9 +819,13 @@ export default function UnitsPage() {
                                   </div>
                                   <ChevronDown
                                     className={`w-5 h-5 ${
-                                      isLight ? "text-[#2D2A32]" : "text-gray-200"
+                                      isLight
+                                        ? "text-[#2D2A32]"
+                                        : "text-gray-200"
                                     } transition-transform ${
-                                      expandedUnits[unit.number] ? "rotate-180" : ""
+                                      expandedUnits[unit.number]
+                                        ? "rotate-180"
+                                        : ""
                                     }`}
                                   />
                                 </button>
@@ -792,247 +839,333 @@ export default function UnitsPage() {
                                       transition={{ duration: 0.2 }}
                                     >
                                       <div className="p-4 sm:p-6 space-y-4">
-                                  {repeatedType === "concept" ? (
-                                    <div className="space-y-4">
-                                      {unit.repeatedQuestions?.conceptBased.map(
-                                        (concept, i) => (
-                                          <div
-                                            key={`concept-${i}`}
-                                            className={`${
-                                              isLight
-                                                ? "bg-[#F5F5F5] border-black"
-                                                : "bg-[#252525] border-white"
-                                            } border-2 p-4`}
-                                          >
-                                            <div className="mb-3">
-                                              <div className="flex items-center justify-between mb-2">
-                                                <h3
-                                                  className={`text-lg font-bold ${
+                                        {repeatedType === "concept" ? (
+                                          <div className="space-y-4">
+                                            {unit.repeatedQuestions?.conceptBased.map(
+                                              (concept, i) => (
+                                                <div
+                                                  key={`concept-${i}`}
+                                                  className={`${
                                                     isLight
-                                                      ? "text-[#2D2A32]"
-                                                      : "text-gray-200"
-                                                  }`}
+                                                      ? "bg-[#F5F5F5] border-black"
+                                                      : "bg-[#252525] border-white"
+                                                  } border-2 p-4`}
                                                 >
-                                                  {concept.concept}
-                                                </h3>
-                                                <span
-                                                  className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
-                                                    isLight
-                                                      ? "bg-[#FFD56B] border-black"
-                                                      : "bg-[#FFE66D] text-[#121212] border-white"
-                                                  }`}
-                                                >
-                                                  {concept.frequency}x frequent
-                                                </span>
-                                              </div>
-
-                                              <div className="space-y-3 mt-4">
-                                                {concept.questions.map(
-                                                  (question, j) => (
-                                                    <div
-                                                      key={`concept-q-${j}`}
-                                                      className={`p-3 ${
-                                                        isLight
-                                                          ? "bg-white border-black"
-                                                          : "bg-[#1E1E1E] border-white"
-                                                      } border-2`}
-                                                    >
-                                                      <div className="flex gap-2 items-start mb-2">
-                                                        <div
-                                                          className={`px-2 py-0.5 text-xs border-2 ${
-                                                            isLight
-                                                              ? "bg-[#76ABAE] border-black"
-                                                              : "bg-[#4ECDC4] text-[#121212] border-white"
-                                                          }`}
-                                                        >
-                                                          {question.year}
-                                                        </div>
-                                                        <div
-                                                          className={`px-2 py-0.5 text-xs border-2 ${
-                                                            isLight
-                                                              ? formatExamType(
-                                                                  question.examType
-                                                                ) === "Midterm"
-                                                                ? "bg-[#FFD56B] border-black"
-                                                                : "bg-[#FF7B54] border-black"
-                                                              : formatExamType(
-                                                                  question.examType
-                                                                ) === "Midterm"
-                                                              ? "bg-[#FFE66D] text-[#121212] border-white"
-                                                              : "bg-[#FF6B6B] text-[#121212] border-white"
-                                                          }`}
-                                                        >
-                                                          {formatExamType(
-                                                            question.examType
-                                                          )}
-                                                        </div>
-                                                      </div>
-                                                      <div
-                                                        className={`text-sm sm:text-base prose ${
-                                                          isLight
-                                                            ? "prose-black"
-                                                            : "prose-invert"
-                                                        } max-w-none ${
-                                                          isLight
-                                                            ? "light-katex"
-                                                            : ""
-                                                        } ${
+                                                  <div className="mb-3">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                      <h3
+                                                        className={`text-lg font-bold ${
                                                           isLight
                                                             ? "text-[#2D2A32]"
                                                             : "text-gray-200"
                                                         }`}
                                                       >
-                                                        <ReactMarkdown
-                                                          remarkPlugins={[
-                                                            remarkGfm,
-                                                            remarkMath,
-                                                          ]}
-                                                          rehypePlugins={[
-                                                            [
-                                                              rehypeKatex,
-                                                              {
-                                                                throwOnError:
-                                                                  false,
-                                                                strict: false,
-                                                              },
-                                                            ],
-                                                          ]}
-                                                        >
-                                                          {question.question}
-                                                        </ReactMarkdown>
-                                                      </div>
+                                                        {concept.concept}
+                                                      </h3>
+                                                      <span
+                                                        className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
+                                                          isLight
+                                                            ? "bg-[#FFD56B] border-black"
+                                                            : "bg-[#FFE66D] text-[#121212] border-white"
+                                                        }`}
+                                                      >
+                                                        {concept.frequency}x
+                                                        frequent
+                                                      </span>
                                                     </div>
-                                                  )
-                                                )}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        )
-                                      )}
-                                    </div>
-                                  ) : (
-                                    <div className="space-y-4">
-                                      {unit.repeatedQuestions?.patternBased.map(
-                                        (pattern, i) => (
-                                          <div
-                                            key={`pattern-${i}`}
-                                            className={`${
-                                              isLight
-                                                ? "bg-[#F5F5F5] border-black"
-                                                : "bg-[#252525] border-white"
-                                            } border-2 p-4`}
-                                          >
-                                            <div className="mb-3">
-                                              <div className="flex items-center justify-between mb-2">
-                                                <h3
-                                                  className={`text-lg font-bold ${
-                                                    isLight
-                                                      ? "text-[#2D2A32]"
-                                                      : "text-gray-200"
-                                                  }`}
-                                                >
-                                                  {pattern.pattern}
-                                                </h3>
-                                                <span
-                                                  className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
-                                                    isLight
-                                                      ? "bg-[#FFD56B] border-black"
-                                                      : "bg-[#FFE66D] text-[#121212] border-white"
-                                                  }`}
-                                                >
-                                                  {pattern.frequency}x frequent
-                                                </span>
-                                              </div>
 
-                                              <div className="space-y-3 mt-4">
-                                                {pattern.questions.map(
-                                                  (question, j) => (
-                                                    <div
-                                                      key={`pattern-q-${j}`}
-                                                      className={`p-3 ${
-                                                        isLight
-                                                          ? "bg-white border-black"
-                                                          : "bg-[#1E1E1E] border-white"
-                                                      } border-2`}
-                                                    >
-                                                      <div className="flex gap-2 items-start mb-2">
-                                                        <div
-                                                          className={`px-2 py-0.5 text-xs border-2 ${
-                                                            isLight
-                                                              ? "bg-[#76ABAE] border-black"
-                                                              : "bg-[#4ECDC4] text-[#121212] border-white"
-                                                          }`}
-                                                        >
-                                                          {question.year}
-                                                        </div>
-                                                        <div
-                                                          className={`px-2 py-0.5 text-xs border-2 ${
-                                                            isLight
-                                                              ? formatExamType(
-                                                                  question.examType
-                                                                ) === "Midterm"
-                                                                ? "bg-[#FFD56B] border-black"
-                                                                : "bg-[#FF7B54] border-black"
-                                                              : formatExamType(
-                                                                  question.examType
-                                                                ) === "Midterm"
-                                                              ? "bg-[#FFE66D] text-[#121212] border-white"
-                                                              : "bg-[#FF6B6B] text-[#121212] border-white"
-                                                          }`}
-                                                        >
-                                                          {formatExamType(
-                                                            question.examType
-                                                          )}
-                                                        </div>
-                                                      </div>
-                                                      <div
-                                                        className={`text-sm sm:text-base prose ${
-                                                          isLight
-                                                            ? "prose-black"
-                                                            : "prose-invert"
-                                                        } max-w-none ${
-                                                          isLight
-                                                            ? "light-katex"
-                                                            : ""
-                                                        } ${
+                                                    <div className="space-y-3 mt-4">
+                                                      {concept.questions.map(
+                                                        (question, j) => (
+                                                          <div
+                                                            key={`concept-q-${j}`}
+                                                            className={`p-3 ${
+                                                              isLight
+                                                                ? "bg-white border-black"
+                                                                : "bg-[#1E1E1E] border-white"
+                                                            } border-2`}
+                                                          >
+                                                            <div className="flex justify-between items-start gap-3">
+                                                              <div className="flex-1">
+                                                                <div className="flex gap-2 items-start mb-2">
+                                                                  <div
+                                                                    className={`px-2 py-0.5 text-xs border-2 ${
+                                                                      isLight
+                                                                        ? "bg-[#76ABAE] border-black"
+                                                                        : "bg-[#4ECDC4] text-[#121212] border-white"
+                                                                    }`}
+                                                                  >
+                                                                    {
+                                                                      question.year
+                                                                    }
+                                                                  </div>
+                                                                  <div
+                                                                    className={`px-2 py-0.5 text-xs border-2 ${
+                                                                      isLight
+                                                                        ? formatExamType(
+                                                                            question.examType
+                                                                          ) ===
+                                                                          "Midterm"
+                                                                          ? "bg-[#FFD56B] border-black"
+                                                                          : "bg-[#FF7B54] border-black"
+                                                                        : formatExamType(
+                                                                            question.examType
+                                                                          ) ===
+                                                                          "Midterm"
+                                                                        ? "bg-[#FFE66D] text-[#121212] border-white"
+                                                                        : "bg-[#FF6B6B] text-[#121212] border-white"
+                                                                    }`}
+                                                                  >
+                                                                    {formatExamType(
+                                                                      question.examType
+                                                                    )}
+                                                                  </div>
+                                                                </div>
+                                                                <div
+                                                                  className={`text-sm sm:text-base prose ${
+                                                                    isLight
+                                                                      ? "prose-black"
+                                                                      : "prose-invert"
+                                                                  } max-w-none ${
+                                                                    isLight
+                                                                      ? "light-katex"
+                                                                      : ""
+                                                                  } ${
+                                                                    isLight
+                                                                      ? "text-[#2D2A32]"
+                                                                      : "text-gray-200"
+                                                                  }`}
+                                                                >
+                                                                  <ReactMarkdown
+                                                                    remarkPlugins={[
+                                                                      remarkGfm,
+                                                                      remarkMath,
+                                                                    ]}
+                                                                    rehypePlugins={[
+                                                                      [
+                                                                        rehypeKatex,
+                                                                        {
+                                                                          throwOnError:
+                                                                            false,
+                                                                          strict:
+                                                                            false,
+                                                                        },
+                                                                      ],
+                                                                    ]}
+                                                                  >
+                                                                    {
+                                                                      question.question
+                                                                    }
+                                                                  </ReactMarkdown>
+                                                                </div>
+                                                              </div>
+                                                              {question.answer && (
+                                                                <button
+                                                                  onClick={() => {
+                                                                    setSelectedAnswer(
+                                                                      {
+                                                                        question:
+                                                                          question.question,
+                                                                        answer:
+                                                                          question.answer!,
+                                                                      }
+                                                                    )
+                                                                    setShowAnswerModal(
+                                                                      true
+                                                                    )
+                                                                  }}
+                                                                  className={`shrink-0 w-8 h-8 ${
+                                                                    isLight
+                                                                      ? "bg-[#76ABAE] border-black hover:bg-[#5a8f91]"
+                                                                      : "bg-[#4ECDC4] border-white hover:bg-[#3dbdb5]"
+                                                                  } border-2 flex items-center justify-center transition-colors`}
+                                                                  title="View Answer"
+                                                                >
+                                                                  <MessageSquare
+                                                                    className={`w-4 h-4 ${
+                                                                      isLight
+                                                                        ? "text-black"
+                                                                        : "text-[#121212]"
+                                                                    }`}
+                                                                  />
+                                                                </button>
+                                                              )}
+                                                            </div>
+                                                          </div>
+                                                        )
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              )
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <div className="space-y-4">
+                                            {unit.repeatedQuestions?.patternBased.map(
+                                              (pattern, i) => (
+                                                <div
+                                                  key={`pattern-${i}`}
+                                                  className={`${
+                                                    isLight
+                                                      ? "bg-[#F5F5F5] border-black"
+                                                      : "bg-[#252525] border-white"
+                                                  } border-2 p-4`}
+                                                >
+                                                  <div className="mb-3">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                      <h3
+                                                        className={`text-lg font-bold ${
                                                           isLight
                                                             ? "text-[#2D2A32]"
                                                             : "text-gray-200"
                                                         }`}
                                                       >
-                                                        <ReactMarkdown
-                                                          remarkPlugins={[
-                                                            remarkGfm,
-                                                            remarkMath,
-                                                          ]}
-                                                          rehypePlugins={[
-                                                            [
-                                                              rehypeKatex,
-                                                              {
-                                                                throwOnError:
-                                                                  false,
-                                                                strict: false,
-                                                              },
-                                                            ],
-                                                          ]}
-                                                        >
-                                                          {question.question}
-                                                        </ReactMarkdown>
-                                                      </div>
+                                                        {pattern.pattern}
+                                                      </h3>
+                                                      <span
+                                                        className={`inline-flex items-center text-sm px-2 py-1 border-2 ${
+                                                          isLight
+                                                            ? "bg-[#FFD56B] border-black"
+                                                            : "bg-[#FFE66D] text-[#121212] border-white"
+                                                        }`}
+                                                      >
+                                                        {pattern.frequency}x
+                                                        frequent
+                                                      </span>
                                                     </div>
-                                                  )
-                                                )}
-                                              </div>
-                                            </div>
+
+                                                    <div className="space-y-3 mt-4">
+                                                      {pattern.questions.map(
+                                                        (question, j) => (
+                                                          <div
+                                                            key={`pattern-q-${j}`}
+                                                            className={`p-3 ${
+                                                              isLight
+                                                                ? "bg-white border-black"
+                                                                : "bg-[#1E1E1E] border-white"
+                                                            } border-2`}
+                                                          >
+                                                            <div className="flex justify-between items-start gap-3">
+                                                              <div className="flex-1">
+                                                                <div className="flex gap-2 items-start mb-2">
+                                                                  <div
+                                                                    className={`px-2 py-0.5 text-xs border-2 ${
+                                                                      isLight
+                                                                        ? "bg-[#76ABAE] border-black"
+                                                                        : "bg-[#4ECDC4] text-[#121212] border-white"
+                                                                    }`}
+                                                                  >
+                                                                    {
+                                                                      question.year
+                                                                    }
+                                                                  </div>
+                                                                  <div
+                                                                    className={`px-2 py-0.5 text-xs border-2 ${
+                                                                      isLight
+                                                                        ? formatExamType(
+                                                                            question.examType
+                                                                          ) ===
+                                                                          "Midterm"
+                                                                          ? "bg-[#FFD56B] border-black"
+                                                                          : "bg-[#FF7B54] border-black"
+                                                                        : formatExamType(
+                                                                            question.examType
+                                                                          ) ===
+                                                                          "Midterm"
+                                                                        ? "bg-[#FFE66D] text-[#121212] border-white"
+                                                                        : "bg-[#FF6B6B] text-[#121212] border-white"
+                                                                    }`}
+                                                                  >
+                                                                    {formatExamType(
+                                                                      question.examType
+                                                                    )}
+                                                                  </div>
+                                                                </div>
+                                                                <div
+                                                                  className={`text-sm sm:text-base prose ${
+                                                                    isLight
+                                                                      ? "prose-black"
+                                                                      : "prose-invert"
+                                                                  } max-w-none ${
+                                                                    isLight
+                                                                      ? "light-katex"
+                                                                      : ""
+                                                                  } ${
+                                                                    isLight
+                                                                      ? "text-[#2D2A32]"
+                                                                      : "text-gray-200"
+                                                                  }`}
+                                                                >
+                                                                  <ReactMarkdown
+                                                                    remarkPlugins={[
+                                                                      remarkGfm,
+                                                                      remarkMath,
+                                                                    ]}
+                                                                    rehypePlugins={[
+                                                                      [
+                                                                        rehypeKatex,
+                                                                        {
+                                                                          throwOnError:
+                                                                            false,
+                                                                          strict:
+                                                                            false,
+                                                                        },
+                                                                      ],
+                                                                    ]}
+                                                                  >
+                                                                    {
+                                                                      question.question
+                                                                    }
+                                                                  </ReactMarkdown>
+                                                                </div>
+                                                              </div>
+                                                              {question.answer && (
+                                                                <button
+                                                                  onClick={() => {
+                                                                    setSelectedAnswer(
+                                                                      {
+                                                                        question:
+                                                                          question.question,
+                                                                        answer:
+                                                                          question.answer!,
+                                                                      }
+                                                                    )
+                                                                    setShowAnswerModal(
+                                                                      true
+                                                                    )
+                                                                  }}
+                                                                  className={`shrink-0 w-8 h-8 ${
+                                                                    isLight
+                                                                      ? "bg-[#76ABAE] border-black hover:bg-[#5a8f91]"
+                                                                      : "bg-[#4ECDC4] border-white hover:bg-[#3dbdb5]"
+                                                                  } border-2 flex items-center justify-center transition-colors`}
+                                                                  title="View Answer"
+                                                                >
+                                                                  <MessageSquare
+                                                                    className={`w-4 h-4 ${
+                                                                      isLight
+                                                                        ? "text-black"
+                                                                        : "text-[#121212]"
+                                                                    }`}
+                                                                  />
+                                                                </button>
+                                                              )}
+                                                            </div>
+                                                          </div>
+                                                        )
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              )
+                                            )}
                                           </div>
-                                        )
-                                      )}
-                                    </div>
+                                        )}
+                                      </div>
+                                    </motion.div>
                                   )}
-                                </div>
-                                      </motion.div>
-                                    )}
-                                  </AnimatePresence>
+                                </AnimatePresence>
                               </div>
                             ))
                         ) : (
@@ -1065,6 +1198,16 @@ export default function UnitsPage() {
           }}
           formulaSheet={selectedUnit?.formulaSheet || null}
           unitNumber={selectedUnit?.number || 0}
+        />
+
+        <AnswerModal
+          isOpen={showAnswerModal}
+          onClose={() => {
+            setShowAnswerModal(false)
+            setSelectedAnswer(null)
+          }}
+          question={selectedAnswer?.question || ""}
+          answer={selectedAnswer?.answer || ""}
         />
       </div>
     </PageWrapper>

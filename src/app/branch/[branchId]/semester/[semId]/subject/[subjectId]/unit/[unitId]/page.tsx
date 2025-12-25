@@ -11,9 +11,15 @@ import { UnitSidebar } from "@/components/units/UnitSidebar"
 import { UnitFiltersMobile } from "@/components/units/UnitFiltersMobile"
 import { NotesModal } from "@/components/notes/NotesModal"
 import { FormulaSheetModal } from "@/components/notes/FormulaSheetModal"
+import { AnswerModal } from "@/components/questions/AnswerModal"
 import { EmptyState } from "@/components/ui/EmptyState"
 import axios from "axios"
-import { BookOpen, FileQuestion, AlertCircle } from "lucide-react"
+import {
+  BookOpen,
+  FileQuestion,
+  AlertCircle,
+  MessageSquare,
+} from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkMath from "remark-math"
 import rehypeKatex from "rehype-katex"
@@ -34,6 +40,7 @@ interface Question {
   marks: number
   year: number
   midsem: boolean
+  answer?: string
 }
 
 interface Note {
@@ -86,6 +93,7 @@ interface RawQuestion {
   marks: number
   year: number
   midsem: boolean
+  answer?: string
 }
 
 interface QuestionsData {
@@ -136,6 +144,11 @@ export default function UnitPage() {
     null
   )
   const [showFormulaSheetModal, setShowFormulaSheetModal] = useState(false)
+  const [showAnswerModal, setShowAnswerModal] = useState(false)
+  const [selectedAnswer, setSelectedAnswer] = useState<{
+    question: string
+    answer: string
+  } | null>(null)
   const [contributor, setContributor] = useState<Contributor | undefined>(
     undefined
   )
@@ -185,6 +198,7 @@ export default function UnitPage() {
             marks: q.marks,
             year: q.year,
             midsem: q.midsem,
+            answer: q.answer,
           })),
         }
       }
@@ -585,100 +599,129 @@ export default function UnitPage() {
                                           : "bg-[#1E1E1E] border-3 border-white/70 hover:border-white"
                                       } p-3 sm:p-5 transition-all`}
                                     >
-                                      <div className="flex flex-col gap-2 sm:gap-3">
-                                        <div className="flex items-center text-xs">
-                                          <div className="hidden sm:flex flex-wrap items-center gap-2">
-                                            <span
-                                              className={`text-sm font-medium px-3 py-1.5 border-2 ${
-                                                isLight
-                                                  ? "bg-[#76ABAE] text-black border-black"
-                                                  : "bg-[#4ECDC4] text-[#121212] border-white"
-                                              }`}
-                                            >
-                                              {question.year}
-                                            </span>
-                                            <span
-                                              className={`text-sm font-medium px-3 py-1.5 border-2 ${
-                                                isLight
-                                                  ? "bg-[#FFD56B] text-black border-black"
-                                                  : "bg-[#FFE66D] text-[#121212] border-white"
-                                              }`}
-                                            >
-                                              {question.marks} marks
-                                            </span>
-                                            <span
-                                              className={`text-sm font-medium px-3 py-1.5 border-2 ${
-                                                isLight
-                                                  ? "bg-[#FF7B54] text-black border-black"
-                                                  : "bg-[#FF6B6B] text-[#121212] border-white"
-                                              }`}
-                                            >
-                                              {question.midsem
-                                                ? "Midterm"
-                                                : "Endterm"}
-                                            </span>
+                                      <div className="flex justify-between items-start gap-3">
+                                        <div className="flex-1 flex flex-col gap-2 sm:gap-3">
+                                          <div className="flex items-center text-xs">
+                                            <div className="hidden sm:flex flex-wrap items-center gap-2">
+                                              <span
+                                                className={`text-sm font-medium px-3 py-1.5 border-2 ${
+                                                  isLight
+                                                    ? "bg-[#76ABAE] text-black border-black"
+                                                    : "bg-[#4ECDC4] text-[#121212] border-white"
+                                                }`}
+                                              >
+                                                {question.year}
+                                              </span>
+                                              <span
+                                                className={`text-sm font-medium px-3 py-1.5 border-2 ${
+                                                  isLight
+                                                    ? "bg-[#FFD56B] text-black border-black"
+                                                    : "bg-[#FFE66D] text-[#121212] border-white"
+                                                }`}
+                                              >
+                                                {question.marks} marks
+                                              </span>
+                                              <span
+                                                className={`text-sm font-medium px-3 py-1.5 border-2 ${
+                                                  isLight
+                                                    ? "bg-[#FF7B54] text-black border-black"
+                                                    : "bg-[#FF6B6B] text-[#121212] border-white"
+                                                }`}
+                                              >
+                                                {question.midsem
+                                                  ? "Midterm"
+                                                  : "Endterm"}
+                                              </span>
+                                            </div>
+                                            <div className="sm:hidden flex items-center text-xs divide-x divide-gray-700">
+                                              <span
+                                                className={`font-medium pr-2 ${
+                                                  isLight
+                                                    ? "text-black"
+                                                    : "text-white"
+                                                }`}
+                                              >
+                                                {question.year}
+                                              </span>
+                                              <span
+                                                className={`font-medium px-2 ${
+                                                  isLight
+                                                    ? "text-[#76ABAE]"
+                                                    : "text-emerald-400"
+                                                }`}
+                                              >
+                                                {question.marks}m
+                                              </span>
+                                              <span
+                                                className={`font-medium pl-2 ${
+                                                  isLight
+                                                    ? "text-[#FF7B54]"
+                                                    : "text-amber-400"
+                                                }`}
+                                              >
+                                                {question.midsem
+                                                  ? "Mid"
+                                                  : "End"}
+                                              </span>
+                                            </div>
                                           </div>
-                                          <div className="sm:hidden flex items-center text-xs divide-x divide-gray-700">
-                                            <span
-                                              className={`font-medium pr-2 ${
+                                          <div
+                                            className={`text-sm sm:text-base prose ${
+                                              isLight
+                                                ? "prose-black"
+                                                : "prose-invert"
+                                            } max-w-none ${
+                                              isLight ? "light-katex" : ""
+                                            } ${
+                                              isLight
+                                                ? "text-[#2D2A32]"
+                                                : "text-gray-200"
+                                            }`}
+                                          >
+                                            <ReactMarkdown
+                                              remarkPlugins={[
+                                                remarkGfm,
+                                                remarkMath,
+                                              ]}
+                                              rehypePlugins={[
+                                                [
+                                                  rehypeKatex,
+                                                  {
+                                                    throwOnError: false,
+                                                    strict: false,
+                                                  },
+                                                ],
+                                              ]}
+                                            >
+                                              {question.text}
+                                            </ReactMarkdown>
+                                          </div>
+                                        </div>
+                                        {question.answer && (
+                                          <button
+                                            onClick={() => {
+                                              setSelectedAnswer({
+                                                question: question.text,
+                                                answer: question.answer!,
+                                              })
+                                              setShowAnswerModal(true)
+                                            }}
+                                            className={`shrink-0 w-8 h-8 sm:w-10 sm:h-10 ${
+                                              isLight
+                                                ? "bg-[#76ABAE] border-black hover:bg-[#5a8f91]"
+                                                : "bg-[#4ECDC4] border-white hover:bg-[#3dbdb5]"
+                                            } border-2 flex items-center justify-center transition-colors`}
+                                            title="View Answer"
+                                          >
+                                            <MessageSquare
+                                              className={`w-4 h-4 sm:w-5 sm:h-5 ${
                                                 isLight
                                                   ? "text-black"
-                                                  : "text-white"
+                                                  : "text-[#121212]"
                                               }`}
-                                            >
-                                              {question.year}
-                                            </span>
-                                            <span
-                                              className={`font-medium px-2 ${
-                                                isLight
-                                                  ? "text-[#76ABAE]"
-                                                  : "text-emerald-400"
-                                              }`}
-                                            >
-                                              {question.marks}m
-                                            </span>
-                                            <span
-                                              className={`font-medium pl-2 ${
-                                                isLight
-                                                  ? "text-[#FF7B54]"
-                                                  : "text-amber-400"
-                                              }`}
-                                            >
-                                              {question.midsem ? "Mid" : "End"}
-                                            </span>
-                                          </div>
-                                        </div>
-                                        <div
-                                          className={`text-sm sm:text-base prose ${
-                                            isLight
-                                              ? "prose-black"
-                                              : "prose-invert"
-                                          } max-w-none ${
-                                            isLight ? "light-katex" : ""
-                                          } ${
-                                            isLight
-                                              ? "text-[#2D2A32]"
-                                              : "text-gray-200"
-                                          }`}
-                                        >
-                                          <ReactMarkdown
-                                            remarkPlugins={[
-                                              remarkGfm,
-                                              remarkMath,
-                                            ]}
-                                            rehypePlugins={[
-                                              [
-                                                rehypeKatex,
-                                                {
-                                                  throwOnError: false,
-                                                  strict: false,
-                                                },
-                                              ],
-                                            ]}
-                                          >
-                                            {question.text}
-                                          </ReactMarkdown>
-                                        </div>
+                                            />
+                                          </button>
+                                        )}
                                       </div>
                                     </motion.div>
                                   ))
@@ -736,6 +779,16 @@ export default function UnitPage() {
           onClose={() => setShowFormulaSheetModal(false)}
           formulaSheet={unit?.formulaSheet || null}
           unitNumber={unit?.number || 0}
+        />
+
+        <AnswerModal
+          isOpen={showAnswerModal}
+          onClose={() => {
+            setShowAnswerModal(false)
+            setSelectedAnswer(null)
+          }}
+          question={selectedAnswer?.question || ""}
+          answer={selectedAnswer?.answer || ""}
         />
       </div>
     </PageWrapper>
