@@ -116,7 +116,9 @@ export function AnswerModal({
                   </p>
                   <div
                     className={`prose ${
-                      isLight ? "prose-black" : "prose-invert"
+                      isLight
+                        ? "prose-black prose-blockquote:text-gray-800 prose-blockquote:border-gray-400 prose-code:text-black prose-code:bg-gray-400"
+                        : "prose-invert"
                     } max-w-none ${isLight ? "light-katex" : ""} ${
                       isLight ? "text-[#2D2A32]" : "text-gray-200"
                     } text-sm sm:text-base`}
@@ -144,7 +146,7 @@ export function AnswerModal({
                   <div
                     className={`prose ${
                       isLight
-                        ? "prose-black max-w-none prose-headings:text-black prose-strong:text-black prose-em:text-black/80"
+                        ? "prose-black max-w-none prose-headings:text-black prose-strong:text-black prose-em:text-black/90 prose-blockquote:text-gray-800 prose-blockquote:border-gray-400 prose-code:text-black prose-code:bg-gray-100 prose-pre:bg-gray-100 prose-pre:text-gray-900 prose-a:text-blue-700 prose-li:text-black prose-p:text-black"
                         : "prose-invert max-w-none"
                     } ${isLight ? "light-katex" : ""} ${
                       isLight ? "text-black" : "text-white"
