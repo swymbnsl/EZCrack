@@ -1,20 +1,17 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import { GraduationCap } from "lucide-react";
-import Link from "next/link";
-import { useTheme } from "@/contexts/ThemeContext";
+import { motion } from "framer-motion"
+import { GraduationCap } from "lucide-react"
+import Link from "next/link"
+import { useTheme } from "@/contexts/ThemeContext"
+import { lightTheme, darkTheme, commonColors } from "@/constants/colors"
+import type { Subject } from "@/types"
 
 interface SubjectCardProps {
-  subject: {
-    _id: string;
-    name: string;
-    subject_code?: string;
-    credits?: number;
-  };
-  index: number;
-  branchId: string | string[];
-  semId: string;
+  subject: Subject & { subject_code?: string }
+  index: number
+  branchId: string | string[]
+  semId: string
 }
 
 export function SubjectCard({
@@ -23,8 +20,10 @@ export function SubjectCard({
   branchId,
   semId,
 }: SubjectCardProps) {
-  const { theme } = useTheme();
-  const isLight = theme === "light";
+  const { theme } = useTheme()
+  const isLight = theme === "light"
+  const colors = isLight ? lightTheme : darkTheme
+  const shadowColor = isLight ? commonColors.shadowLight : commonColors.shadowDark
 
   return (
     <Link
@@ -35,25 +34,33 @@ export function SubjectCard({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        whileHover={{ 
+        whileHover={{
           scale: 1.02,
           rotate: -1,
-          transition: { duration: 0.2 }
+          transition: { duration: 0.2 },
         }}
-        className={`${
-          isLight 
-            ? "bg-white border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]" 
-            : "bg-[#1E1E1E] border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"
-        } border-4 p-6 transition-all`}
+        className="border-4 p-6 transition-all"
+        style={{
+          backgroundColor: colors.backgroundCard,
+          borderColor: colors.border,
+          boxShadow: `4px 4px 0px 0px ${shadowColor}`,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = `6px 6px 0px 0px ${shadowColor}`
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = `4px 4px 0px 0px ${shadowColor}`
+        }}
       >
         <div className="flex justify-between items-start">
           <div className="space-y-4">
             <div>
-              <h2 className={`text-xl font-bold mb-2 relative inline-block ${
-                isLight ? "text-black" : "text-white"
-              }`}>
-                <motion.span 
-                  className={`absolute -inset-2 -z-10`}
+              <h2
+                className="text-xl font-bold mb-2 relative inline-block"
+                style={{ color: colors.text }}
+              >
+                <motion.span
+                  className="absolute -inset-2 -z-10"
                   initial={{ rotate: 5 }}
                   animate={{ rotate: -2 }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -61,18 +68,24 @@ export function SubjectCard({
                 {subject.name}
               </h2>
               <div className="flex items-center gap-3 text-sm">
-                <span className={`px-2.5 py-1 ${
-                  isLight 
-                    ? "bg-[#FFD56B] text-black border-black" 
-                    : "bg-[#FFE66D] text-[#121212] border-white"
-                } border-2`}>
+                <span
+                  className="px-2.5 py-1 border-2"
+                  style={{
+                    backgroundColor: colors.secondary,
+                    color: colors.textOnAccent,
+                    borderColor: colors.border,
+                  }}
+                >
                   {subject.subject_code || "CS-301"}
                 </span>
-                <div className={`flex items-center gap-1.5 px-2.5 py-1 ${
-                  isLight 
-                    ? "bg-[#FF7B54] text-black border-black" 
-                    : "bg-[#FF6B6B] text-[#121212] border-white"
-                } border-2`}>
+                <div
+                  className="flex items-center gap-1.5 px-2.5 py-1 border-2"
+                  style={{
+                    backgroundColor: colors.accent,
+                    color: colors.textOnAccent,
+                    borderColor: colors.border,
+                  }}
+                >
                   <GraduationCap className="w-4 h-4" />
                   <span>{subject.credits || 3} Credits</span>
                 </div>
@@ -82,5 +95,5 @@ export function SubjectCard({
         </div>
       </motion.div>
     </Link>
-  );
+  )
 }
