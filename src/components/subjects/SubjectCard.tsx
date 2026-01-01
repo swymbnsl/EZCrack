@@ -23,7 +23,9 @@ export function SubjectCard({
   const { theme } = useTheme()
   const isLight = theme === "light"
   const colors = isLight ? lightTheme : darkTheme
-  const shadowColor = isLight ? commonColors.shadowLight : commonColors.shadowDark
+  const shadowColor = isLight
+    ? commonColors.shadowLight
+    : commonColors.shadowDark
 
   return (
     <Link
