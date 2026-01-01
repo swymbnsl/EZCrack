@@ -8,22 +8,8 @@ import React, {
   ReactNode,
   useRef,
 } from "react"
-import axios from "axios"
-
-interface Subject {
-  _id: string
-  name: string
-}
-
-interface Contributor {
-  _id: string
-  name: string
-  branch: string
-  semester: number
-  avatar: string
-  linkedinUrl?: string
-  subject_ids: Subject[]
-}
+import { contributorsApi } from "@/services/api"
+import type { Contributor } from "@/types"
 
 interface ContributorsContextType {
   contributors: Contributor[]
@@ -70,8 +56,8 @@ export const ContributorsProvider = ({ children }: { children: ReactNode }) => {
 
         // Create a new promise for this fetch
         fetchPromise = (async () => {
-          const response = await axios.get("/api/contributors")
-          contributorsData = response.data.contributors
+          const response = await contributorsApi.getAll()
+          contributorsData = response.contributors
 
           if (isMounted.current) {
             setContributors(contributorsData)

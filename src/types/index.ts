@@ -169,3 +169,25 @@ export interface QuestionsResponse {
 export interface ContributorsResponse {
   contributors: Contributor[]
 }
+
+// ============ Header Types ============
+export interface HeaderProps {
+  branchId: string | string[]
+  semId: string
+  backLink: string
+  backText: string
+  title: string
+  subtitle: string
+  stats: {
+    primary: { value: number | string; label: string }
+    secondary: { value: number | string; label: string }
+  }
+  showContributor?: boolean
+  showWeightageInfo?: boolean
+  contributor?: Contributor
+}
+
+export interface StatCardProps {
+  value: number | string
+  label: string
+}

@@ -1,0 +1,143 @@
+"use client"
+
+import { MessageSquare } from "lucide-react"
+import { useTheme } from "@/contexts/ThemeContext"
+import { lightTheme, darkTheme } from "@/constants/colors"
+import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer"
+import type { ExamType } from "@/types"
+
+interface QuestionItemProps {
+  question: string
+  answer?: string
+  marks?: number
+  year?: string | number
+  examType?: ExamType
+  topics?: string[]
+  showExamBadge?: boolean
+  showMarksBadge?: boolean
+  showYearBadge?: boolean
+  showTopics?: boolean
+  onAnswerClick?: (question: string, answer: string) => void
+}
+
+const formatExamType = (examType: string) => {
+  const type = examType.toLowerCase()
+  return type === "midterm"
+    ? "Midterm"
+    : type === "endterm"
+    ? "Endterm"
+    : examType
+}
+
+export function QuestionItem({
+  question,
+  answer,
+  marks,
+  year,
+  examType,
+  topics = [],
+  showExamBadge = true,
+  showMarksBadge = true,
+  showYearBadge = false,
+  showTopics = true,
+  onAnswerClick,
+}: QuestionItemProps) {
+  const { theme } = useTheme()
+  const isLight = theme === "light"
+  const colors = isLight ? lightTheme : darkTheme
+  const isMidterm = examType?.toLowerCase() === "midterm"
+
+  return (
+    <div
+      className="border-2 p-3 sm:p-4"
+      style={{
+        backgroundColor: colors.backgroundCard,
+        borderColor: colors.border,
+      }}
+    >
+      <div className="flex justify-between items-start gap-4">
+        <div className="flex-1">
+          <div className="flex gap-2 items-start mb-2 flex-wrap">
+            {showYearBadge && year && (
+              <div
+                className="px-2 py-0.5 text-xs border-2"
+                style={{
+                  backgroundColor: colors.primary,
+                  borderColor: colors.border,
+                  color: colors.textOnPrimary,
+                }}
+              >
+                {year}
+              </div>
+            )}
+            {showExamBadge && examType && (
+              <div
+                className="px-1.5 py-0.5 text-xs border-2"
+                style={{
+                  backgroundColor: isMidterm ? colors.warning : colors.error,
+                  borderColor: colors.border,
+                  color: "#000000",
+                }}
+              >
+                {formatExamType(examType)}
+              </div>
+            )}
+            {showMarksBadge && marks !== undefined && (
+              <div
+                className="px-1.5 py-0.5 text-xs border-2"
+                style={{
+                  backgroundColor: colors.primary,
+                  borderColor: colors.border,
+                  color: colors.textOnPrimary,
+                }}
+              >
+                {marks} marks
+              </div>
+            )}
+          </div>
+          <div
+            className={`text-sm sm:text-base prose ${
+              isLight ? "prose-black" : "prose-invert"
+            } max-w-none ${isLight ? "light-katex" : ""}`}
+            style={{ color: colors.text }}
+          >
+            <MarkdownRenderer content={question} />
+          </div>
+          {showTopics && topics.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {topics.map((topic, i) => (
+                <span
+                  key={i}
+                  className="text-xs px-1.5 py-0.5 inline-flex items-center border"
+                  style={{
+                    backgroundColor: colors.backgroundMuted,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  }}
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+        {answer && onAnswerClick && (
+          <button
+            onClick={() => onAnswerClick(question, answer)}
+            className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 border-2 flex items-center justify-center transition-colors hover:opacity-80"
+            style={{
+              backgroundColor: colors.primary,
+              borderColor: colors.border,
+            }}
+            title="View Answer"
+          >
+            <MessageSquare
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              style={{ color: colors.textOnPrimary }}
+            />
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
