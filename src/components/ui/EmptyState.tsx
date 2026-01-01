@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { LucideIcon } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
+import { lightTheme, darkTheme, commonColors } from "@/constants/colors"
 
 interface EmptyStateProps {
   icon: LucideIcon
@@ -22,6 +23,10 @@ export function EmptyState({
 }: EmptyStateProps) {
   const { theme } = useTheme()
   const isLight = theme === "light"
+  const colors = isLight ? lightTheme : darkTheme
+  const shadowColor = isLight
+    ? commonColors.shadowLight
+    : commonColors.shadowDark
 
   return (
     <motion.div
@@ -35,23 +40,15 @@ export function EmptyState({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.3 }}
         whileHover={{
-          boxShadow: isLight
-            ? "8px 8px 0px rgba(0,0,0,1)"
-            : "8px 8px 0px rgba(255,255,255,0.8)",
+          boxShadow: `8px 8px 0px ${shadowColor}`,
         }}
-        className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-none border-3 sm:border-4 ${
-          isLight
-            ? "border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-            : "border-white bg-[#1E1E1E] shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)] sm:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)] md:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.8)]"
-        } flex items-center justify-center mb-4 sm:mb-5 md:mb-6 ${
-          !iconColor
-            ? isLight
-              ? "text-[#457f82]"
-              : "text-[#4ECDC4]"
-            : iconColor.includes("text-")
-            ? iconColor.replace("text-", "text-")
-            : `text-${iconColor}-400`
-        }`}
+        className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-none border-3 sm:border-4 flex items-center justify-center mb-4 sm:mb-5 md:mb-6"
+        style={{
+          borderColor: colors.border,
+          backgroundColor: colors.backgroundCard,
+          boxShadow: `4px 4px 0px 0px ${shadowColor}`,
+          color: iconColor || colors.primary,
+        }}
       >
         <Icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
       </motion.div>
@@ -59,9 +56,8 @@ export function EmptyState({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.3 }}
-        className={`text-lg sm:text-xl font-bold mb-2 ${
-          isLight ? "text-black" : "text-white"
-        }`}
+        className="text-lg sm:text-xl font-bold mb-2"
+        style={{ color: colors.text }}
       >
         {title}
       </motion.h3>
@@ -69,9 +65,8 @@ export function EmptyState({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.3 }}
-        className={`${
-          isLight ? "text-gray-600" : "text-gray-400"
-        } text-sm sm:text-base max-w-md mb-6 sm:mb-8`}
+        className="text-sm sm:text-base max-w-md mb-6 sm:mb-8"
+        style={{ color: colors.textMuted }}
       >
         {description}
       </motion.p>
@@ -82,23 +77,20 @@ export function EmptyState({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.3 }}
           whileHover={{
-            boxShadow: isLight
-              ? "8px 8px 0px rgba(0,0,0,1)"
-              : "8px 8px 0px rgba(255,255,255,0.8)",
+            boxShadow: `8px 8px 0px ${shadowColor}`,
           }}
           whileTap={{
-            boxShadow: isLight
-              ? "2px 2px 0px rgba(0,0,0,1)"
-              : "2px 2px 0px rgba(255,255,255,0.8)",
+            boxShadow: `2px 2px 0px ${shadowColor}`,
             transform: "translateX(2px) translateY(2px)",
           }}
           onClick={action.onClick}
-          className={`px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 ${
-            isLight
-              ? "bg-[#FFD56B] text-black border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-              : "bg-[#4ECDC4] text-[#121212] border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)] sm:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)] md:shadow-[8px_8px_0px_0px_rgba(255,255,255,0.8)]"
-          } 
-            border-3 sm:border-4 font-bold text-sm sm:text-base rounded-none transition-all`}
+          className="px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 border-3 sm:border-4 font-bold text-sm sm:text-base rounded-none transition-all"
+          style={{
+            backgroundColor: isLight ? colors.secondary : colors.primary,
+            color: colors.textOnPrimary,
+            borderColor: colors.border,
+            boxShadow: `4px 4px 0px 0px ${shadowColor}`,
+          }}
         >
           {action.label}
         </motion.button>

@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
+import { lightTheme, darkTheme } from "./src/constants/colors"
 
 const config: Config = {
   content: [
@@ -11,6 +12,40 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // Neobrutalism theme colors
+        neo: {
+          // Light theme
+          "primary-light": lightTheme.primary,
+          "primary-light-hover": lightTheme.primaryHover,
+          "secondary-light": lightTheme.secondary,
+          "secondary-light-alt": lightTheme.secondaryAlt,
+          "accent-light": lightTheme.accent,
+          "accent-light-hover": lightTheme.accentHover,
+          "bg-light": lightTheme.background,
+          "bg-light-alt": lightTheme.backgroundAlt,
+          "bg-light-muted": lightTheme.backgroundMuted,
+          "card-light": lightTheme.backgroundCard,
+          "paper-light": lightTheme.backgroundPaper,
+          "text-light": lightTheme.text,
+          "gray-light": lightTheme.gray,
+          // Dark theme
+          "primary-dark": darkTheme.primary,
+          "primary-dark-hover": darkTheme.primaryHover,
+          "secondary-dark": darkTheme.secondary,
+          "secondary-dark-alt": darkTheme.secondaryAlt,
+          "accent-dark": darkTheme.accent,
+          "accent-dark-hover": darkTheme.accentHover,
+          "bg-dark": darkTheme.background,
+          "card-dark": darkTheme.backgroundCard,
+          "bg-dark-muted": darkTheme.backgroundMuted,
+          "code-dark": darkTheme.backgroundCode,
+          "text-dark": darkTheme.text,
+          "accent-green-dark": darkTheme.accentGreen,
+          "accent-pink-dark": darkTheme.accentPink,
+          // Common
+          linkedin: lightTheme.linkedin,
+          "linkedin-hover": lightTheme.linkedinHover,
+        },
       },
       fontFamily: {
         poppins: ["var(--font-poppins)"],
@@ -70,6 +105,6 @@ const config: Config = {
     },
   },
   plugins: [require("@tailwindcss/typography")],
-};
+}
 
-export default config;
+export default config

@@ -25,8 +25,6 @@ export default function Home() {
   const isLight = theme === "light"
 
   useEffect(() => {
-    // In a real app, you might fetch this data from an API
-    // For now, we'll use the static data from constants
     setAvailableBranches(branches)
     setAvailableSemesters(semesters)
     setIsLoading(false)
@@ -62,8 +60,8 @@ export default function Home() {
             <motion.div
               className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-4 ${
                 isLight
-                  ? "border-[#FF7B54]/30 border-t-[#FF7B54]"
-                  : "border-[#FF6B6B]/30 border-t-[#FF6B6B]"
+                  ? "border-neo-accent-light/30 border-t-neo-accent-light"
+                  : "border-neo-accent-dark/30 border-t-neo-accent-dark"
               } rounded-none`}
               animate={{
                 rotate: 360,
@@ -159,24 +157,33 @@ export default function Home() {
               iconColor={
                 availableBranches.length === 0
                   ? isLight
-                    ? "text-[#76ABAE]"
-                    : "text-[#4ECDC4]"
+                    ? "text-neo-primary-light"
+                    : "text-neo-primary-dark"
                   : isLight
-                  ? "text-[#FF7B54]"
-                  : "text-[#FF6B6B]"
+                  ? "text-neo-accent-light"
+                  : "text-neo-accent-dark"
               }
             />
           </motion.div>
         )}
       </motion.main>
-      <AttentionNotice 
+      <AttentionNotice
         message={
           <>
-            <p>The platform is still under development, and the material will be significantly improved.</p>
-            <p className="mt-2">Currently, only 1st-year and some 2rd-year material have been uploaded. The rest will be added soon.</p>
-            <p className="mt-2">Join the WhatsApp community to request material or contribute your own.</p>
+            <p>
+              The platform is still under development, and the material will be
+              significantly improved.
+            </p>
+            <p className="mt-2">
+              Currently, only 1st-year and some 2rd-year material have been
+              uploaded. The rest will be added soon.
+            </p>
+            <p className="mt-2">
+              Join the WhatsApp community to request material or contribute your
+              own.
+            </p>
           </>
-        } 
+        }
       />
     </PageWrapper>
   )
