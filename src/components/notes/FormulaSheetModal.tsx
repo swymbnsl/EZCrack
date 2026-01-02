@@ -90,7 +90,7 @@ export function FormulaSheetModal({
                   <X className={`w-4 h-4 ${isLight ? "text-black" : "text-[#121212]"}`} />
                 </button>
               </div>
-              <div className={`p-6 overflow-y-auto flex-grow ${
+              <div className={`p-6 overflow-y-auto flex-grow scrollbar-thin ${
                 isLight ? "bg-[#FFFFFA]" : "bg-[#121212]"
               }`}>
                 <div className={`prose ${isLight ? "prose-black max-w-none prose-headings:text-black prose-strong:text-black prose-em:text-black/80" : "prose-invert max-w-none"} ${isLight ? "light-katex" : ""} ${isLight ? "text-black" : "text-white"}`}>

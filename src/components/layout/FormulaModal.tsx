@@ -31,7 +31,7 @@ export function FormulaModal({ onClose }: FormulaModalProps) {
         onClick={onClose}
       />
       <div
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] max-w-[90vw] max-h-[85vh] overflow-y-auto border-4 rounded-xl p-4 sm:p-6 z-[10000]"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] max-w-[90vw] max-h-[85vh] overflow-y-auto scrollbar-thin border-4 rounded-xl p-4 sm:p-6 z-[10000]"
         style={{
           backgroundColor: colors.backgroundCard,
           borderColor: colors.border,
@@ -81,7 +81,7 @@ export function FormulaModal({ onClose }: FormulaModalProps) {
         </div>
 
         <div
-          className="text-xs sm:text-sm space-y-4 overflow-y-auto scrollbar-thin"
+          className="text-xs sm:text-sm space-y-4"
           style={{ color: isLight ? lightTheme.text : darkTheme.textMuted }}
         >
           <p style={{ color: colors.text }}>
