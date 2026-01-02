@@ -44,10 +44,7 @@ export const Dropdown = ({
         style={{
           backgroundColor: colors.backgroundCard,
           borderColor: colors.border,
-          boxShadow: `4px 4px 0px 0px ${shadowColor}`,
-        }}
-        whileHover={{
-          boxShadow: `8px 8px 0px ${shadowColor}`,
+          boxShadow: `8px 8px 0px 0px ${shadowColor}`,
         }}
         whileTap={{
           boxShadow: `2px 2px 0px ${shadowColor}`,

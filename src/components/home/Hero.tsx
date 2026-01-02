@@ -64,8 +64,8 @@ export const Hero = () => {
       <motion.p
         className={`text-base sm:text-lg md:text-xl lg:text-2xl ${
           isLight
-            ? "text-neo-text-light bg-neo-secondary-light border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
-            : "text-neo-bg-dark bg-neo-secondary-dark border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.8)] sm:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"
+            ? "text-neo-text-light bg-neo-secondary-light border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+            : "text-neo-bg-dark bg-neo-secondary-dark border-white shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)] sm:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.8)]"
         } px-4 sm:px-6 py-1 sm:py-2 inline-block rotate-1 border-3 sm:border-4 font-bold`}
         initial={{
           scale: 0.8,

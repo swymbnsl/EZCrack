@@ -90,13 +90,11 @@ export function UnitContent({
       >
         {/* Desktop Sidebar */}
         <div
-          className="hidden sm:block sm:w-auto sm:min-w-[320px] h-full overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full"
-          style={{
-            backgroundColor: isLight ? colors.backgroundMuted : "transparent",
-            scrollbarColor: isLight
-              ? "rgba(156, 163, 175, 0.4) rgba(229, 231, 235, 0.4)"
-              : "rgba(75, 85, 99, 0.4) rgba(31, 41, 55, 0.4)",
-          }}
+          className={`hidden sm:block sm:w-auto sm:min-w-[320px] h-full overflow-y-auto scrollbar-thin ${
+            isLight
+              ? "bg-[#EFEFEF] scrollbar-track-gray-200/40 scrollbar-thumb-gray-400/40 hover:scrollbar-thumb-gray-500/60"
+              : "scrollbar-track-gray-800/40 scrollbar-thumb-gray-600/40 hover:scrollbar-thumb-gray-500/50"
+          } scrollbar-thumb-rounded-full`}
         >
           <UnitSidebar
             activeTab={activeTab}
@@ -288,7 +286,7 @@ function QuestionsView({
             >
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div
-                  className="w-10 h-10 border-3 flex items-center justify-center"
+                  className="min-w-10 min-h-10 border-3 flex items-center justify-center"
                   style={{
                     backgroundColor: colors.primary,
                     borderColor: colors.border,
@@ -323,8 +321,7 @@ function QuestionsView({
             <div
               className="p-6 space-y-4 h-full"
               style={{
-                backgroundColor: colors.backgroundMuted,
-                opacity: 0.7,
+                backgroundColor: colors.backgroundQuestionViewCard,
               }}
             >
               {filteredQuestions.length > 0 ? (

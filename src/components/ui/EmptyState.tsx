@@ -50,7 +50,11 @@ export function EmptyState({
           color: iconColor || colors.primary,
         }}
       >
-        <Icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+        <Icon
+          className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 ${
+            iconColor || colors.primary
+          }`}
+        />
       </motion.div>
       <motion.h3
         initial={{ opacity: 0 }}

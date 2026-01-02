@@ -49,7 +49,7 @@ export function QuestionItem({
 
   return (
     <div
-      className="border-2 p-3 sm:p-4"
+      className={`p-3 sm:p-4 ${showTopics ? "border-2" : ""}`}
       style={{
         backgroundColor: colors.backgroundCard,
         borderColor: colors.border,
@@ -60,7 +60,9 @@ export function QuestionItem({
           <div className="flex gap-2 items-start mb-2 flex-wrap">
             {showYearBadge && year && (
               <div
-                className="px-2 py-0.5 text-xs border-2"
+                className={`${
+                  showTopics ? "px-2 py-0.5 text-xs" : "px-3 py-1.5 text-sm"
+                } border-2`}
                 style={{
                   backgroundColor: colors.primary,
                   borderColor: colors.border,
@@ -70,28 +72,32 @@ export function QuestionItem({
                 {year}
               </div>
             )}
-            {showExamBadge && examType && (
-              <div
-                className="px-1.5 py-0.5 text-xs border-2"
-                style={{
-                  backgroundColor: isMidterm ? colors.warning : colors.error,
-                  borderColor: colors.border,
-                  color: "#000000",
-                }}
-              >
-                {formatExamType(examType)}
-              </div>
-            )}
             {showMarksBadge && marks !== undefined && (
               <div
-                className="px-1.5 py-0.5 text-xs border-2"
+                className={`${
+                  showTopics ? "px-2 py-0.5 text-xs" : "px-3 py-1.5 text-sm"
+                } border-2`}
                 style={{
-                  backgroundColor: colors.primary,
+                  backgroundColor: colors.warning,
                   borderColor: colors.border,
                   color: colors.textOnPrimary,
                 }}
               >
                 {marks} marks
+              </div>
+            )}
+            {showExamBadge && examType && (
+              <div
+                className={`${
+                  showTopics ? "px-2 py-0.5 text-xs" : "px-3 py-1.5 text-sm"
+                } border-2`}
+                style={{
+                  backgroundColor: colors.error,
+                  borderColor: colors.border,
+                  color: "#000000",
+                }}
+              >
+                {formatExamType(examType)}
               </div>
             )}
           </div>
@@ -108,7 +114,7 @@ export function QuestionItem({
               {topics.map((topic, i) => (
                 <span
                   key={i}
-                  className="text-xs px-1.5 py-0.5 inline-flex items-center border"
+                  className="text-xs px-2 py-0.5 inline-flex items-center border"
                   style={{
                     backgroundColor: colors.backgroundMuted,
                     color: colors.text,

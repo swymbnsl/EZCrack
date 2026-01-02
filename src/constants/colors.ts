@@ -18,13 +18,15 @@ export const lightTheme = {
   background: "#FFFFFF", // White - main background
   backgroundAlt: "#F8F8F8", // Light gray - alternate background
   backgroundMuted: "#EFEFEF", // Muted gray background
-  backgroundCard: "#F5F5F5", // Card background
+  // backgroundCard: "#F5F5F5", // Card background
+  backgroundCard: "#FFFFFF", // Card background
   backgroundPaper: "#FFFFFA", // Off-white paper-like background
-  backgroundLight: "#F5F5F0", // Very light background with slight warmth
+  backgroundQuestionViewCard: "#F5F5F0", // Very light background with slight warmth
 
   // Text colors
-  text: "#2D2A32", // Dark gray - primary text
-  textMuted: "#2D2A32", // Muted text (with opacity in usage)
+  // text: "#2D2A32", // Dark gray - primary text
+  text: "#000000", // Dark gray - primary text
+  textMuted: "#6b7280", // Muted text (with opacity in usage)
   textOnPrimary: "#000000", // Text on primary backgrounds
   textOnAccent: "#000000", // Text on accent backgrounds
 
@@ -65,10 +67,10 @@ export const darkTheme = {
   backgroundCard: "#1E1E1E", // Slightly lighter - card backgrounds
   backgroundMuted: "#252525", // Muted dark background
   backgroundCode: "#1a1a1a", // Code block background
-
+  backgroundQuestionViewCard: "#121212", // Dark card background
   // Text colors
   text: "#FFFFFF", // White - primary text
-  textMuted: "#E5E5E5", // Light gray - muted text (using gray-200)
+  textMuted: "#9CA3AF", // Light gray - muted text (using gray-400)
   textOnPrimary: "#121212", // Dark text on primary backgrounds
   textOnAccent: "#121212", // Dark text on accent backgrounds
 

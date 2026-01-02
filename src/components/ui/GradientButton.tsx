@@ -65,9 +65,9 @@ export const GradientButton = ({
           : colors.border,
         boxShadow: disabled
           ? isLight
-            ? "2px 2px 0px rgba(100,100,100,1)"
-            : "2px 2px 0px rgba(150,150,150,0.6)"
-          : `4px 4px 0px 0px ${shadowColor}`,
+            ? "4px 4px 0px rgba(100,100,100,1)"
+            : "4px 4px 0px rgba(150,150,150,0.6)"
+          : `8px 8px 0px 0px ${shadowColor}`,
       }}
     >
       {children}
