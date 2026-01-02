@@ -28,7 +28,6 @@ export default function UnitPage() {
     showNotesModal,
     setShowNotesModal,
     selectedTopicNotes,
-    setSelectedTopicNotes,
     showFormulaSheetModal,
     setShowFormulaSheetModal,
     showAnswerModal,
@@ -76,7 +75,6 @@ export default function UnitPage() {
           showNotesModal={showNotesModal}
           onShowNotesModal={setShowNotesModal}
           selectedTopicNotes={selectedTopicNotes}
-          onSelectTopicNotes={setSelectedTopicNotes}
           showFormulaSheetModal={showFormulaSheetModal}
           onShowFormulaSheetModal={setShowFormulaSheetModal}
           showAnswerModal={showAnswerModal}

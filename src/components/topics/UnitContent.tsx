@@ -36,7 +36,6 @@ interface UnitContentProps {
   showNotesModal: boolean
   onShowNotesModal: (show: boolean) => void
   selectedTopicNotes: Note | null
-  onSelectTopicNotes: (note: Note | null) => void
   showFormulaSheetModal: boolean
   onShowFormulaSheetModal: (show: boolean) => void
   showAnswerModal: boolean
@@ -61,7 +60,6 @@ export function UnitContent({
   showNotesModal,
   onShowNotesModal,
   selectedTopicNotes,
-  onSelectTopicNotes,
   showFormulaSheetModal,
   onShowFormulaSheetModal,
   showAnswerModal,

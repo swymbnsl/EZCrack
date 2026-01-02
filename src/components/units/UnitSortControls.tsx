@@ -3,7 +3,6 @@
 import { SortAsc, SortDesc } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
 import { lightTheme, darkTheme } from "@/constants/colors"
-import type { SortOrder } from "@/types"
 
 // This component uses a subset of SortOrder without "original"
 type BinarySortOrder = "asc" | "desc"

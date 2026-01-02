@@ -284,6 +284,7 @@ export function generateTopicAnalysis<
 
   return {
     ...rawUnit,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     topics: topicsWithWeightage.map(({ exactWeightage, ...topic }) => topic),
   } as RawUnit & {
     topics: Array<{

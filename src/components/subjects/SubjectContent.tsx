@@ -15,7 +15,6 @@ import {
   ExamTypeFilter,
   RepeatedTypeToggle,
 } from "@/components/shared"
-import { useTheme } from "@/contexts/ThemeContext"
 import { sortUnitsByNumber } from "@/utils"
 import type {
   Unit,
@@ -75,9 +74,6 @@ export function SubjectContent({
   selectedAnswer,
   onSelectAnswer,
 }: SubjectContentProps) {
-  const { theme } = useTheme()
-  const isLight = theme === "light"
-
   const handleAnswerClick = (question: string, answer: string) => {
     onSelectAnswer({ question, answer })
     onShowAnswerModal(true)

@@ -196,6 +196,7 @@ export function useUnitData({
       return {
         ...rawUnit,
         topics: topicsWithWeightage.map(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ({ exactWeightage, ...topic }) => topic as Topic
         ),
       }
@@ -263,7 +264,7 @@ export function useUnitData({
     [unit]
   )
 
-  const sortedTopics = useMemo(() => {
+  const sortedTopics: Topic[] = useMemo(() => {
     if (!unit) return []
 
     let filtered = [...unit.topics]
@@ -279,9 +280,9 @@ export function useUnitData({
     }
 
     if (sortOrder === "asc") {
-      return sortTopicsByWeightage(filtered, "weightage", "asc")
+      return sortTopicsByWeightage<Topic>(filtered, "weightage", "asc")
     } else {
-      return sortTopicsByWeightage(filtered)
+      return sortTopicsByWeightage<Topic>(filtered)
     }
   }, [unit, sortOrder, yearFilter])
 

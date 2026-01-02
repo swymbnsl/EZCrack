@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { MessageSquare } from "lucide-react"
 import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer"
 import { useTheme } from "@/contexts/ThemeContext"
-import { lightTheme, darkTheme, commonColors } from "@/constants/colors"
+import { lightTheme, darkTheme } from "@/constants/colors"
 
 interface QuestionCardProps {
   question: string
@@ -14,7 +14,6 @@ interface QuestionCardProps {
   topics?: string[]
   answer?: string
   onShowAnswer?: () => void
-  index?: number
   animationDelay?: number
   variant?: "default" | "compact"
 }
@@ -27,16 +26,12 @@ export function QuestionCard({
   topics = [],
   answer,
   onShowAnswer,
-  index = 0,
   animationDelay = 0,
   variant = "default",
 }: QuestionCardProps) {
   const { theme } = useTheme()
   const isLight = theme === "light"
   const colors = isLight ? lightTheme : darkTheme
-  const shadowColor = isLight
-    ? commonColors.shadowLight
-    : commonColors.shadowDark
 
   const examType = midsem ? "Midterm" : "Endterm"
 

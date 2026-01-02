@@ -5,7 +5,6 @@ import { Calendar, BookOpen, ChevronDown } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
 import { lightTheme, darkTheme } from "@/constants/colors"
 import { QuestionItem } from "@/components/questions/QuestionItem"
-import { sortByNumber } from "@/utils"
 import type { Question } from "@/types"
 
 interface QuestionsByYear {

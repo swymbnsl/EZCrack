@@ -5,7 +5,6 @@ import { Book } from "lucide-react"
 import { SubjectCard } from "@/components/subjects/SubjectCard"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { EmptyState } from "@/components/ui/EmptyState"
-import { useTheme } from "@/contexts/ThemeContext"
 import type { Subject } from "@/types"
 
 interface SemesterSubjectsGridProps {
@@ -21,9 +20,6 @@ export function SemesterSubjectsGrid({
   branchId,
   semId,
 }: SemesterSubjectsGridProps) {
-  const { theme } = useTheme()
-  const isLight = theme === "light"
-
   if (isLoading) {
     return <LoadingSpinner text="Loading subjects..." />
   }

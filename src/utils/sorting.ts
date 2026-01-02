@@ -66,13 +66,15 @@ export function sortUnitsByNumber<T extends { number: number }>(
 /**
  * Sort topics by weightage (highest first by default)
  */
-export function sortTopicsByWeightage<T extends Record<string, any>>(
+export function sortTopicsByWeightage<T extends object>(
   topics: T[],
   field: string = "weightage",
   order: "asc" | "desc" = "desc"
 ): T[] {
   return [...topics].sort((a, b) => {
-    const diff = b[field] - a[field]
+    const aValue = (a as Record<string, unknown>)[field] as number
+    const bValue = (b as Record<string, unknown>)[field] as number
+    const diff = bValue - aValue
     return order === "desc" ? diff : -diff
   })
 }
