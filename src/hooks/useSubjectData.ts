@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { useContributors } from "@/contexts/ContributorsContext"
-import { subjectsApi, unitsApi, questionsApi } from "@/services/api"
+import { unitsApi, questionsApi } from "@/services/api"
 import { sortYearsDescending, filterByExamType } from "@/utils"
 import type {
   Unit,
@@ -52,15 +52,18 @@ export function useSubjectData({ subjectId }: UseSubjectDataProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [unitsResponse, subjectResponse, questionsResponse] =
+        const [unitsResponse, questionsResponse] =
           await Promise.all([
             unitsApi.getBySubjectId(subjectId),
-            subjectsApi.getById(subjectId),
             questionsApi.getBySubjectId(subjectId),
           ])
 
         setUnits(unitsResponse.units)
-        setSubject(subjectResponse.subject)
+
+        if (unitsResponse.units.length > 0) {
+          setSubject(unitsResponse.units[0].subject_id)
+        }
+
         setQuestions(questionsResponse.foundQuestions || [])
       } catch (error) {
         console.error("Error fetching data:", error)
