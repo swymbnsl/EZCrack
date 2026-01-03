@@ -96,7 +96,7 @@ export interface Unit {
   _id: string
   number: number
   topics: string[] | Topic[]
-  subject_id?: string
+  subject_id?: string | Subject
   notes?: Note[]
   formulaSheet?: FormulaSheet
   repeatedQuestions?: RepeatedQuestions

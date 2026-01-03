@@ -52,15 +52,19 @@ export function useSubjectData({ subjectId }: UseSubjectDataProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [unitsResponse, subjectResponse, questionsResponse] =
+        const [unitsResponse, questionsResponse] =
           await Promise.all([
             unitsApi.getBySubjectId(subjectId),
-            subjectsApi.getById(subjectId),
             questionsApi.getBySubjectId(subjectId),
           ])
 
         setUnits(unitsResponse.units)
-        setSubject(subjectResponse.subject)
+        const subjectData = unitsResponse.units[0].subject_id
+        if (subjectData && typeof subjectData === 'object') {
+          setSubject(subjectData)
+        }
+
+
         setQuestions(questionsResponse.foundQuestions || [])
       } catch (error) {
         console.error("Error fetching data:", error)
