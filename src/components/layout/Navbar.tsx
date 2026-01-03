@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { MessageCircle, Home, Code, Users } from "lucide-react"
+import { MessageCircle, Home, Github, Users } from "lucide-react"
 import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { useTheme } from "@/contexts/ThemeContext"
 import { usePathname } from "next/navigation"
@@ -51,15 +51,14 @@ export const Navbar = () => {
             <span className="hidden sm:inline">Home</span>
           </Link>
           <a
-            href="https://swymbnsl.com"
+            href="https://github.com/swymbnsl/EZCrack"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-1 px-2 sm:px-4 py-2 text-xs sm:text-sm font-bold transition-colors"
             style={{ color: colors.text }}
           >
-            <Code className="w-4 h-4" />
-            <span className="hidden sm:inline">Developer</span>
-            <span className="sm:hidden">Dev</span>
+            <Github className="w-4 h-4" />
+            <span className="inline">GitHub</span>
           </a>
           <Link
             href="/contributors"
