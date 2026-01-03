@@ -1,6 +1,6 @@
 <a href="https://github.com/swymbnsl/EZCrack">
 <p align="center">
-    <img src="public/ezcrack-logo.png.png" width="160px" alt="EZCrack logo" align="center">
+    <img src="public/ezcrack-logo.png" width="160px" alt="EZCrack logo" align="center">
   </a>
 <br/>
   <h3 align="center">EZCrack</h3>
@@ -220,7 +220,7 @@ Thank you for your cooperation, and we look forward to hearing from you!
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/swymbnsl/EZCrack/blob/main/LICENSE) for more information.
+Distributed under the GNU GPL-3.0 License. See [LICENSE](https://github.com/swymbnsl/EZCrack/blob/main/LICENSE) for more information.
 
 ## Screenshots
 
