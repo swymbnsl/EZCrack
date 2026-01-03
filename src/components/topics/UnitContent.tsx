@@ -321,7 +321,7 @@ function QuestionsView({
             <div
               className="p-6 space-y-4 h-full"
               style={{
-                backgroundColor: colors.backgroundQuestionViewCard,
+                backgroundColor: colors.backgroundQuestionViewCard + "B3",
               }}
             >
               {filteredQuestions.length > 0 ? (

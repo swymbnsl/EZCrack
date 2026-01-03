@@ -45,7 +45,6 @@ export function QuestionItem({
   const { theme } = useTheme()
   const isLight = theme === "light"
   const colors = isLight ? lightTheme : darkTheme
-  const isMidterm = examType?.toLowerCase() === "midterm"
 
   return (
     <div
