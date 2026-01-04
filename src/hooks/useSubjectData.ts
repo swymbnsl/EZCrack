@@ -58,12 +58,19 @@ export function useSubjectData({ subjectId }: UseSubjectDataProps) {
             questionsApi.getBySubjectId(subjectId),
           ])
 
-        setUnits(unitsResponse.units)
+        const fetchedUnits = unitsResponse.units
+        setUnits(fetchedUnits)
+        let derivedSubject: Subject | null = null
 
-        if (unitsResponse.units.length > 0) {
-          setSubject(unitsResponse.units[0].subject_id)
+        if (fetchedUnits.length > 0) {
+          const subjectFromUnit = fetchedUnits[0].subject_id
+
+          if (subjectFromUnit && typeof subjectFromUnit === "object") {
+            derivedSubject = subjectFromUnit as Subject
+          }
         }
 
+        setSubject(derivedSubject)
         setQuestions(questionsResponse.foundQuestions || [])
       } catch (error) {
         console.error("Error fetching data:", error)
