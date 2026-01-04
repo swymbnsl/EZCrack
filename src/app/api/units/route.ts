@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 
     await connectToDB();
     const units = await Unit.find({ subject_id })
-      .populate("subject_id", "name")
+      .populate("subject_id")
       .lean();
 
     return NextResponse.json({ units });
