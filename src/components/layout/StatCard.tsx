@@ -12,7 +12,19 @@ export function StatCard({ value, label }: StatCardProps) {
 
   return (
     <div
-      className="flex-1 sm:flex-none sm:w-28 md:w-32 h-[88px] text-center px-2 sm:px-4 py-2 sm:py-3 border-4 flex flex-col items-center justify-center"
+      className="
+        w-full
+        sm:w-28
+        md:w-32
+        h-[88px]
+        text-center
+        px-2 sm:px-4
+        py-2 sm:py-3
+        border-4
+        flex flex-col
+        items-center
+        justify-center
+      "
       style={{
         backgroundColor: colors.backgroundCard,
         borderColor: colors.border,
