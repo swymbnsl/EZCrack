@@ -15,7 +15,9 @@ export async function GET(request: Request) {
     }
 
     await connectToDB();
-    const units = await Unit.find({ subject_id }).lean();
+    const units = await Unit.find({ subject_id })
+      .populate("subject_id")
+      .lean();
 
     return NextResponse.json({ units });
   } catch (error) {

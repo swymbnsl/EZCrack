@@ -102,6 +102,10 @@ export interface Unit {
   repeatedQuestions?: RepeatedQuestions
 }
 
+export interface PopulatedUnit extends Omit<Unit, "subject_id"> {
+  subject_id?: string | Subject
+}
+
 export interface UnitWithTopics extends Omit<Unit, "topics"> {
   topics: Topic[]
 }
@@ -155,7 +159,7 @@ export interface SubjectResponse {
 }
 
 export interface UnitsResponse {
-  units: Unit[]
+  units: PopulatedUnit[]
 }
 
 export interface UnitResponse {

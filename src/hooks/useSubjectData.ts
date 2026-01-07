@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from "react"
 import { useContributors } from "@/contexts/ContributorsContext"
-import { subjectsApi, unitsApi, questionsApi } from "@/services/api"
+import { unitsApi, questionsApi, subjectsApi } from "@/services/api"
 import { sortYearsDescending, filterByExamType } from "@/utils"
 import type {
   Unit,
+  PopulatedUnit,
   Question,
   Subject,
   Contributor,
@@ -52,15 +53,33 @@ export function useSubjectData({ subjectId }: UseSubjectDataProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [unitsResponse, subjectResponse, questionsResponse] =
+        const [unitsResponse, questionsResponse] =
           await Promise.all([
             unitsApi.getBySubjectId(subjectId),
-            subjectsApi.getById(subjectId),
             questionsApi.getBySubjectId(subjectId),
           ])
 
-        setUnits(unitsResponse.units)
-        setSubject(subjectResponse.subject)
+        const fetchedUnits: PopulatedUnit[] = unitsResponse.units
+        const unitsForState: Unit[] = fetchedUnits.map(unit => ({
+          ...unit,
+          subject_id: typeof unit.subject_id === "object" ? unit.subject_id?._id : unit.subject_id
+        }))
+        setUnits(unitsForState)
+        
+        let derivedSubject: Subject | null = null
+
+        if (fetchedUnits.length > 0) {
+          const subjectFromUnit = fetchedUnits[0].subject_id
+
+          if (subjectFromUnit && typeof subjectFromUnit === "object") {
+            derivedSubject = subjectFromUnit
+          }
+        } else {
+          const subjectResponse = await subjectsApi.getById(subjectId)
+          derivedSubject = subjectResponse.subject
+        }
+
+        setSubject(derivedSubject)
         setQuestions(questionsResponse.foundQuestions || [])
       } catch (error) {
         console.error("Error fetching data:", error)
