@@ -43,8 +43,8 @@ export default function UnitPage() {
 
   return (
     <PageWrapper>
-      <div className="relative z-10 min-h-screen h-full sm:h-screen flex flex-col overflow-auto sm:overflow-hidden">
-        <div className="sm:sticky sm:top-0 sm:z-20 bg-inherit">
+      <div className="relative z-10 min-h-screen h-full md:h-screen flex flex-col overflow-auto md:overflow-hidden">
+        <div className="md:sticky md:top-0 md:z-20 bg-inherit">
           <Header
             branchId={parsedBranchId}
             semId={parsedSemId}
