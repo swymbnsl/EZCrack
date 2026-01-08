@@ -7,7 +7,6 @@ export async function GET(
   { params }: { params: Promise<{ subjectId: string }> }
 ) {
   const { subjectId } = await params;
-
   if (!subjectId) {
     return NextResponse.json(
       { error: "Subject ID is required" },
@@ -18,9 +17,7 @@ export async function GET(
   try {
     await connectToDB();
 
-    const subject = await Subject.findById(subjectId)
-      .select("_id name subject_code credits")
-      .lean();
+    const subject = await Subject.findById(subjectId).lean();
 
     if (!subject) {
       return NextResponse.json({ error: "Subject not found" }, { status: 404 });
