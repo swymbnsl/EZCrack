@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/mongoose";
 import Branch from "@/models/branch-model";
+
 interface BranchDocument {
   name: string;
   subject_ids: Array<{
     _id: string;
     name: string;
-    semester: number;
+    subject_code: string;
+    credits: number;
   }>;
 }
 
@@ -24,8 +26,12 @@ export async function GET(request: Request) {
     }
 
     await connectToDB();
+
     const branchDoc = (await Branch.findOne({ name: branch + sem })
-      .populate<{ subject_ids: BranchDocument["subject_ids"] }>("subject_ids")
+      .populate({
+        path: "subject_ids",
+        select: "_id name subject_code credits",
+      })
       .lean()) as BranchDocument | null;
 
     if (!branchDoc) {
