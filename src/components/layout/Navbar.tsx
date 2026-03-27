@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { MessageCircle, Home, Github, Users } from "lucide-react"

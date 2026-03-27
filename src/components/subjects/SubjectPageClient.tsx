@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo, useCallback } from "react"
-import { useContributors } from "@/contexts/ContributorsContext"
-import { unitsApi, questionsApi, subjectsApi } from "@/services/api"
+"use client"
+
+import { useState, useMemo, useCallback } from "react"
+import { Header } from "@/components/layout/Header"
+import { ScrollableContent } from "@/components/layout/ScrollableContent"
+import { SubjectContent } from "@/components/subjects"
 import { sortYearsDescending, filterByExamType } from "@/utils"
 import type {
   Unit,
-  PopulatedUnit,
   Question,
   Subject,
   Contributor,
@@ -13,24 +15,32 @@ import type {
   RepeatedType,
 } from "@/types"
 
-interface UseSubjectDataProps {
-  subjectId: string
-}
-
 interface QuestionsByYear {
   total: number
   byUnit: Record<number, Question[]>
 }
 
-export function useSubjectData({ subjectId }: UseSubjectDataProps) {
-  const [units, setUnits] = useState<Unit[]>([])
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [subject, setSubject] = useState<Subject | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [contributor, setContributor] = useState<Contributor | undefined>(
-    undefined
-  )
+interface SubjectPageClientProps {
+  units: Unit[]
+  questions: Question[]
+  subject: Subject | null
+  contributor: Contributor | undefined
+  branchId: string
+  semId: string
+  subjectId: string
+  backLink: string
+}
 
+export function SubjectPageClient({
+  units,
+  questions,
+  subject,
+  contributor,
+  branchId,
+  semId,
+  subjectId,
+  backLink,
+}: SubjectPageClientProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("units")
   const [examFilter, setExamFilter] = useState<ExamFilter>("all")
   const [repeatedType, setRepeatedType] = useState<RepeatedType>("concept")
@@ -40,66 +50,11 @@ export function useSubjectData({ subjectId }: UseSubjectDataProps) {
   const [expandedUnits, setExpandedUnits] = useState<Record<number, boolean>>(
     {}
   )
-
   const [showAnswerModal, setShowAnswerModal] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState<{
     question: string
     answer: string
   } | null>(null)
-
-  const { getContributorBySubjectId } = useContributors()
-
-  // Fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [unitsResponse, questionsResponse] =
-          await Promise.all([
-            unitsApi.getBySubjectId(subjectId),
-            questionsApi.getBySubjectId(subjectId),
-          ])
-
-        const fetchedUnits: PopulatedUnit[] = unitsResponse.units
-        const unitsForState: Unit[] = fetchedUnits.map(unit => ({
-          ...unit,
-          subject_id: typeof unit.subject_id === "object" ? unit.subject_id?._id : unit.subject_id
-        }))
-        setUnits(unitsForState)
-        
-        let derivedSubject: Subject | null = null
-
-        if (fetchedUnits.length > 0) {
-          const subjectFromUnit = fetchedUnits[0].subject_id
-
-          if (subjectFromUnit && typeof subjectFromUnit === "object") {
-            derivedSubject = subjectFromUnit
-          }
-        } else {
-          const subjectResponse = await subjectsApi.getById(subjectId)
-          derivedSubject = subjectResponse.subject
-        }
-
-        setSubject(derivedSubject)
-        setQuestions(questionsResponse.foundQuestions || [])
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    if (subjectId) {
-      fetchData()
-    }
-  }, [subjectId])
-
-  // Fetch contributor
-  useEffect(() => {
-    if (subjectId) {
-      const subjectContributor = getContributorBySubjectId(subjectId)
-      setContributor(subjectContributor)
-    }
-  }, [subjectId, getContributorBySubjectId])
 
   // Filter questions by exam type
   const filteredQuestions = useMemo(() => {
@@ -176,40 +131,46 @@ export function useSubjectData({ subjectId }: UseSubjectDataProps) {
       : `${filteredQuestions.length} questions across ${sortedYears.length} ${yearText}`
   }, [viewMode, units.length, filteredQuestions.length, sortedYears.length])
 
-  return {
-    // Data
-    units,
-    questions,
-    subject,
-    isLoading,
-    contributor,
+  return (
+    <div className="relative min-h-screen flex flex-col sm:h-screen overflow-auto sm:overflow-hidden">
+      <div className="z-20 bg-inherit sm:sticky sm:top-0">
+        <Header
+          branchId={branchId}
+          semId={semId}
+          backLink={backLink}
+          backText="Back to Subjects"
+          title={subject?.name || "Loading..."}
+          subtitle={subtitle}
+          stats={stats}
+          contributor={contributor}
+        />
+      </div>
 
-    // View state
-    viewMode,
-    setViewMode,
-    examFilter,
-    setExamFilter,
-    repeatedType,
-    setRepeatedType,
-
-    // Computed data
-    filteredQuestions,
-    questionsByYear,
-    sortedYears,
-    totalTopics,
-    stats,
-    subtitle,
-
-    // Expanded state
-    expandedYears,
-    toggleYear,
-    expandedUnits,
-    toggleUnit,
-
-    // Answer modal state
-    showAnswerModal,
-    setShowAnswerModal,
-    selectedAnswer,
-    setSelectedAnswer,
-  }
+      <ScrollableContent>
+        <SubjectContent
+          units={units}
+          isLoading={false}
+          branchId={branchId}
+          semId={semId}
+          subjectId={subjectId}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          examFilter={examFilter}
+          onExamFilterChange={setExamFilter}
+          repeatedType={repeatedType}
+          onRepeatedTypeChange={setRepeatedType}
+          questionsByYear={questionsByYear}
+          sortedYears={sortedYears}
+          expandedYears={expandedYears}
+          onToggleYear={toggleYear}
+          expandedUnits={expandedUnits}
+          onToggleUnit={toggleUnit}
+          showAnswerModal={showAnswerModal}
+          onShowAnswerModal={setShowAnswerModal}
+          selectedAnswer={selectedAnswer}
+          onSelectAnswer={setSelectedAnswer}
+        />
+      </ScrollableContent>
+    </div>
+  )
 }

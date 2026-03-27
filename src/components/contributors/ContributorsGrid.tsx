@@ -2,19 +2,17 @@
 
 import { Users } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
-import { useContributors } from "@/contexts/ContributorsContext"
 import { EmptyState } from "@/components/ui/EmptyState"
 import { ContributorCard } from "./ContributorCard"
-import { ContributorsLoading } from "./ContributorsLoading"
+import type { Contributor } from "@/types"
 
-export function ContributorsGrid() {
-  const { contributors, isLoading } = useContributors()
+interface ContributorsGridProps {
+  contributors: Contributor[]
+}
+
+export function ContributorsGrid({ contributors }: ContributorsGridProps) {
   const { theme } = useTheme()
   const isLight = theme === "light"
-
-  if (isLoading) {
-    return <ContributorsLoading />
-  }
 
   if (contributors.length === 0) {
     return (

@@ -1,90 +1,99 @@
-"use client"
-
-import { useParams } from "next/navigation"
 import { PageWrapper } from "@/components/layout/PageWrapper"
-import { Header } from "@/components/layout/Header"
-import { UnitContent } from "@/components/topics"
-import { useUnitData } from "@/hooks/useUnitData"
+import { UnitPageClient } from "@/components/topics/UnitPageClient"
+import {
+  getUnitById,
+  getQuestionsByUnitAndSubject,
+  getAllContributors,
+  getContributorBySubjectId,
+  getAllUnits,
+} from "@/lib/data"
+import { generateAnalysisData } from "@/lib/analysis"
+import type { RawQuestion, QuestionsData } from "@/types"
 
-export default function UnitPage() {
-  const params = useParams()
-  const { branchId, semId, subjectId, unitId } = params
+export async function generateStaticParams() {
+  const units = await getAllUnits()
+  const params: {
+    branchId: string
+    semId: string
+    subjectId: string
+    unitId: string
+  }[] = []
 
-  const parsedBranchId = Array.isArray(branchId) ? branchId[0] : branchId || ""
-  const parsedSemId = Array.isArray(semId) ? semId[0] : semId || ""
+  for (const unit of units) {
+    const subjectData = unit.subject_id
+    if (!subjectData) continue
 
-  const {
-    unit,
-    isLoading,
-    contributor,
-    activeTab,
-    setActiveTab,
-    sortOrder,
-    setSortOrder,
-    yearFilter,
-    setYearFilter,
-    availableYears,
-    sortedTopics,
-    showNotesModal,
-    setShowNotesModal,
-    selectedTopicNotes,
-    showFormulaSheetModal,
-    setShowFormulaSheetModal,
-    showAnswerModal,
-    setShowAnswerModal,
-    selectedAnswer,
-    setSelectedAnswer,
-    handleTopicClick,
-    hasTopicNotes,
-  } = useUnitData({
-    unitId: unitId as string,
-    subjectId: subjectId as string,
-  })
+    const subjectId =
+      typeof subjectData === "object"
+        ? String(subjectData._id)
+        : String(subjectData)
+
+    params.push({
+      branchId: "placeholder",
+      semId: "placeholder",
+      subjectId,
+      unitId: String(unit._id),
+    })
+  }
+
+  return params
+}
+
+export default async function UnitPage({
+  params,
+}: {
+  params: Promise<{
+    branchId: string
+    semId: string
+    subjectId: string
+    unitId: string
+  }>
+}) {
+  const { branchId, semId, subjectId, unitId } = await params
+
+  const [rawUnit, contributors] = await Promise.all([
+    getUnitById(unitId),
+    getAllContributors(),
+  ])
+
+  if (!rawUnit) {
+    return (
+      <PageWrapper>
+        <div className="flex items-center justify-center min-h-screen">
+          <p>Unit not found</p>
+        </div>
+      </PageWrapper>
+    )
+  }
+
+  // Fetch questions using the unit number
+  const actualQuestions = await getQuestionsByUnitAndSubject(
+    rawUnit.number,
+    subjectId
+  )
+
+  const questionsData: QuestionsData = {
+    foundQuestions: actualQuestions.map((q) => ({
+      ...q,
+      _id: String(q._id),
+      year: typeof q.year === "string" ? parseInt(q.year as string) : q.year,
+    })) as RawQuestion[],
+  }
+
+  const unit = generateAnalysisData(rawUnit, questionsData)
+
+  // Get contributor
+  const contributor = getContributorBySubjectId(subjectId, contributors)
 
   return (
     <PageWrapper>
-      <div className="relative z-10 min-h-screen h-full sm:h-screen flex flex-col overflow-auto sm:overflow-hidden">
-        <div className="sm:sticky sm:top-0 sm:z-20 bg-inherit">
-          <Header
-            branchId={parsedBranchId}
-            semId={parsedSemId}
-            backLink={`/branch/${parsedBranchId}/semester/${parsedSemId}/subject/${subjectId}`}
-            backText="Back to Units"
-            title={`Unit ${unit?.number || ""}`}
-            subtitle={`${unit?.topics.length || 0} topics to explore`}
-            showWeightageInfo={true}
-            stats={{
-              primary: { value: unit?.topics.length || 0, label: "Topics" },
-              secondary: { value: availableYears?.length || 0, label: "Years" },
-            }}
-            contributor={contributor}
-          />
-        </div>
-
-        <UnitContent
-          unit={unit}
-          isLoading={isLoading}
-          sortedTopics={sortedTopics}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-          yearFilter={yearFilter}
-          onYearFilterChange={setYearFilter}
-          availableYears={availableYears}
-          showNotesModal={showNotesModal}
-          onShowNotesModal={setShowNotesModal}
-          selectedTopicNotes={selectedTopicNotes}
-          showFormulaSheetModal={showFormulaSheetModal}
-          onShowFormulaSheetModal={setShowFormulaSheetModal}
-          showAnswerModal={showAnswerModal}
-          onShowAnswerModal={setShowAnswerModal}
-          selectedAnswer={selectedAnswer}
-          onSelectAnswer={setSelectedAnswer}
-          onTopicClick={handleTopicClick}
-          hasTopicNotes={hasTopicNotes}
-        />
-      </div>
+      <UnitPageClient
+        unit={unit}
+        contributor={contributor}
+        branchId={branchId}
+        semId={semId}
+        subjectId={subjectId}
+      />
     </PageWrapper>
   )
 }

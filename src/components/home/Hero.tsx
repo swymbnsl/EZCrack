@@ -1,3 +1,5 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { useTheme } from "@/contexts/ThemeContext"
 import { lightTheme, darkTheme } from "@/constants/colors"

@@ -1,28 +1,18 @@
-"use client"
-
-import { motion } from "framer-motion"
 import { PageWrapper } from "@/components/layout/PageWrapper"
 import { Navbar } from "@/components/layout/Navbar"
 import { ContributorsHeader, ContributorsGrid } from "@/components/contributors"
-import { useTheme } from "@/contexts/ThemeContext"
+import { getAllContributors } from "@/lib/data"
 
-export default function ContributorsPage() {
-  const { theme } = useTheme()
-  const isLight = theme === "light"
+export default async function ContributorsPage() {
+  const contributors = await getAllContributors()
 
   return (
     <PageWrapper>
       <Navbar />
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`min-h-screen pt-32 px-4 max-w-6xl mx-auto ${
-          isLight ? "text-neo-text-light" : "text-white"
-        }`}
-      >
+      <main className="min-h-screen pt-32 px-4 max-w-6xl mx-auto">
         <ContributorsHeader />
-        <ContributorsGrid />
-      </motion.main>
+        <ContributorsGrid contributors={contributors} />
+      </main>
     </PageWrapper>
   )
 }

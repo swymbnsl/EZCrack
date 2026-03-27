@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { Info } from "lucide-react"
 import { useTheme } from "@/contexts/ThemeContext"
