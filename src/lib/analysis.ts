@@ -57,6 +57,7 @@ export function generateAnalysisData(
           year: q.year,
           midsem: q.midsem,
           answer: q.answer,
+          image_urls: q.image_urls,
         })),
       }
     }

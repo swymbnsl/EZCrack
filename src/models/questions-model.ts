@@ -33,6 +33,10 @@ const questionSchema = new mongoose.Schema({
     ref: "Subject",
     required: true,
   },
+  image_urls: {
+    type: [String],
+    default: [],
+  },
   created_at: {
     type: Date,
     default: Date.now,

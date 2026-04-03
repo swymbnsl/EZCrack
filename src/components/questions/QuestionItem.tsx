@@ -1,6 +1,7 @@
 "use client"
 
 import { MessageSquare } from "lucide-react"
+import Image from "next/image"
 import { useTheme } from "@/contexts/ThemeContext"
 import { lightTheme, darkTheme } from "@/constants/colors"
 import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer"
@@ -13,6 +14,7 @@ interface QuestionItemProps {
   year?: string | number
   examType?: ExamType
   topics?: string[]
+  image_urls?: string[]
   showExamBadge?: boolean
   showMarksBadge?: boolean
   showYearBadge?: boolean
@@ -36,6 +38,7 @@ export function QuestionItem({
   year,
   examType,
   topics = [],
+  image_urls,
   showExamBadge = true,
   showMarksBadge = true,
   showYearBadge = false,
@@ -108,6 +111,23 @@ export function QuestionItem({
           >
             <MarkdownRenderer content={question} />
           </div>
+          {/* Display multiple images if available */}
+          {image_urls && image_urls.length > 0 && (
+            <div className="mt-3 flex flex-col gap-3">
+              {image_urls.map((url, i) => (
+                <div key={i} className="border-2 overflow-hidden bg-white/5" style={{ borderColor: colors.border }}>
+                  <Image
+                    src={url}
+                    alt={`Question diagram ${i + 1}`}
+                    width={500}
+                    height={300}
+                    className="w-full h-auto object-contain"
+                    style={{ maxHeight: '300px' }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
           {showTopics && topics.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {topics.map((topic, i) => (

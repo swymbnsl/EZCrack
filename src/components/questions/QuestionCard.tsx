@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { MessageSquare } from "lucide-react"
+import Image from "next/image"
 import { MarkdownRenderer } from "@/components/shared/MarkdownRenderer"
 import { useTheme } from "@/contexts/ThemeContext"
 import { lightTheme, darkTheme } from "@/constants/colors"
@@ -13,6 +14,7 @@ interface QuestionCardProps {
   midsem: boolean
   topics?: string[]
   answer?: string
+  image_urls?: string[]
   onShowAnswer?: () => void
   animationDelay?: number
   variant?: "default" | "compact"
@@ -25,6 +27,7 @@ export function QuestionCard({
   midsem,
   topics = [],
   answer,
+  image_urls,
   onShowAnswer,
   animationDelay = 0,
   variant = "default",
@@ -129,6 +132,23 @@ export function QuestionCard({
               content={question}
               className="text-sm sm:text-base"
             />
+            {/* Display multiple images if available */}
+            {image_urls && image_urls.length > 0 && (
+              <div className="mt-2 flex flex-col gap-2">
+                {image_urls.map((url, i) => (
+                  <div key={i} className="border-2 overflow-hidden bg-white/5" style={{ borderColor: colors.border }}>
+                    <Image
+                      src={url}
+                      alt={`Question diagram ${i + 1}`}
+                      width={500}
+                      height={300}
+                      className="w-full h-auto object-contain"
+                      style={{ maxHeight: '250px' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           {answer && onShowAnswer && (
             <button
@@ -194,6 +214,23 @@ export function QuestionCard({
             content={question}
             className="text-sm sm:text-base"
           />
+          {/* Display multiple images if available */}
+          {image_urls && image_urls.length > 0 && (
+            <div className="mt-3 flex flex-col gap-3">
+              {image_urls.map((url, i) => (
+                <div key={i} className="border-2 overflow-hidden bg-white/5" style={{ borderColor: colors.border }}>
+                  <Image
+                    src={url}
+                    alt={`Question diagram ${i + 1}`}
+                    width={500}
+                    height={300}
+                    className="w-full h-auto object-contain"
+                    style={{ maxHeight: '300px' }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
           {topics.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {topics.map((topic, i) => (

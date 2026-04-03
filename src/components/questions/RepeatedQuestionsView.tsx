@@ -124,6 +124,7 @@ interface ConceptBasedQuestionsProps {
       year: string
       examType: string
       answer?: string
+      image_urls?: string[]
     }[]
   }[]
   onAnswerClick: (question: string, answer: string) => void
@@ -173,6 +174,7 @@ function ConceptBasedQuestions({
                   answer={question.answer}
                   year={question.year}
                   examType={question.examType as "midterm" | "endterm"}
+                  image_urls={question.image_urls}
                   showYearBadge={true}
                   showMarksBadge={false}
                   showTopics={false}
@@ -196,6 +198,7 @@ interface PatternBasedQuestionsProps {
       year: string
       examType: string
       answer?: string
+      image_urls?: string[]
     }[]
   }[]
   onAnswerClick: (question: string, answer: string) => void
@@ -245,6 +248,7 @@ function PatternBasedQuestions({
                   answer={question.answer}
                   year={question.year}
                   examType={question.examType as "midterm" | "endterm"}
+                  image_urls={question.image_urls}
                   showYearBadge={true}
                   showMarksBadge={false}
                   showTopics={false}

@@ -342,6 +342,7 @@ function QuestionsView({
                       examType={question.midsem ? "midterm" : "endterm"}
                       showYearBadge={true}
                       showTopics={false}
+                      image_urls={question.image_urls}
                       onAnswerClick={onAnswerClick}
                     />
                   </motion.div>

@@ -138,6 +138,7 @@ export function YearwiseQuestionsView({
                               marks={question.marks}
                               examType={question.midsem ? "midterm" : "endterm"}
                               topics={question.topics}
+                              image_urls={question.image_urls}
                               showYearBadge={false}
                               onAnswerClick={onAnswerClick}
                             />

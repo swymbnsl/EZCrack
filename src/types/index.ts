@@ -31,6 +31,7 @@ export interface BaseQuestion {
   year: number | string
   midsem: boolean
   answer?: string
+  image_urls?: string[]
 }
 
 export interface Question extends BaseQuestion {
@@ -45,6 +46,7 @@ export interface TopicQuestion {
   year: number
   midsem: boolean
   answer?: string
+  image_urls?: string[]
 }
 
 export interface RepeatedQuestionItem {
@@ -52,6 +54,7 @@ export interface RepeatedQuestionItem {
   year: string
   examType: string
   answer?: string
+  image_urls?: string[]
 }
 
 export interface BaseRepeatedQuestion {
@@ -129,6 +132,7 @@ export interface RawQuestion {
   year: number
   midsem: boolean
   answer?: string
+  image_urls?: string[]
 }
 
 export interface QuestionsData {
