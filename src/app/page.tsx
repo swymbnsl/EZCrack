@@ -2,7 +2,6 @@ import { Hero } from "@/components/home/Hero"
 import { HomeClient } from "@/components/home/HomeClient"
 import { PageWrapper } from "@/components/layout/PageWrapper"
 import { Navbar } from "@/components/layout/Navbar"
-import { AttentionNotice } from "@/components/ui/AttentionNotice"
 import { branches, semesters } from "@/constants/lists"
 
 export default function Home() {
@@ -13,24 +12,6 @@ export default function Home() {
         <Hero />
         <HomeClient branches={branches} semesters={semesters} />
       </main>
-      <AttentionNotice
-        message={
-          <>
-            <p>
-              The platform is still under development, and the material will be
-              significantly improved.
-            </p>
-            <p className="mt-2">
-              Currently, only 1st-year and some 2rd-year material have been
-              uploaded. The rest will be added soon.
-            </p>
-            <p className="mt-2">
-              Join the WhatsApp community to request material or contribute your
-              own.
-            </p>
-          </>
-        }
-      />
     </PageWrapper>
   )
 }
