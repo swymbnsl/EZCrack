@@ -1,19 +1,28 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const unitSchema = new mongoose.Schema(
   {
     number: {
       type: Number,
-      required: true,
+      required: [true, "Unit number is required"],
+      min: [1, "Unit must be at least 1"],
+      max: [20, "Unit cannot exceed 20"],
     },
     topics: {
       type: [String],
-      required: true,
+      required: [true, "At least one topic is required"],
+      validate: {
+        validator: function (v: string[]) {
+          return v && v.length > 0
+        },
+        message: "Topics array cannot be empty",
+      },
     },
     subject_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subject",
-      required: true,
+      required: [true, "Subject ID is required"],
+      index: true,
     },
     notes: [
       {
@@ -25,7 +34,7 @@ const unitSchema = new mongoose.Schema(
         },
       },
     ],
-    formulaSheet: {
+    formula_sheet: {
       content: String,
       createdAt: {
         type: Date,
@@ -36,38 +45,12 @@ const unitSchema = new mongoose.Schema(
         default: Date.now,
       },
     },
-    repeatedQuestions: {
-      conceptBased: [
-        {
-          frequency: Number,
-          concept: String,
-          questions: [
-            {
-              question: String,
-              year: String,
-              examType: String,
-            },
-          ],
-        },
-      ],
-      patternBased: [
-        {
-          frequency: Number,
-          pattern: String,
-          questions: [
-            {
-              question: String,
-              year: String,
-              examType: String,
-            },
-          ],
-        },
-      ],
-    },
   },
   {
     timestamps: true,
   }
-);
+)
 
-export default mongoose.models.Unit || mongoose.model("Unit", unitSchema);
+unitSchema.index({ subject_id: 1, number: 1 })
+
+export default mongoose.models.Unit || mongoose.model("Unit", unitSchema)

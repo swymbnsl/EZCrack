@@ -8,7 +8,7 @@ import { lightTheme, darkTheme, commonColors } from "@/constants/colors"
 import type { Subject } from "@/types"
 
 interface SubjectCardProps {
-  subject: Subject & { subject_code?: string }
+  subject: Subject
   index: number
   branchId: string | string[]
   semId: string
@@ -78,7 +78,7 @@ export function SubjectCard({
                     borderColor: colors.border,
                   }}
                 >
-                  {subject.subject_code || "CS-301"}
+                  {subject.subject_code}
                 </span>
                 <div
                   className="flex items-center gap-1.5 px-2.5 py-1 border-2"
@@ -89,7 +89,7 @@ export function SubjectCard({
                   }}
                 >
                   <GraduationCap className="w-4 h-4" />
-                  <span>{subject.credits || 3} Credits</span>
+                  <span>{subject.credits} Credits</span>
                 </div>
               </div>
             </div>

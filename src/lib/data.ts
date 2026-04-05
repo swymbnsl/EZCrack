@@ -4,6 +4,7 @@ import Branch from "@/models/branch-model"
 import Subject from "@/models/subjects-model"
 import Unit from "@/models/units-model"
 import Question from "@/models/questions-model"
+import RepeatedQuestionGroup from "@/models/repeated-question-group-model"
 import { Contributor as ContributorModel } from "@/models/contributors-model"
 import type {
   Subject as SubjectType,
@@ -11,6 +12,7 @@ import type {
   Question as QuestionType,
   Contributor,
   RawUnit,
+  RepeatedQuestions,
 } from "@/types"
 
 /**
@@ -78,7 +80,72 @@ export async function getSubjectById(
 // ============ Unit Queries ============
 
 /**
- * Get all units for a subject (with populated subject_id)
+ * Type for a populated question from the database
+ */
+interface PopulatedQuestion {
+  _id: string
+  question: string
+  year: number
+  midsem: boolean
+  answer?: string
+  image_urls?: string[]
+}
+
+/**
+ * Helper function to fetch and transform repeated questions for units
+ */
+async function getRepeatedQuestionsForUnits(
+  unitIds: string[]
+): Promise<Map<string, RepeatedQuestions>> {
+  const repeatedGroups = await RepeatedQuestionGroup.find({
+    unit_id: { $in: unitIds },
+  })
+    .populate("question_ids")
+    .lean()
+
+  const repeatedByUnit = new Map<string, RepeatedQuestions>()
+
+  for (const group of repeatedGroups) {
+    const unitId = String(group.unit_id)
+    
+    if (!repeatedByUnit.has(unitId)) {
+      repeatedByUnit.set(unitId, {
+        conceptBased: [],
+        patternBased: [],
+      })
+    }
+
+    const unitRepeated = repeatedByUnit.get(unitId)!
+    
+    // Transform question_ids to the expected format
+    const questions = (group.question_ids || []).map((q: PopulatedQuestion) => ({
+      question: q.question || "",
+      year: String(q.year || ""),
+      examType: q.midsem ? "Midterm" : "Endterm",
+      answer: q.answer,
+      image_urls: q.image_urls || [],
+    }))
+
+    if (group.type === "concept") {
+      unitRepeated.conceptBased.push({
+        concept: group.name,
+        frequency: group.frequency,
+        questions,
+      })
+    } else if (group.type === "pattern") {
+      unitRepeated.patternBased.push({
+        pattern: group.name,
+        frequency: group.frequency,
+        questions,
+      })
+    }
+  }
+
+  return repeatedByUnit
+}
+
+/**
+ * Get all units for a subject (with populated subject_id and repeated questions)
  */
 export async function getUnitsBySubjectId(
   subjectId: string
@@ -87,7 +154,23 @@ export async function getUnitsBySubjectId(
   const units = await Unit.find({ subject_id: subjectId })
     .populate("subject_id")
     .lean()
-  return serialize<PopulatedUnit[]>(units)
+
+  // Fetch repeated questions for all units
+  const unitIds = units.map((u) => String(u._id))
+  const repeatedByUnit = await getRepeatedQuestionsForUnits(unitIds)
+
+  // Attach repeated questions to each unit
+  const unitsWithRepeated = units.map((unit) => {
+    const unitId = String(unit._id)
+    const repeatedQuestions = repeatedByUnit.get(unitId)
+    
+    return {
+      ...unit,
+      repeatedQuestions,
+    }
+  })
+
+  return serialize<PopulatedUnit[]>(unitsWithRepeated)
 }
 
 /**
@@ -98,7 +181,19 @@ export async function getUnitById(
 ): Promise<RawUnit | null> {
   await connectToDB()
   const unit = await Unit.findById(unitId).lean()
-  return unit ? serialize<RawUnit>(unit) : null
+  
+  if (!unit) return null
+
+  // Fetch repeated questions for this unit
+  const unitDoc = unit as { _id: unknown }
+  const unitIdStr = String(unitDoc._id)
+  const repeatedByUnit = await getRepeatedQuestionsForUnits([unitIdStr])
+  const repeatedQuestions = repeatedByUnit.get(unitIdStr)
+
+  return serialize<RawUnit>({
+    ...unit,
+    repeatedQuestions,
+  })
 }
 
 /**

@@ -2,9 +2,9 @@
 export interface Subject {
   _id: string
   name: string
-  semester: number
-  code?: string
-  credits?: number
+  unit_ids: string[]
+  subject_code: string
+  credits: number
 }
 
 // ============ Contributor Types ============

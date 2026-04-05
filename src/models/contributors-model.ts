@@ -46,7 +46,6 @@ contributorSchema.pre('save', function(next) {
 
 // Create indexes for better query performance
 contributorSchema.index({ branch: 1, semester: 1 });
-contributorSchema.index({ "contributions.totalQuestions": -1 });
-contributorSchema.index({ "contributions.totalNotes": -1 });
+contributorSchema.index({ subject_ids: 1 });
 
 export const Contributor = mongoose.models.Contributor || mongoose.model('Contributor', contributorSchema); 
